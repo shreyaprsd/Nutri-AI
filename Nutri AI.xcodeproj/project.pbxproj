@@ -74,7 +74,6 @@
 			buildConfigurationList = 358C86D82EBB418800478DDA /* Build configuration list for PBXNativeTarget "Nutri AI" */;
 			buildPhases = (
 				358C86C92EBB418700478DDA /* Sources */,
-				354289C32EBCF257005CB9BD /* ShellScript */,
 				358C86CA2EBB418700478DDA /* Frameworks */,
 				358C86CB2EBB418700478DDA /* Resources */,
 			);
@@ -148,27 +147,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		354289C32EBCF257005CB9BD /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\n\necho \"SwiftFormat found at: $(which swiftformat)\"\n\ncd \"$SRCROOT\" || exit 0\n\n# Try to format - check if \"Nutri AI\" subdirectory exists\nif [ -d \"Nutri AI\" ]; then\n    echo \"Formatting Nutri AI directory...\"\n    swiftformat \"Nutri AI\" --swiftversion 6.0 --verbose 2>&1 || true\nelif [ -f \"Nutri_AIApp.swift\" ] || [ -d \"Authentication\" ]; then\n    echo \"Formatting current directory...\"\n    swiftformat . --swiftversion 6.0 --verbose 2>&1 || true\nelse\n    echo \"⚠️ Could not find Swift files to format\"\n    echo \"Current directory contents:\"\n    ls -la\nfi\n\necho \"✅ SwiftFormat completed\"\nexit 0\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		358C86C92EBB418700478DDA /* Sources */ = {
@@ -309,15 +287,18 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = THAJT3C2NG;
+				DEVELOPMENT_TEAM = F5MZ88W8CN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "";
+				INFOPLIST_FILE = "Nutri-AI-Info.plist";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Need access to the camera ";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Need access to photos";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -342,15 +323,18 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = THAJT3C2NG;
+				DEVELOPMENT_TEAM = F5MZ88W8CN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "";
+				INFOPLIST_FILE = "Nutri-AI-Info.plist";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Need access to the camera ";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Need access to photos";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
