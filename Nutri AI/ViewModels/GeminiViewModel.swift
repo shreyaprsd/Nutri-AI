@@ -8,22 +8,23 @@
 import FirebaseAI
 import FirebaseAILogic
 import Observation
+import SwiftData
 import SwiftUI
 import UIKit
 
 @Observable
 class GeminiViewModel {
-  var nutritionInfo: NutritionResponse?
+    var nutritionInfo: NutritionResponse?
 
-  private var model: GenerativeModel = {
-    let ai = FirebaseAI.firebaseAI()
-    return ai.generativeModel(
-      modelName: "gemini-2.5-flash",
-      generationConfig: GenerationConfig(responseMIMEType: "application/json")
-    )
-  }()
+    private var model: GenerativeModel = {
+        let ai = FirebaseAI.firebaseAI()
+        return ai.generativeModel(
+            modelName: "gemini-2.5-flash",
+            generationConfig: GenerationConfig(responseMIMEType: "application/json")
+        )
+    }()
 
-  static let nutritionSchema = """
+    static let nutritionSchema = """
     {
       "type": "object",
       "required": ["foodName", "calories", "carbs", "protein", "fats", "saturatedFats", "polyunsaturatedFats", "cholesterol", "sodium", "potassium", "vitaminA", "vitaminC", "iron", "calcium", "fiber", "sugar", "servingSize", "description"],
@@ -133,31 +134,36 @@ class GeminiViewModel {
       }
     }
     """
-  @MainActor
-  func analyzeFood(image: UIImage) async {
-    do {
-      guard let imageData = image.jpegData(compressionQuality: 0.8) else {
-        print("Failed to convert image to data")
-        return
-      }
-      let imagePart = InlineDataPart(data: imageData, mimeType: "image/jpeg")
-      let prompt = """
-        You are a nutritional analysis expert. Based on the provided image, identify the food item(s) and estimate their nutritional information for a standard serving size.Provide the macronutrients and micronutrients in grams or miligrams only. Respond ONLY with a JSON object that conforms to the provided schema. Do not include any other text, markdown formatting, or explanations.Also note that the description provided should not be more than 10 words , foodname should not be more than 3 words. 
+    @MainActor
+    func analyzeFood(image: UIImage, modelContext: ModelContext) async {
+        do {
+            guard let imageData = image.jpegData(compressionQuality: 0.8) else {
+                print("Failed to convert image to data")
+                return
+            }
+            let imagePart = InlineDataPart(data: imageData, mimeType: "image/jpeg")
+            let prompt = """
+            You are a nutritional analysis expert. Based on the provided image, identify the food item(s) and estimate their nutritional information for a standard serving size.Provide the macronutrients and micronutrients in grams or miligrams only. Respond ONLY with a JSON object that conforms to the provided schema. Do not include any other text, markdown formatting, or explanations.Also note that the description provided should not be more than 10 words , foodname should not be more than 3 words. 
 
-        Schema: \(Self.nutritionSchema)
-        """
-      let promptPart = TextPart(prompt)
-      let response = try await model.generateContent(promptPart, imagePart)
-      guard let text = response.text, let jsonData = text.data(using: .utf8) else {
-        print("Failed to get the text from the data response ")
-        return
-      }
-      print(text)
-      let decoder = JSONDecoder()
-      nutritionInfo = try decoder.decode(NutritionResponse.self, from: jsonData)
+            Schema: \(Self.nutritionSchema)
+            """
+            let promptPart = TextPart(prompt)
+            let response = try await model.generateContent(promptPart, imagePart)
+            guard let text = response.text, let jsonData = text.data(using: .utf8) else {
+                print("Failed to get the text from the data response ")
+                return
+            }
+            print(text)
+            let decoder = JSONDecoder()
+            nutritionInfo = try decoder.decode(NutritionResponse.self, from: jsonData)
 
-    } catch {
-      print(error.localizedDescription)
+            if let nutritionInfo {
+                let entry = NutritionModel(createdAt: Date(), imageData: imageData, response: nutritionInfo)
+                let vm = NutritionVM(modelContext: modelContext)
+                try await vm.addFoodEntry(entry)
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
     }
-  }
 }

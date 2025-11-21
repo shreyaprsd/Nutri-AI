@@ -8,25 +8,25 @@
 import SwiftUI
 
 struct ContentView: View {
-  @StateObject var viewModel: AuthViewModel
-  var body: some View {
-    VStack {
-      switch viewModel.authenticationState {
-      case .unauthenticated:
-        LoginView(viewModel: viewModel)
-      case .authenticating:
-        ProgressView("Signing in ..")
-          .progressViewStyle(CircularProgressViewStyle())
-      case .authenticated:
-        MainView(viewModel: viewModel)
-      }
+    @StateObject var viewModel: AuthViewModel
+    var body: some View {
+        VStack {
+            switch viewModel.authenticationState {
+            case .unauthenticated:
+                LoginView(viewModel: viewModel)
+            case .authenticating:
+                ProgressView("Signing in ..")
+                    .progressViewStyle(CircularProgressViewStyle())
+            case .authenticated:
+                MainView(viewModel: viewModel)
+            }
+        }
+        .onAppear {
+            viewModel.registerAuthStateHandler()
+        }
     }
-    .onAppear {
-      viewModel.registerAuthStateHandler()
-    }
-  }
 }
 
 #Preview {
-  ContentView(viewModel: AuthViewModel())
+    ContentView(viewModel: AuthViewModel())
 }

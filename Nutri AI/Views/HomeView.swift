@@ -9,34 +9,26 @@ import SwiftData
 import SwiftUI
 
 struct HomeView: View {
-  @Binding var selectedImage: UIImage?
-  @State private var geminiVM = GeminiViewModel()
-  @State private var imageID = UUID()
-
-  var body: some View {
-    Group {
-      if let selectedImage {
-        VStack {
-          Image(uiImage: selectedImage)
-            .resizable()
-            .scaledToFit()
-            .frame(width: 300, height: 300)
-            .padding()
+    @Query(sort: \NutritionModel.createdAt, order: .reverse) var foodEntries: [NutritionModel]
+    @Binding var selectedImage: UIImage?
+    @State private var geminiVM = GeminiViewModel()
+    @State private var imageID = UUID()
+    @Environment(\.modelContext) private var modelContext: ModelContext
+    var body: some View {
+        Group {
+            FoodEntryList(selectedImage: $selectedImage)
+                .task(id: imageID) {
+                    print("New image captured ith id :(\(imageID)), starting analysis")
+                    if let selectedImage {
+                        await geminiVM.analyzeFood(image: selectedImage, modelContext: modelContext)
+                    }
+                }
+                .onChange(of: selectedImage) { _, newValue in
+                    if newValue != nil {
+                        imageID = UUID()
+                        print("Image changed, new ID generated")
+                    }
+                }
         }
-        .task(id: imageID) {
-          print("New image detected, starting analysis...")
-          await geminiVM.analyzeFood(image: selectedImage)
-          print(geminiVM.nutritionInfo ?? "no data")
-        }
-      } else {
-        Text("hello")
-      }
     }
-    .onChange(of: selectedImage) { _, newValue in
-      if newValue != nil {
-        imageID = UUID()
-        print(" Image changed, new ID generated")
-      }
-    }
-  }
 }
