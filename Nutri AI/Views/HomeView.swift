@@ -9,7 +9,6 @@ import SwiftData
 import SwiftUI
 
 struct HomeView: View {
-    @Query(sort: \NutritionModel.createdAt, order: .reverse) var foodEntries: [NutritionModel]
     @Binding var selectedImage: UIImage?
     @State private var geminiVM = GeminiViewModel()
     @State private var imageID = UUID()
@@ -18,9 +17,9 @@ struct HomeView: View {
         Group {
             FoodEntryList(selectedImage: $selectedImage)
                 .task(id: imageID) {
-                    print("New image captured ith id :(\(imageID)), starting analysis")
                     if let selectedImage {
                         await geminiVM.analyzeFood(image: selectedImage, modelContext: modelContext)
+                        print("New image captured with id :(\(imageID)), starting analysis")
                     }
                 }
                 .onChange(of: selectedImage) { _, newValue in

@@ -29,7 +29,7 @@ struct MainView: View {
                         )
                     }
                     .tag(1)
-                ProfileView()
+                ProfileView(auth: viewModel)
                     .tabItem {
                         Label("Profile", systemImage: "person")
                     }
@@ -81,7 +81,9 @@ struct MainView: View {
                                 title: "Scan food"
                             ) {
                                 showOptions = false
-                                showImagePicker = true
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                                    showImagePicker = true
+                                }
                             }
                         }
                     }
@@ -117,8 +119,9 @@ struct MainView: View {
                 }
             }
         }
-        .sheet(isPresented: $showImagePicker) {
+        .fullScreenCover(isPresented: $showImagePicker) {
             CameraView(image: $selectedImage)
+                .ignoresSafeArea()
         }
         .onChange(of: selectedImage) { _, newValue in
             if newValue != nil {

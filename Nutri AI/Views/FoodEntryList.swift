@@ -21,13 +21,17 @@ struct FoodEntryList: View {
             if foodEntries.isEmpty {
                 FoodEntryEmptyList()
             } else {
-                ForEach(foodEntries) { entry in
-                    FoodEntryRow(item: entry)
-                        .frame(width: 290, height: 105)
-                        .padding(6)
-                        .padding(.top, 478)
-                        .padding(.bottom, 116)
+                List {
+                    ForEach(foodEntries, id: \.id) { entry in
+                        FoodEntryRow(item: entry)
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets())
+                    }
                 }
+                .listStyle(.plain)
+                .scrollContentBackground(.hidden)
+                .padding(.horizontal)
             }
         }
     }
@@ -35,24 +39,22 @@ struct FoodEntryList: View {
 
 struct FoodEntryEmptyList: View {
     var body: some View {
-        VStack {
-            RoundedRectangle(cornerRadius: 16)
-                .foregroundStyle(Color.gray.opacity(0.2))
-                .overlay {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("You haven't uploaded any food")
-                            .font(.callout)
-                            .fontWeight(.bold)
-                        Text(
-                            "Start tracking today's meals by taking a quick picture."
-                        )
-                    }
+        RoundedRectangle(cornerRadius: 16)
+            .foregroundStyle(Color.gray.opacity(0.1))
+            .overlay {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("You haven't uploaded any food yet.")
+                        .font(.callout)
+                        .bold()
+                    Text(
+                        "Start tracking today's meals by taking a quick picture."
+                    )
                 }
-                .frame(width: 290, height: 105)
-                .padding(6)
-                .padding(.top, 478)
-                .padding(.bottom, 116)
-        }
+            }
+            .frame(width: 330, height: 120)
+            .padding(8)
+            .padding(.top, 478)
+            .padding(.bottom, 116)
     }
 }
 
@@ -60,35 +62,55 @@ struct FoodEntryRow: View {
     let item: NutritionModel
     var body: some View {
         RoundedRectangle(cornerRadius: 16)
-            .foregroundStyle(Color.gray.opacity(0.2))
+            .foregroundStyle(Color.gray.opacity(0.1))
             .overlay {
-                if let image = item.image {
-                    FoodImage(image: image)
-                    VStack {
-                        HStack {
+                HStack {
+                    if let image = item.image {
+                        FoodImage(image: image)
+                    }
+                    Spacer()
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack(spacing: 8) {
                             Text(item.foodName)
-                            Text(item.createdAt, style: .time)
+                                .fontWeight(.regular)
+                                .font(.system(size: 16))
+                            Spacer()
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color.white)
+                                .overlay {
+                                    Text(item.createdAt, style: .time)
+                                        .fontWeight(.regular)
+                                        .font(.system(size: 12))
+                                }
+                                .frame(width: 54, height: 28)
                         }
-                        FoodNutriView(
-                            nutrition: "\(item.calories) kCal",
-                            image: "🔥"
-                        )
+                        Spacer()
                         HStack {
-                            FoodNutriView(
-                                nutrition: item.protein.formatted,
-                                image: "🍗"
-                            )
-                            FoodNutriView(
-                                nutrition: item.carbs.formatted,
-                                image: "🌾"
-                            )
-                            FoodNutriView(
-                                nutrition: item.fats.formatted,
-                                image: "🥑"
-                            )
+                            Image(systemName: "flame.fill")
+                            Text("\(item.calories) calories")
+                        }
+                        .bold()
+                        Spacer()
+                        HStack {
+                            FoodNutriView(nutrition: item.protein.roundedFormatted, image: "🍗")
+
+                            FoodNutriView(nutrition: item.carbs.roundedFormatted, image: "🌾")
+
+                            FoodNutriView(nutrition: item.fats.roundedFormatted, image: "🥑")
                         }
                     }
+                    .padding(.top)
+                    .padding(.bottom)
+                    .padding()
                 }
             }
+            .frame(width: 330, height: 120)
+            .padding(8)
+//            .padding(.top, 478)
+//            .padding(.bottom, 116)
     }
+}
+
+#Preview {
+    FoodEntryEmptyList()
 }

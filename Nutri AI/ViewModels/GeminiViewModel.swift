@@ -143,7 +143,8 @@ class GeminiViewModel {
             }
             let imagePart = InlineDataPart(data: imageData, mimeType: "image/jpeg")
             let prompt = """
-            You are a nutritional analysis expert. Based on the provided image, identify the food item(s) and estimate their nutritional information for a standard serving size.Provide the macronutrients and micronutrients in grams or miligrams only. Respond ONLY with a JSON object that conforms to the provided schema. Do not include any other text, markdown formatting, or explanations.Also note that the description provided should not be more than 10 words , foodname should not be more than 3 words. 
+            You are a nutritional analysis expert. Based on the provided image, identify the food item(s) and estimate their nutritional information for a standard serving size.Provide the macronutrients and micronutrients in grams or miligrams only(represented by g and mg respectively). Respond ONLY with a JSON object that conforms to the provided schema. Do not include any other text, markdown formatting, or explanations.Also note that the description and foodName provided should not be more than 5 and 3 words respectively, calories should not represented with kCal in the json data.
+               
 
             Schema: \(Self.nutritionSchema)
             """

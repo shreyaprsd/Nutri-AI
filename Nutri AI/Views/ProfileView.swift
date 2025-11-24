@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @StateObject var auth: AuthViewModel
     var body: some View {
-        Text( /*@START_MENU_TOKEN@*/"Hello, World!" /*@END_MENU_TOKEN@*/)
+        Button("Logout") {
+            auth.signOut()
+        }
     }
 }
 
 #Preview {
-    ProfileView()
+    ProfileView(auth: AuthViewModel())
 }

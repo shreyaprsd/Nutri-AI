@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// to display options after clicking the "+" button
 struct OptionButton: View {
     let icon: String
     let title: String
@@ -31,19 +32,19 @@ struct OptionButton: View {
     }
 }
 
+// to food image in the list view
 struct FoodImage: View {
     let image: UIImage
     var body: some View {
         Image(uiImage: image)
             .resizable()
             .scaledToFill()
-            .frame(width: 105, height: 105)
+            .frame(width: 116, height: 120)
             .clipShape(RoundedRectangle(cornerRadius: 16))
-            .padding(.trailing, 193)
-            .padding(.leading, 12)
     }
 }
 
+// to display macro in the list
 struct FoodNutriView: View {
     let nutrition: String
     let image: String
@@ -52,7 +53,12 @@ struct FoodNutriView: View {
             Text(image)
             Text(nutrition)
         }
+        .font(.system(size: 12))
     }
+}
+
+struct AnalysisProgressView: View {
+    var body: some View {}
 }
 
 #Preview {
