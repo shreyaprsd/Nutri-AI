@@ -15,7 +15,7 @@ struct HomeView: View {
     @Environment(\.modelContext) private var modelContext: ModelContext
     var body: some View {
         Group {
-            FoodEntryList(selectedImage: $selectedImage)
+            FoodEntryList(selectedImage: $selectedImage, geminiVM: geminiVM)
                 .task(id: imageID) {
                     if let selectedImage {
                         await geminiVM.analyzeFood(image: selectedImage, modelContext: modelContext)

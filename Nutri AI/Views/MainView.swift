@@ -94,7 +94,7 @@ struct MainView: View {
                         .frame(height: 150)
                 }
             }
-
+            
             VStack {
                 Spacer()
                 HStack {
@@ -115,7 +115,7 @@ struct MainView: View {
                         }
                     }
                     .padding(.trailing, 24)
-                    .padding(.bottom, 46)
+                    .padding(.bottom, 50)
                 }
             }
         }

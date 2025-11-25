@@ -14,6 +14,7 @@ import UIKit
 
 @Observable
 class GeminiViewModel {
+    var isLoading: Bool = false
     var nutritionInfo: NutritionResponse?
 
     private var model: GenerativeModel = {
@@ -136,9 +137,11 @@ class GeminiViewModel {
     """
     @MainActor
     func analyzeFood(image: UIImage, modelContext: ModelContext) async {
+        isLoading = true
         do {
             guard let imageData = image.jpegData(compressionQuality: 0.8) else {
                 print("Failed to convert image to data")
+                isLoading = false
                 return
             }
             let imagePart = InlineDataPart(data: imageData, mimeType: "image/jpeg")
@@ -152,6 +155,7 @@ class GeminiViewModel {
             let response = try await model.generateContent(promptPart, imagePart)
             guard let text = response.text, let jsonData = text.data(using: .utf8) else {
                 print("Failed to get the text from the data response ")
+                isLoading = false
                 return
             }
             print(text)
@@ -163,8 +167,10 @@ class GeminiViewModel {
                 let vm = NutritionVM(modelContext: modelContext)
                 try await vm.addFoodEntry(entry)
             }
+            isLoading = false
         } catch {
             print(error.localizedDescription)
+            isLoading = false
         }
     }
 }

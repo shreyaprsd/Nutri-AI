@@ -57,16 +57,56 @@ struct FoodNutriView: View {
     }
 }
 
+// progressview that appears while waiting for the api to response
 struct AnalysisProgressView: View {
-    var body: some View {}
+    @State private var progress: Double = 0.0
+
+    var body: some View {
+        VStack(spacing: 20) {
+            ZStack {
+                Circle()
+                    .stroke(
+                        Color.gray.opacity(0.2),
+                        lineWidth: 10
+                    )
+
+                Circle()
+                    .trim(from: 0, to: progress)
+                    .stroke(
+                        Color.white,
+                        style: StrokeStyle(
+                            lineWidth: 10,
+                            lineCap: .round
+                        )
+                    )
+                    .rotationEffect(.degrees(-90))
+                    .animation(.easeInOut, value: progress)
+
+                Text("\(Int(progress * 100))%")
+                    .font(.system(size: 12))
+                    .foregroundStyle(Color.white)
+            }
+            .frame(width: 50, height: 50)
+        }
+        .onAppear {
+            startRandomProgress()
+        }
+    }
+
+    private func startRandomProgress() {
+        Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { timer in
+            let randomIncrement = Double.random(in: 0.05 ... 0.15)
+
+            progress += randomIncrement
+
+            if progress >= 0.9 {
+                progress = 0.9
+                timer.invalidate()
+            }
+        }
+    }
 }
 
 #Preview {
-    OptionButton(
-        icon: "camera.fill",
-        title: "Take Photo",
-        action: {
-            print("Button tapped")
-        }
-    )
+    AnalysisProgressView()
 }

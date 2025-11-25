@@ -69,6 +69,7 @@ final class NutritionModel {
         var formatted: String {
             "\(total)\(unit)"
         }
+
         var roundedFormatted: String {
             "\(total.cleanString())\(unit)"
         }

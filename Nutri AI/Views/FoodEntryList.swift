@@ -12,16 +12,22 @@ struct FoodEntryList: View {
     @Query(sort: \NutritionModel.createdAt, order: .reverse) var foodEntries:
         [NutritionModel]
     @Binding var selectedImage: UIImage?
-    @State private var geminiVM = GeminiViewModel()
+    var geminiVM: GeminiViewModel
     @State private var imageID = UUID()
     @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         Group {
-            if foodEntries.isEmpty {
+            if foodEntries.isEmpty, !geminiVM.isLoading {
                 FoodEntryEmptyList()
             } else {
                 List {
+                    if geminiVM.isLoading, let image = selectedImage {
+                        LoadingFoodRow(image: image)
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets())
+                    }
                     ForEach(foodEntries, id: \.id) { entry in
                         FoodEntryRow(item: entry)
                             .listRowBackground(Color.clear)
