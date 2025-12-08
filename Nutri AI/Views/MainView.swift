@@ -14,14 +14,21 @@ struct MainView: View {
     @State private var selectedImage: UIImage?
     @State private var selectedTab = 0
     @State private var hideFloatingButton = false
+    @State private var analysisVM = NutrientAnalysisViewModel()
+    @State private var imageID = UUID()
+    @Environment(\.modelContext) private var modelContext
+
     var body: some View {
         ZStack {
             TabView(selection: $selectedTab) {
-                HomeView(selectedImage: $selectedImage, hideFloatingButton: $hideFloatingButton)
-                    .tabItem {
-                        Label("Home", systemImage: "house")
-                    }
-                    .tag(0)
+                HomeView(
+                    selectedImage: $selectedImage,
+                    analysisVM: analysisVM, hideFloatingButton: $hideFloatingButton
+                )
+                .tabItem {
+                    Label("Home", systemImage: "house")
+                }
+                .tag(0)
                 GrowthView()
                     .tabItem {
                         Label(
@@ -125,9 +132,18 @@ struct MainView: View {
             CameraView(image: $selectedImage)
                 .ignoresSafeArea()
         }
+        .task(id: imageID) {
+            if let selectedImage {
+                await analysisVM.analzeFood(image: selectedImage, modelContext: modelContext)
+                print("New image captured with id: \(imageID), starting analysis")
+                self.selectedImage = nil
+            }
+        }
         .onChange(of: selectedImage) { _, newValue in
             if newValue != nil {
+                imageID = UUID()
                 selectedTab = 0
+                print("Image changed, new ID generated")
             }
         }
     }

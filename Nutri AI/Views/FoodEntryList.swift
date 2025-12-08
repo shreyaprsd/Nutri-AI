@@ -12,18 +12,18 @@ struct FoodEntryList: View {
     @Query(sort: \NutritionModel.createdAt, order: .reverse) var foodEntries:
         [NutritionModel]
     @Binding var selectedImage: UIImage?
-    var geminiVM: GeminiViewModel
+    var analysisVM: NutrientAnalysisViewModel
     @State private var imageID = UUID()
     @State private var selectedFoodEntry: NutritionModel?
     @Environment(\.modelContext) private var modelContext
     @Binding var hideFloatingButton: Bool
     var body: some View {
         Group {
-            if foodEntries.isEmpty, !geminiVM.isLoading {
+            if foodEntries.isEmpty, !analysisVM.isLoading {
                 FoodEntryEmptyList()
             } else {
                 List {
-                    if geminiVM.isLoading, let image = selectedImage {
+                    if analysisVM.isLoading, let image = selectedImage {
                         LoadingFoodRow(image: image)
                             .listRowBackground(Color.clear)
                             .listRowSeparator(.hidden)

@@ -55,14 +55,6 @@ class AuthViewModel: ObservableObject {
         errorMessage = ""
     }
 
-    private func wait() async {
-        do {
-            print("Wait")
-            try await Task.sleep(nanoseconds: 1_000_000_000)
-            print("Done")
-        } catch {}
-    }
-
     func reset() {
         flow = .login
     }

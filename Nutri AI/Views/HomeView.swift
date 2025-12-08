@@ -10,28 +10,16 @@ import SwiftUI
 
 struct HomeView: View {
     @Binding var selectedImage: UIImage?
-    @State private var geminiVM = GeminiViewModel()
-    @State private var imageID = UUID()
-    @Environment(\.modelContext) private var modelContext: ModelContext
+    var analysisVM: NutrientAnalysisViewModel
     @Binding var hideFloatingButton: Bool
+
     var body: some View {
-        Group {
-            NavigationStack {
-                FoodEntryList(selectedImage: $selectedImage, geminiVM: geminiVM, hideFloatingButton: $hideFloatingButton)
-                    .task(id: imageID) {
-                        if let selectedImage {
-                            await geminiVM.analyzeFood(image: selectedImage, modelContext: modelContext)
-                            print("New image captured with id :(\(imageID)), starting analysis")
-                            self.selectedImage = nil
-                        }
-                    }
-                    .onChange(of: selectedImage) { _, newValue in
-                        if newValue != nil {
-                            imageID = UUID()
-                            print("Image changed, new ID generated")
-                        }
-                    }
-            }
+        NavigationStack {
+            FoodEntryList(
+                selectedImage: $selectedImage,
+                analysisVM: analysisVM,
+                hideFloatingButton: $hideFloatingButton
+            )
         }
     }
 }
