@@ -9,7 +9,7 @@ import GoogleSignIn
 import SwiftUI
 
 struct LoginView: View {
-    @StateObject var viewModel: AuthViewModel
+    @ObservedObject var viewModel: AuthViewModel
     @Environment(\.dismiss) var dismiss
 
     private func signInWithGoogle() {

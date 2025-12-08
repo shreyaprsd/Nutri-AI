@@ -15,10 +15,10 @@ final class NutritionModel {
     var createdAt: Date
     @Attribute(.externalStorage) var imageData: Data?
     var foodName: String
-    var calories: String
     var servingSize: String
     var foodDescription: String
 
+    var calories: String
     var carbs: StoredNutrient
     var protein: StoredNutrient
     var fats: StoredNutrient
@@ -34,14 +34,17 @@ final class NutritionModel {
     var fiber: StoredNutrient
     var sugar: StoredNutrient
 
+    var servingMultiplier: Double = 1.0
+
     init(createdAt: Date, imageData: Data?, response: NutritionResponse) {
         self.createdAt = createdAt
         self.imageData = imageData
         foodName = response.foodName
-        calories = response.calories
         servingSize = response.servingSize
         foodDescription = response.description
+        servingMultiplier = 1.0
 
+        calories = response.calories
         carbs = StoredNutrient(total: response.carbs.total, unit: response.carbs.unit)
         protein = StoredNutrient(total: response.protein.total, unit: response.protein.unit)
         fats = StoredNutrient(total: response.fats.total, unit: response.fats.unit)
@@ -66,12 +69,9 @@ final class NutritionModel {
     struct StoredNutrient: Codable {
         let total: Double
         let unit: String
+
         var formatted: String {
             "\(total)\(unit)"
-        }
-
-        var roundedFormatted: String {
-            "\(total.cleanString())\(unit)"
         }
     }
 }

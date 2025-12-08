@@ -292,6 +292,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Nutri-AI-Info.plist";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need your camera in order to analyze your food.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We need to save your  food image";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Need access to photos";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -328,6 +329,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Nutri-AI-Info.plist";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need your camera in order to analyze your food.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We need to save your  food image";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Need access to photos";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

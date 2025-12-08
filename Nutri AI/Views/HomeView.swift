@@ -13,21 +13,25 @@ struct HomeView: View {
     @State private var geminiVM = GeminiViewModel()
     @State private var imageID = UUID()
     @Environment(\.modelContext) private var modelContext: ModelContext
+    @Binding var hideFloatingButton: Bool
     var body: some View {
         Group {
-            FoodEntryList(selectedImage: $selectedImage, geminiVM: geminiVM)
-                .task(id: imageID) {
-                    if let selectedImage {
-                        await geminiVM.analyzeFood(image: selectedImage, modelContext: modelContext)
-                        print("New image captured with id :(\(imageID)), starting analysis")
+            NavigationStack {
+                FoodEntryList(selectedImage: $selectedImage, geminiVM: geminiVM, hideFloatingButton: $hideFloatingButton)
+                    .task(id: imageID) {
+                        if let selectedImage {
+                            await geminiVM.analyzeFood(image: selectedImage, modelContext: modelContext)
+                            print("New image captured with id :(\(imageID)), starting analysis")
+                            self.selectedImage = nil
+                        }
                     }
-                }
-                .onChange(of: selectedImage) { _, newValue in
-                    if newValue != nil {
-                        imageID = UUID()
-                        print("Image changed, new ID generated")
+                    .onChange(of: selectedImage) { _, newValue in
+                        if newValue != nil {
+                            imageID = UUID()
+                            print("Image changed, new ID generated")
+                        }
                     }
-                }
+            }
         }
     }
 }

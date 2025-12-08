@@ -13,10 +13,11 @@ struct MainView: View {
     @State private var showImagePicker = false
     @State private var selectedImage: UIImage?
     @State private var selectedTab = 0
+    @State private var hideFloatingButton = false
     var body: some View {
         ZStack {
             TabView(selection: $selectedTab) {
-                HomeView(selectedImage: $selectedImage)
+                HomeView(selectedImage: $selectedImage, hideFloatingButton: $hideFloatingButton)
                     .tabItem {
                         Label("Home", systemImage: "house")
                     }
@@ -94,28 +95,29 @@ struct MainView: View {
                         .frame(height: 150)
                 }
             }
-            
-            VStack {
-                Spacer()
-                HStack {
+            if !hideFloatingButton {
+                VStack {
                     Spacer()
-                    Button(action: {
-                        withAnimation(.spring()) {
-                            showOptions.toggle()
-                        }
-                    }) {
-                        ZStack {
-                            Circle()
-                                .fill(Color.black)
-                                .frame(width: 50, height: 50)
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            withAnimation(.spring()) {
+                                showOptions.toggle()
+                            }
+                        }) {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.black)
+                                    .frame(width: 50, height: 50)
 
-                            Image(systemName: "plus")
-                                .font(.system(size: 30, weight: .medium))
-                                .foregroundColor(.white)
+                                Image(systemName: "plus")
+                                    .font(.system(size: 30, weight: .medium))
+                                    .foregroundColor(.white)
+                            }
                         }
+                        .padding(.trailing, 24)
+                        .padding(.bottom, 50)
                     }
-                    .padding(.trailing, 24)
-                    .padding(.bottom, 50)
                 }
             }
         }

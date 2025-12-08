@@ -27,4 +27,10 @@ class NutritionVM {
         modelContext.delete(food)
         try modelContext.save()
     }
+
+    // update serving multiplier
+    func updateServingMultiplier(for food: NutritionModel, multiplier: Double) throws {
+        food.servingMultiplier = multiplier
+        try modelContext.save()
+    }
 }
