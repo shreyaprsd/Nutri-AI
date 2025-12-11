@@ -46,6 +46,11 @@ class AuthViewModel: ObservableObject {
                 self.authenticationState =
                     user == nil ? .unauthenticated : .authenticated
                 self.displayName = user?.displayName ?? ""
+                if let user {
+                    Task {
+                        await UserManager.shared.createUserDocument(for: user)
+                    }
+                }
             }
         }
     }

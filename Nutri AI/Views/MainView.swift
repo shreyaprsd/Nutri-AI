@@ -134,21 +134,19 @@ struct MainView: View {
         }
         .task(id: imageID) {
             if let selectedImage {
-                await analysisVM.analzeFood(image: selectedImage, modelContext: modelContext)
-                print("New image captured with id: \(imageID), starting analysis")
-                self.selectedImage = nil
+                await analysisVM.analzeFood(image: selectedImage, modelContext: modelContext) {
+                    self.selectedImage = nil
+                }
+                print("Analysis complete")
             }
         }
-        .onChange(of: selectedImage) { _, newValue in
-            if newValue != nil {
+
+        .onChange(of: selectedImage) { oldValue, newValue in
+            if oldValue == nil, newValue != nil {
                 imageID = UUID()
                 selectedTab = 0
                 print("Image changed, new ID generated")
             }
         }
     }
-}
-
-#Preview {
-    MainView(viewModel: AuthViewModel())
 }

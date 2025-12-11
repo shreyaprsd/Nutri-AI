@@ -14,15 +14,14 @@ final class NutrientAnalysisViewModel {
     var isLoading = false
     var nutritionInfo: NutritionResponse?
     var errorMessage: String?
-
     private let analysisService: NutritionalAnalysisServiceProtocol
-
+    
     init(analysisService: NutritionalAnalysisServiceProtocol = NutritionalAnalysisService()) {
         self.analysisService = analysisService
     }
 
     @MainActor
-    func analzeFood(image: UIImage, modelContext: ModelContext) async {
+    func analzeFood(image: UIImage, modelContext: ModelContext, onComplete: @escaping () -> Void) async {
         isLoading = true
         errorMessage = nil
         defer {
@@ -38,6 +37,11 @@ final class NutrientAnalysisViewModel {
             let entry = NutritionModel(createdAt: Date(), imageData: imageData, response: response)
             let nutritionVM = NutritionVM(modelContext: modelContext)
             try await nutritionVM.addFoodEntry(entry)
+            onComplete()
+            print("saved to local db")
+            let repo = FoodRepository(modelContext: modelContext)
+            try await repo.saveFoodEntryToFirestore(food: entry, image: image)
+            print("Saved to firestore")
         } catch {
             errorMessage = error.localizedDescription
         }

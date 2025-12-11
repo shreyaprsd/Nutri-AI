@@ -11,7 +11,7 @@ enum NutritionSchema {
     static let json = """
     {
       "type": "object",
-      "required": ["foodName", "calories", "carbs", "protein", "fats", "saturatedFats", "polyunsaturatedFats", "cholesterol", "sodium", "potassium", "vitaminA", "vitaminC", "iron", "calcium", "fiber", "sugar", "servingSize", "description"],
+      "required": ["foodName", "calories", "carbs", "protein", "fats", "saturatedFats", "polysaturatedFats", "cholesterol", "sodium", "potassium", "vitaminA", "vitaminC", "iron", "calcium", "fiber", "sugar", "servingSize", "description"],
       "properties": {
         "foodName": { "type": "string" },
         "calories": { "type": "string" },

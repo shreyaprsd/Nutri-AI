@@ -13,7 +13,6 @@ struct FoodEntryList: View {
         [NutritionModel]
     @Binding var selectedImage: UIImage?
     var analysisVM: NutrientAnalysisViewModel
-    @State private var imageID = UUID()
     @State private var selectedFoodEntry: NutritionModel?
     @Environment(\.modelContext) private var modelContext
     @Binding var hideFloatingButton: Bool
@@ -44,7 +43,7 @@ struct FoodEntryList: View {
                 .scrollContentBackground(.hidden)
                 .padding(.horizontal)
                 .navigationDestination(item: $selectedFoodEntry) { entry in
-                    FoodEntryDetails(item: entry)
+                    FoodEntryDetails(item: entry, hideFloatingButton: $hideFloatingButton)
                 }
                 .onChange(of: selectedFoodEntry) { _, newValue in
                     if newValue == nil {
@@ -81,7 +80,7 @@ struct FoodEntryRow: View {
     @Bindable var item: NutritionModel
 
     private var calculatedCalories: String {
-        guard let base = Double(item.calories) else { return item.calories }
+        guard let base = Double(item.nutrients.calories) else { return item.nutrients.calories }
         return String(format: "%.0f", base * item.servingMultiplier)
     }
 
@@ -123,12 +122,12 @@ struct FoodEntryRow: View {
                         Spacer()
                         HStack {
                             FoodNutriView(nutrition:
-                                calculateNutrient(item.protein), image: "🍗")
+                                calculateNutrient(item.nutrients.protein), image: "🍗")
 
-                            FoodNutriView(nutrition: calculateNutrient(item.carbs), image: "🌾")
+                            FoodNutriView(nutrition: calculateNutrient(item.nutrients.carbs), image: "🌾")
 
                             FoodNutriView(nutrition:
-                                calculateNutrient(item.fats), image: "🥑")
+                                calculateNutrient(item.nutrients.fats), image: "🥑")
                         }
                     }
                     .padding(.top)
