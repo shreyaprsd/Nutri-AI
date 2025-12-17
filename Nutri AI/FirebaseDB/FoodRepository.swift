@@ -69,4 +69,88 @@ class FoodRepository {
             throw error
         }
     }
+
+    func saveFoodToBothDB(food: NutritionModel, image: UIImage?, onLocalSaveComplete: () -> Void) async throws {
+        // save the data locally
+        do {
+            modelContext.insert(food)
+            try modelContext.save()
+            onLocalSaveComplete()
+            print("Data saved locally")
+        } catch {
+            throw FoodDataError.localSavingFailed
+        }
+
+        // save the data to firestoreDB
+        do {
+            try await saveFoodEntryToFirestore(food: food, image: image)
+            print("Data saved to Firestore")
+        } catch {
+            print("Firestore save failed, scheduling background sync")
+            BackgroundSyncManager.shared.addPendingSync(food: food, image: image)
+        }
+    }
+
+    func deleteFoodFromBothDB(for food: NutritionModel) async throws {
+        // delete locally
+        do {
+            modelContext.delete(food)
+            try modelContext.save()
+            print("Data deleted locally")
+        } catch {
+            throw FoodDataError.localDeletionFailed
+        }
+
+        // delete from Firebase DB
+        do {
+            try await deleteFoodEntryFromFirestore(for: food)
+            print("Food deleted from Firestore")
+        } catch {
+            throw FoodDataError.onlineDeletionFailed
+        }
+    }
+
+    func updateFoodInBothDB(food: NutritionModel, multiplier: Double) async throws {
+        // update locally
+        do {
+            try modelContext.save()
+            print("Data updated locally")
+        } catch {
+            throw FoodDataError.localUpdateFailed
+        }
+
+        // update in firestore db
+        do {
+            try await updateFoodEntryToFirestore(food: food, multiplier: multiplier)
+            print("Food updated in Firestore")
+        } catch {
+            throw FoodDataError.onlineUpdateFailed
+        }
+    }
+
+    enum FoodDataError: Error {
+        case localSavingFailed
+        case onlineSavingFailed
+        case localDeletionFailed
+        case onlineDeletionFailed
+        case localUpdateFailed
+        case onlineUpdateFailed
+
+        var errorDescription: String? {
+            switch self {
+            case .localSavingFailed:
+                "Failed to save the food to the local database"
+            case .onlineSavingFailed:
+                "Failed to save the food to the online database"
+            case .localDeletionFailed:
+                "Failed to delete the food from the local database"
+            case .onlineDeletionFailed:
+                "Failed to delete the food from the online database"
+            case .localUpdateFailed:
+                "Failed to update the food in the local database"
+            case .onlineUpdateFailed:
+                "Failed to update the food in the online database"
+            }
+        }
+    }
 }

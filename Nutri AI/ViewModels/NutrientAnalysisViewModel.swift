@@ -15,7 +15,7 @@ final class NutrientAnalysisViewModel {
     var nutritionInfo: NutritionResponse?
     var errorMessage: String?
     private let analysisService: NutritionalAnalysisServiceProtocol
-    
+
     init(analysisService: NutritionalAnalysisServiceProtocol = NutritionalAnalysisService()) {
         self.analysisService = analysisService
     }
@@ -35,13 +35,10 @@ final class NutrientAnalysisViewModel {
                 return
             }
             let entry = NutritionModel(createdAt: Date(), imageData: imageData, response: response)
-            let nutritionVM = NutritionVM(modelContext: modelContext)
-            try await nutritionVM.addFoodEntry(entry)
+            let foodEntryViewModel = FoodEntryViewModel(modelContext: modelContext)
+
+            try await foodEntryViewModel.addFoodEntry(entry, image: image, onLocalSaveComplete: onComplete)
             onComplete()
-            print("saved to local db")
-            let repo = FoodRepository(modelContext: modelContext)
-            try await repo.saveFoodEntryToFirestore(food: entry, image: image)
-            print("Saved to firestore")
         } catch {
             errorMessage = error.localizedDescription
         }

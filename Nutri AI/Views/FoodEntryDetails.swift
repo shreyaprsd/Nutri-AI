@@ -13,8 +13,8 @@ struct FoodEntryDetails: View {
     @Binding var hideFloatingButton: Bool
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
-    private var vm: NutritionVM {
-        NutritionVM(modelContext: modelContext)
+    private var vm: FoodEntryViewModel {
+        FoodEntryViewModel(modelContext: modelContext)
     }
 
     var body: some View {
@@ -86,8 +86,8 @@ struct FoodEntryTextDetailsView: View {
     @Environment(\.modelContext) private var modelContext
     @FocusState private var isTextFieldFocused: Bool
 
-    private var vm: NutritionVM {
-        NutritionVM(modelContext: modelContext)
+    private var vm: FoodEntryViewModel {
+        FoodEntryViewModel(modelContext: modelContext)
     }
 
     private var calculatedCalories: String {
@@ -137,7 +137,7 @@ struct FoodEntryTextDetailsView: View {
                                 .onChange(of: inputText) { _, newValue in
                                     updateTask?.cancel()
                                     if !newValue.isEmpty,
-                                        Double(newValue) != nil
+                                       Double(newValue) != nil
                                     {
                                         updateTask = Task {
                                             try? await Task.sleep(

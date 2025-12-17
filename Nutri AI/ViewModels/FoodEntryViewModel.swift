@@ -1,5 +1,5 @@
 //
-//  NutritionVM.swift
+//  FoodEntryViewModel.swift
 //  Nutri AI
 //
 //  Created by Shreya Prasad on 19/11/25.
@@ -7,21 +7,21 @@
 
 import Foundation
 import SwiftData
+import UIKit
 
 @Observable
-class NutritionVM {
+class FoodEntryViewModel {
     private var modelContext: ModelContext
     private var foodRepository: FoodRepository
-    
+
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
         foodRepository = FoodRepository(modelContext: modelContext)
     }
 
     // save the data
-    func addFoodEntry(_ food: NutritionModel) async throws {
-        modelContext.insert(food)
-        try modelContext.save()
+    func addFoodEntry(_ food: NutritionModel, image: UIImage?, onLocalSaveComplete: () -> Void) async throws {
+        try await foodRepository.saveFoodToBothDB(food: food, image: image, onLocalSaveComplete: onLocalSaveComplete)
     }
 
     // delete the data
