@@ -10,6 +10,7 @@ import FirebaseAuth
 import FirebaseCore
 import Foundation
 import GoogleSignIn
+import SwiftData
 import SwiftUI
 
 enum AuthenticationState {
@@ -34,7 +35,6 @@ class AuthViewModel: ObservableObject {
     @Published var user: User?
     @Published var authenticationState: AuthenticationState = .unauthenticated
     @Published var displayName: String = ""
-
     private var authStateHandler: AuthStateDidChangeListenerHandle?
 
     func registerAuthStateHandler() {
@@ -73,13 +73,21 @@ class AuthViewModel: ObservableObject {
         }
     }
 
-    func deleteAccount() async -> Bool {
+    func deleteAccount(foodViewModel: FoodEntryViewModel) async {
+        guard let user else {
+            return
+        }
         do {
-            try await user?.delete()
-            return true
+            // delete the firebase document
+            await UserManager.shared.deleteUserDocument(for: user)
+            // delete the local data
+            try await foodViewModel.deleteAllLocalFoodEntries()
+            // delete the auth account
+            try await user.delete()
+
         } catch {
+            print(error.localizedDescription)
             errorMessage = error.localizedDescription
-            return false
         }
     }
 }

@@ -26,11 +26,7 @@ class FoodEntryViewModel {
 
     // delete the data
     func deleteFoodEntry(_ food: NutritionModel) async throws {
-        modelContext.delete(food)
-        try modelContext.save()
-
-        try await foodRepository.deleteFoodEntryFromFirestore(for: food)
-        print("Deleted from firestore")
+        try await foodRepository.deleteFoodFromBothDB(for: food)
     }
 
     // update serving multiplier
@@ -39,5 +35,10 @@ class FoodEntryViewModel {
         try modelContext.save()
 
         try await foodRepository.updateFoodEntryToFirestore(food: food, multiplier: multiplier)
+    }
+
+    // delete all food entries (for account deletion)
+    func deleteAllLocalFoodEntries() async throws {
+        try await foodRepository.deleteAllLocalFoods()
     }
 }

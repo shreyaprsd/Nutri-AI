@@ -53,7 +53,7 @@ class FoodRepository {
             fatalError("User not signed in ")
         }
 
-        let foodRef = db.collection("users").document(userID).collection("foods").document(food.foodName)
+        let foodRef = db.collection("users").document(userID).collection("foods").document(food.id.uuidString)
         do {
             let document = try await foodRef.getDocument()
             if document.exists {
@@ -126,6 +126,16 @@ class FoodRepository {
         } catch {
             throw FoodDataError.onlineUpdateFailed
         }
+    }
+
+    func deleteAllLocalFoods() async throws {
+        let descriptor = FetchDescriptor<NutritionModel>()
+        let allFoods: [NutritionModel] = try modelContext.fetch(descriptor)
+        for food in allFoods {
+            modelContext.delete(food)
+        }
+        try modelContext.save()
+        print("All local foods deleted")
     }
 
     enum FoodDataError: Error {

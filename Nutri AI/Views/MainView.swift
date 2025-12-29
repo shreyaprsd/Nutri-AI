@@ -15,6 +15,7 @@ struct MainView: View {
     @State private var selectedTab = 0
     @State private var hideFloatingButton = false
     @State private var analysisVM = NutrientAnalysisViewModel()
+    @State var foodViewModel: FoodEntryViewModel
     @State private var imageID = UUID()
     @Environment(\.modelContext) private var modelContext
 
@@ -37,11 +38,13 @@ struct MainView: View {
                         )
                     }
                     .tag(1)
-                ProfileView(auth: viewModel)
-                    .tabItem {
-                        Label("Profile", systemImage: "person")
-                    }
-                    .tag(2)
+                NavigationStack {
+                    ProfileView(auth: viewModel, foodViewModel: foodViewModel)
+                }
+                .tabItem {
+                    Label("Profile", systemImage: "person")
+                }
+                .tag(2)
             }
 
             if showOptions {

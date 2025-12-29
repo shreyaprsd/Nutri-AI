@@ -27,8 +27,18 @@ struct Nutri_AIApp: App {
     @StateObject var viewModel: AuthViewModel = .init()
     var body: some Scene {
         WindowGroup {
-            ContentView(viewModel: viewModel)
+            AppRootView()
         }
         .modelContainer(for: [NutritionModel.self])
+    }
+}
+
+struct AppRootView: View {
+    @Environment(\.modelContext) private var modelContext
+    var body: some View {
+        ContentView(
+            viewModel: AuthViewModel(),
+            foodEntryViewModel: FoodEntryViewModel(modelContext: modelContext)
+        )
     }
 }

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @ObservedObject var viewModel: AuthViewModel
+    @State var foodEntryViewModel: FoodEntryViewModel
 
     var body: some View {
         VStack {
@@ -19,7 +20,7 @@ struct ContentView: View {
                 ProgressView("Signing in ..")
                     .progressViewStyle(CircularProgressViewStyle())
             case .authenticated:
-                MainView(viewModel: viewModel)
+                MainView(viewModel: viewModel, foodViewModel: foodEntryViewModel)
             }
         }
         .onAppear {
