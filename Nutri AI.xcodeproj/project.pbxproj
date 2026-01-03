@@ -6,6 +6,18 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		358C86E32EBB475B00478DDA /* FirebaseAI in Frameworks */ = {isa = PBXBuildFile; productRef = 358C86E22EBB475B00478DDA /* FirebaseAI */; };
+		358C86E52EBB475B00478DDA /* FirebaseAILogic in Frameworks */ = {isa = PBXBuildFile; productRef = 358C86E42EBB475B00478DDA /* FirebaseAILogic */; };
+		358C86E72EBB475B00478DDA /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 358C86E62EBB475B00478DDA /* FirebaseAuth */; };
+		358C86E92EBB475B00478DDA /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 358C86E82EBB475B00478DDA /* FirebaseCore */; };
+		358C86EB2EBB475B00478DDA /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 358C86EA2EBB475B00478DDA /* FirebaseDatabase */; };
+		358C86ED2EBB475B00478DDA /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 358C86EC2EBB475B00478DDA /* FirebaseFirestore */; };
+		358C86EF2EBB475B00478DDA /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 358C86EE2EBB475B00478DDA /* FirebaseStorage */; };
+		358C86F52EBB4ACB00478DDA /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 358C86F42EBB4ACB00478DDA /* GoogleSignIn */; };
+		358C86F72EBB4ACB00478DDA /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 358C86F62EBB4ACB00478DDA /* GoogleSignInSwift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		358C86CD2EBB418700478DDA /* Nutri AI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Nutri AI.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +35,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				358C86F72EBB4ACB00478DDA /* GoogleSignInSwift in Frameworks */,
+				358C86EB2EBB475B00478DDA /* FirebaseDatabase in Frameworks */,
+				358C86F52EBB4ACB00478DDA /* GoogleSignIn in Frameworks */,
+				358C86E52EBB475B00478DDA /* FirebaseAILogic in Frameworks */,
+				358C86E72EBB475B00478DDA /* FirebaseAuth in Frameworks */,
+				358C86E92EBB475B00478DDA /* FirebaseCore in Frameworks */,
+				358C86EF2EBB475B00478DDA /* FirebaseStorage in Frameworks */,
+				358C86E32EBB475B00478DDA /* FirebaseAI in Frameworks */,
+				358C86ED2EBB475B00478DDA /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +86,15 @@
 			);
 			name = "Nutri AI";
 			packageProductDependencies = (
+				358C86E22EBB475B00478DDA /* FirebaseAI */,
+				358C86E42EBB475B00478DDA /* FirebaseAILogic */,
+				358C86E62EBB475B00478DDA /* FirebaseAuth */,
+				358C86E82EBB475B00478DDA /* FirebaseCore */,
+				358C86EA2EBB475B00478DDA /* FirebaseDatabase */,
+				358C86EC2EBB475B00478DDA /* FirebaseFirestore */,
+				358C86EE2EBB475B00478DDA /* FirebaseStorage */,
+				358C86F42EBB4ACB00478DDA /* GoogleSignIn */,
+				358C86F62EBB4ACB00478DDA /* GoogleSignInSwift */,
 			);
 			productName = "Nutri AI";
 			productReference = 358C86CD2EBB418700478DDA /* Nutri AI.app */;
@@ -94,6 +124,10 @@
 			);
 			mainGroup = 358C86C42EBB418700478DDA;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				358C86E12EBB475B00478DDA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				358C86F32EBB4ACB00478DDA /* XCRemoteSwiftPackageReference "GoogleSignIn-IOS" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 358C86CE2EBB418700478DDA /* Products */;
 			projectDirPath = "";
@@ -253,14 +287,18 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = THAJT3C2NG;
+				DEVELOPMENT_TEAM = F5MZ88W8CN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Nutri-AI-Info.plist";
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need your camera in order to analyze your food.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Need access to photos";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -285,14 +323,18 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = THAJT3C2NG;
+				DEVELOPMENT_TEAM = F5MZ88W8CN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Nutri-AI-Info.plist";
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need your camera in order to analyze your food.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Need access to photos";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -332,6 +374,73 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		358C86E12EBB475B00478DDA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.5.0;
+			};
+		};
+		358C86F32EBB4ACB00478DDA /* XCRemoteSwiftPackageReference "GoogleSignIn-IOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-IOS/";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		358C86E22EBB475B00478DDA /* FirebaseAI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 358C86E12EBB475B00478DDA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAI;
+		};
+		358C86E42EBB475B00478DDA /* FirebaseAILogic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 358C86E12EBB475B00478DDA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAILogic;
+		};
+		358C86E62EBB475B00478DDA /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 358C86E12EBB475B00478DDA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		358C86E82EBB475B00478DDA /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 358C86E12EBB475B00478DDA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		358C86EA2EBB475B00478DDA /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 358C86E12EBB475B00478DDA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		358C86EC2EBB475B00478DDA /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 358C86E12EBB475B00478DDA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		358C86EE2EBB475B00478DDA /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 358C86E12EBB475B00478DDA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+		358C86F42EBB4ACB00478DDA /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 358C86F32EBB4ACB00478DDA /* XCRemoteSwiftPackageReference "GoogleSignIn-IOS" */;
+			productName = GoogleSignIn;
+		};
+		358C86F62EBB4ACB00478DDA /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 358C86F32EBB4ACB00478DDA /* XCRemoteSwiftPackageReference "GoogleSignIn-IOS" */;
+			productName = GoogleSignInSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 358C86C52EBB418700478DDA /* Project object */;
 }
