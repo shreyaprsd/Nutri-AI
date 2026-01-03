@@ -5,6 +5,7 @@
 //  Created by Shreya Prasad on 05/11/25.
 //
 
+import BackgroundTasks
 import FirebaseCore
 import SwiftData
 import SwiftUI
@@ -15,7 +16,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         FirebaseApp.configure()
-
+        BackgroundSyncManager.shared.registerBackgroundTask()
         return true
     }
 }

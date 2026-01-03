@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject var viewModel: AuthViewModel
+    @ObservedObject var viewModel: AuthViewModel
+
     var body: some View {
         VStack {
             switch viewModel.authenticationState {
@@ -25,8 +26,4 @@ struct ContentView: View {
             viewModel.registerAuthStateHandler()
         }
     }
-}
-
-#Preview {
-    ContentView(viewModel: AuthViewModel())
 }

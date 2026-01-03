@@ -11,7 +11,7 @@ import UIKit
 
 struct CameraView: UIViewControllerRepresentable {
     @Binding var image: UIImage?
-    @Environment(\.presentationMode) var presentationMode // dismiss when the view is done
+    @Environment(\.dismiss) var dismiss // dismiss when the view is done
 
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let picker = UIImagePickerController() // create the camera picker
@@ -46,11 +46,11 @@ struct CameraView: UIViewControllerRepresentable {
             if let image = info[.originalImage] as? UIImage {
                 parent.image = image
             }
-            parent.presentationMode.wrappedValue.dismiss() // dismiss the picker
+            parent.dismiss() // dismiss the picker
         }
 
         func imagePickerControllerDidCancel(_: UIImagePickerController) {
-            parent.presentationMode.wrappedValue.dismiss() // dimiss on cancel
+            parent.dismiss() // dimiss on cancel
         }
     }
 }

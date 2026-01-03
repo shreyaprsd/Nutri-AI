@@ -10,6 +10,8 @@ import FirebaseAuth
 import FirebaseCore
 import Foundation
 import GoogleSignIn
+import OSLog
+import SwiftData
 import SwiftUI
 
 enum AuthenticationState {
@@ -34,8 +36,8 @@ class AuthViewModel: ObservableObject {
     @Published var user: User?
     @Published var authenticationState: AuthenticationState = .unauthenticated
     @Published var displayName: String = ""
-
     private var authStateHandler: AuthStateDidChangeListenerHandle?
+    let logger = Logger(subsystem: "com.shreyaprasad.NutriAI", category: "Authentication")
 
     func registerAuthStateHandler() {
         if authStateHandler == nil {
@@ -46,6 +48,11 @@ class AuthViewModel: ObservableObject {
                 self.authenticationState =
                     user == nil ? .unauthenticated : .authenticated
                 self.displayName = user?.displayName ?? ""
+                if let user {
+                    Task {
+                        await UserManager.shared.createUserDocument(for: user)
+                    }
+                }
             }
         }
     }
@@ -53,14 +60,6 @@ class AuthViewModel: ObservableObject {
     func switchFlow() {
         flow = flow == .login ? .signUp : .login
         errorMessage = ""
-    }
-
-    private func wait() async {
-        do {
-            print("Wait")
-            try await Task.sleep(nanoseconds: 1_000_000_000)
-            print("Done")
-        } catch {}
     }
 
     func reset() {
@@ -71,18 +70,26 @@ class AuthViewModel: ObservableObject {
         do {
             try Auth.auth().signOut()
         } catch {
-            print(error)
+            logger.error("\(error)")
             errorMessage = error.localizedDescription
         }
     }
 
-    func deleteAccount() async -> Bool {
+    func deleteAccount(foodViewModel: FoodEntryViewModel) async throws {
+        guard let user else {
+            throw AuthError.userNotAuthenticated
+        }
         do {
-            try await user?.delete()
-            return true
+            // delete the firebase document
+            await UserManager.shared.deleteUserDocument(for: user)
+            // delete the local data
+            try await foodViewModel.deleteAllLocalFoodEntries()
+            // delete the auth account
+            try await user.delete()
+
         } catch {
+            logger.error("\(error.localizedDescription)")
             errorMessage = error.localizedDescription
-            return false
         }
     }
 }
@@ -102,7 +109,7 @@ extension AuthViewModel {
             let window = windowScene.windows.first,
             let rootViewController = window.rootViewController
         else {
-            print("There is no root view controller")
+            logger.info("There is no root view controller")
             return false
         }
 
@@ -123,15 +130,23 @@ extension AuthViewModel {
             )
             let result = try await Auth.auth().signIn(with: credential)
             let firebaseUser = result.user
-            print(
-                "User \(firebaseUser.uid) signed-in with email \(firebaseUser.email ?? "unknown")"
-            )
+            logger.info("User \(firebaseUser.uid) signed-in with email \(firebaseUser.email ?? "unknown")")
             return true
 
         } catch {
-            print(error.localizedDescription)
+            logger.error("\(error.localizedDescription)")
             errorMessage = error.localizedDescription
             return false
+        }
+    }
+}
+
+enum AuthError: Error {
+    case userNotAuthenticated
+    var errorDescription: String? {
+        switch self {
+        case .userNotAuthenticated:
+            "User not authenticated"
         }
     }
 }

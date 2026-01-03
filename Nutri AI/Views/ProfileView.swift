@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @StateObject var auth: AuthViewModel
+    @ObservedObject var auth: AuthViewModel
     var body: some View {
         Button("Logout") {
             auth.signOut()

@@ -20,7 +20,8 @@ struct LoadingImageView: View {
                 .blur(radius: isLoading ? 1 : 0)
                 .overlay {
                     if isLoading {
-                        AnalysisProgressView()
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
                     }
                 }
         }
@@ -35,15 +36,15 @@ struct LoadingFoodRow: View {
             .overlay {
                 HStack {
                     LoadingImageView(image: image)
+                    Spacer()
                     VStack(alignment: .leading, spacing: 4) {
-                        Spacer()
                         Text("Analyzing food...")
                             .fontWeight(.regular)
                             .font(.system(size: 16))
                             .bold()
-                        
+
                         Spacer()
-                        
+
                         Text("We'll notify you when done!")
                             .foregroundStyle(Color.secondary)
                             .fontWeight(.regular)

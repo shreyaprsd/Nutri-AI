@@ -12,17 +12,17 @@ struct FoodEntryList: View {
     @Query(sort: \NutritionModel.createdAt, order: .reverse) var foodEntries:
         [NutritionModel]
     @Binding var selectedImage: UIImage?
-    var geminiVM: GeminiViewModel
-    @State private var imageID = UUID()
+    var analysisVM: NutrientAnalysisViewModel
+    @State private var selectedFoodEntry: NutritionModel?
     @Environment(\.modelContext) private var modelContext
-
+    @Binding var hideFloatingButton: Bool
     var body: some View {
         Group {
-            if foodEntries.isEmpty, !geminiVM.isLoading {
+            if foodEntries.isEmpty, !analysisVM.isLoading {
                 FoodEntryEmptyList()
             } else {
                 List {
-                    if geminiVM.isLoading, let image = selectedImage {
+                    if analysisVM.isLoading, let image = selectedImage {
                         LoadingFoodRow(image: image)
                             .listRowBackground(Color.clear)
                             .listRowSeparator(.hidden)
@@ -33,11 +33,23 @@ struct FoodEntryList: View {
                             .listRowBackground(Color.clear)
                             .listRowSeparator(.hidden)
                             .listRowInsets(EdgeInsets())
+                            .onTapGesture {
+                                hideFloatingButton = true
+                                selectedFoodEntry = entry
+                            }
                     }
                 }
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
                 .padding(.horizontal)
+                .navigationDestination(item: $selectedFoodEntry) { entry in
+                    FoodEntryDetails(item: entry, hideFloatingButton: $hideFloatingButton)
+                }
+                .onChange(of: selectedFoodEntry) { _, newValue in
+                    if newValue == nil {
+                        hideFloatingButton = false
+                    }
+                }
             }
         }
     }
@@ -65,7 +77,18 @@ struct FoodEntryEmptyList: View {
 }
 
 struct FoodEntryRow: View {
-    let item: NutritionModel
+    @Bindable var item: NutritionModel
+
+    private var calculatedCalories: String {
+        guard let base = Double(item.nutrients.calories) else { return item.nutrients.calories }
+        return String(format: "%.0f", base * item.servingMultiplier)
+    }
+
+    private func calculateNutrient(_ nutrient: NutritionModel.StoredNutrient) -> String {
+        let calculated = nutrient.total * item.servingMultiplier
+        return "\(calculated.cleanString())\(nutrient.unit)"
+    }
+
     var body: some View {
         RoundedRectangle(cornerRadius: 16)
             .foregroundStyle(Color.gray.opacity(0.1))
@@ -93,16 +116,18 @@ struct FoodEntryRow: View {
                         Spacer()
                         HStack {
                             Image(systemName: "flame.fill")
-                            Text("\(item.calories) calories")
+                            Text("\(calculatedCalories) calories")
                         }
                         .bold()
                         Spacer()
                         HStack {
-                            FoodNutriView(nutrition: item.protein.roundedFormatted, image: "🍗")
+                            FoodNutriView(nutrition:
+                                calculateNutrient(item.nutrients.protein), image: "🍗")
 
-                            FoodNutriView(nutrition: item.carbs.roundedFormatted, image: "🌾")
+                            FoodNutriView(nutrition: calculateNutrient(item.nutrients.carbs), image: "🌾")
 
-                            FoodNutriView(nutrition: item.fats.roundedFormatted, image: "🥑")
+                            FoodNutriView(nutrition:
+                                calculateNutrient(item.nutrients.fats), image: "🥑")
                         }
                     }
                     .padding(.top)
@@ -112,11 +137,5 @@ struct FoodEntryRow: View {
             }
             .frame(width: 330, height: 120)
             .padding(8)
-//            .padding(.top, 478)
-//            .padding(.bottom, 116)
     }
-}
-
-#Preview {
-    FoodEntryEmptyList()
 }

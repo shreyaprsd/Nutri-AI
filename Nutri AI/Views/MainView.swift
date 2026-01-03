@@ -13,14 +13,22 @@ struct MainView: View {
     @State private var showImagePicker = false
     @State private var selectedImage: UIImage?
     @State private var selectedTab = 0
+    @State private var hideFloatingButton = false
+    @State private var analysisVM = NutrientAnalysisViewModel()
+    @State private var imageID = UUID()
+    @Environment(\.modelContext) private var modelContext
+
     var body: some View {
         ZStack {
             TabView(selection: $selectedTab) {
-                HomeView(selectedImage: $selectedImage)
-                    .tabItem {
-                        Label("Home", systemImage: "house")
-                    }
-                    .tag(0)
+                HomeView(
+                    selectedImage: $selectedImage,
+                    analysisVM: analysisVM, hideFloatingButton: $hideFloatingButton
+                )
+                .tabItem {
+                    Label("Home", systemImage: "house")
+                }
+                .tag(0)
                 GrowthView()
                     .tabItem {
                         Label(
@@ -94,28 +102,29 @@ struct MainView: View {
                         .frame(height: 150)
                 }
             }
-            
-            VStack {
-                Spacer()
-                HStack {
+            if !hideFloatingButton {
+                VStack {
                     Spacer()
-                    Button(action: {
-                        withAnimation(.spring()) {
-                            showOptions.toggle()
-                        }
-                    }) {
-                        ZStack {
-                            Circle()
-                                .fill(Color.black)
-                                .frame(width: 50, height: 50)
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            withAnimation(.spring()) {
+                                showOptions.toggle()
+                            }
+                        }) {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.black)
+                                    .frame(width: 50, height: 50)
 
-                            Image(systemName: "plus")
-                                .font(.system(size: 30, weight: .medium))
-                                .foregroundColor(.white)
+                                Image(systemName: "plus")
+                                    .font(.system(size: 30, weight: .medium))
+                                    .foregroundColor(.white)
+                            }
                         }
+                        .padding(.trailing, 24)
+                        .padding(.bottom, 50)
                     }
-                    .padding(.trailing, 24)
-                    .padding(.bottom, 50)
                 }
             }
         }
@@ -123,14 +132,19 @@ struct MainView: View {
             CameraView(image: $selectedImage)
                 .ignoresSafeArea()
         }
-        .onChange(of: selectedImage) { _, newValue in
-            if newValue != nil {
+        .task(id: imageID) {
+            if let selectedImage {
+                await analysisVM.analyzeFood(image: selectedImage, modelContext: modelContext) {
+                    self.selectedImage = nil
+                }
+            }
+        }
+
+        .onChange(of: selectedImage) { oldValue, newValue in
+            if oldValue == nil, newValue != nil {
+                imageID = UUID()
                 selectedTab = 0
             }
         }
     }
-}
-
-#Preview {
-    MainView(viewModel: AuthViewModel())
 }
