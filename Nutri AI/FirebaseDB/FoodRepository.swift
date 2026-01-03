@@ -8,11 +8,13 @@
 import FirebaseAuth
 import FirebaseFirestore
 import Foundation
+import OSLog
 import SwiftData
 
 class FoodRepository {
     private let db = Firestore.firestore()
     private var modelContext: ModelContext
+    let logger = Logger(subsystem: "com.shreyaprasad.NutriAI", category: "FoodRepository")
 
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
@@ -20,7 +22,7 @@ class FoodRepository {
 
     func saveFoodEntryToFirestore(food: NutritionModel, image: UIImage?) async throws {
         guard let userId = Auth.auth().currentUser?.uid else {
-            return
+            throw FoodDataError.userNotAuthenticated
         }
         var imageURL: String?
         if let image,
@@ -36,7 +38,7 @@ class FoodRepository {
 
     func updateFoodEntryToFirestore(food: NutritionModel, multiplier _: Double) async throws {
         guard let userId = Auth.auth().currentUser?.uid else {
-            return
+            throw FoodDataError.userNotAuthenticated
         }
 
         let docRef = db.collection("users").document(userId).collection("foods").document(food.id.uuidString)
@@ -45,15 +47,15 @@ class FoodRepository {
 
         foodRemote.servingMultiplier = food.servingMultiplier
         try docRef.setData(from: foodRemote, merge: true)
-        print("Food nutrients updated in firestore db")
+        logger.info("Food nutrients updated in firestore db")
     }
 
     func deleteFoodEntryFromFirestore(for food: NutritionModel) async throws {
         guard let userID = Auth.auth().currentUser?.uid else {
-            fatalError("User not signed in ")
+            throw FoodDataError.userNotAuthenticated
         }
 
-        let foodRef = db.collection("users").document(userID).collection("foods").document(food.foodName)
+        let foodRef = db.collection("users").document(userID).collection("foods").document(food.id.uuidString)
         do {
             let document = try await foodRef.getDocument()
             if document.exists {
@@ -65,7 +67,7 @@ class FoodRepository {
                 try await foodRef.delete()
             }
         } catch {
-            print("Error deleting food\(food.foodName)")
+            logger.error("Error deleting food\(food.foodName)")
             throw error
         }
     }
@@ -76,7 +78,7 @@ class FoodRepository {
             modelContext.insert(food)
             try modelContext.save()
             onLocalSaveComplete()
-            print("Data saved locally")
+            logger.info("Data saved locally")
         } catch {
             throw FoodDataError.localSavingFailed
         }
@@ -84,9 +86,9 @@ class FoodRepository {
         // save the data to firestoreDB
         do {
             try await saveFoodEntryToFirestore(food: food, image: image)
-            print("Data saved to Firestore")
+            logger.info("Data saved to Firestore")
         } catch {
-            print("Firestore save failed, scheduling background sync")
+            logger.error("Firestore save failed, scheduling background sync")
             BackgroundSyncManager.shared.addPendingSync(food: food, image: image)
         }
     }
@@ -96,7 +98,7 @@ class FoodRepository {
         do {
             modelContext.delete(food)
             try modelContext.save()
-            print("Data deleted locally")
+            logger.info("Data deleted locally")
         } catch {
             throw FoodDataError.localDeletionFailed
         }
@@ -104,7 +106,7 @@ class FoodRepository {
         // delete from Firebase DB
         do {
             try await deleteFoodEntryFromFirestore(for: food)
-            print("Food deleted from Firestore")
+            logger.info("Food deleted from Firestore")
         } catch {
             throw FoodDataError.onlineDeletionFailed
         }
@@ -114,7 +116,7 @@ class FoodRepository {
         // update locally
         do {
             try modelContext.save()
-            print("Data updated locally")
+            logger.info("Data updated locally")
         } catch {
             throw FoodDataError.localUpdateFailed
         }
@@ -122,13 +124,24 @@ class FoodRepository {
         // update in firestore db
         do {
             try await updateFoodEntryToFirestore(food: food, multiplier: multiplier)
-            print("Food updated in Firestore")
+            logger.info("Food updated in Firestore")
         } catch {
             throw FoodDataError.onlineUpdateFailed
         }
     }
 
+    func deleteAllLocalFoods() async throws {
+        let descriptor = FetchDescriptor<NutritionModel>()
+        let allFoods: [NutritionModel] = try modelContext.fetch(descriptor)
+        for food in allFoods {
+            modelContext.delete(food)
+        }
+        try modelContext.save()
+        logger.info("All local foods deleted")
+    }
+
     enum FoodDataError: Error {
+        case userNotAuthenticated
         case localSavingFailed
         case onlineSavingFailed
         case localDeletionFailed
@@ -150,6 +163,8 @@ class FoodRepository {
                 "Failed to update the food in the local database"
             case .onlineUpdateFailed:
                 "Failed to update the food in the online database"
+            case .userNotAuthenticated:
+                "User is not authenticated"
             }
         }
     }

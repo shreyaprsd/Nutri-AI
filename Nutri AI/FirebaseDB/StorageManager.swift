@@ -7,11 +7,12 @@
 
 import FirebaseStorage
 import Foundation
+import OSLog
 
 class StorageManager {
     static let shared = StorageManager()
     private let storage = Storage.storage()
-
+    let logger = Logger(subsystem: "com.shreyaprasad.NutriAI", category: "StorageManager")
     private init() {}
 
     // upload the image and return url
@@ -39,6 +40,6 @@ class StorageManager {
     func deleteImage(imageURL: String) async throws {
         let storageRef = storage.reference(forURL: imageURL)
         _ = try await storageRef.delete()
-        print("Successfully deleted from storage")
+        logger.info("Successfully deleted from storage")
     }
 }

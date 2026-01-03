@@ -8,15 +8,16 @@
 import BackgroundTasks
 import FirebaseAuth
 import FirebaseFirestore
+import OSLog
 import UIKit
 
 class BackgroundSyncManager {
     static let shared = BackgroundSyncManager()
     static let taskIdentifier = "com.shreyaprasad.NutriAI.firestoresync"
-
+    private let queue = DispatchQueue(label: "com.shreyaprasad.NutriAI.syncQueue")
     private var pendingSyncItems: [(food: NutritionModel, image: UIImage?)] = []
     private let db = Firestore.firestore()
-
+    let logger = Logger(subsystem: "com.shreyaprasad.NutriAI", category: "BackgroundSyncManager")
     private init() {}
 
     // register the background task
@@ -25,36 +26,42 @@ class BackgroundSyncManager {
             forTaskWithIdentifier: Self.taskIdentifier,
             using: nil
         ) { task in
-            self.handleBackgroundSync(task: task as! BGProcessingTask)
-            print("Background task registered")
+            guard let processingTask = task as? BGProcessingTask else {
+                task.setTaskCompleted(success: false)
+                return
+            }
+            self.handleBackgroundSync(task: processingTask)
+            self.logger.info("Background task registered")
         }
     }
 
     // Called when Firestore save fails
     func addPendingSync(food: NutritionModel, image: UIImage?) {
-        pendingSyncItems.append((food, image))
-
+        queue.sync {
+            pendingSyncItems.append((food, image))
+        }
         let request = BGProcessingTaskRequest(identifier: Self.taskIdentifier)
         request.requiresExternalPower = true
         request.requiresNetworkConnectivity = true
 
         do {
             try BGTaskScheduler.shared.submit(request)
-            print("Background task scheduled")
+            logger.info("Background task scheduled")
+
         } catch {
-            print("Background task scheduling failed \(error.localizedDescription)")
+            logger.error("Background task scheduling failed \(error.localizedDescription)")
         }
     }
 
     // Called by iOS when background task runs
     private func handleBackgroundSync(task: BGProcessingTask) {
-        print("Items to sync: \(pendingSyncItems.count)")
+        logger.debug("Items to sync: \(self.pendingSyncItems.count)")
         task.expirationHandler = { task.setTaskCompleted(success: false) }
 
         Task {
             let success = await performSync()
             task.setTaskCompleted(success: success)
-            print("Background task finished")
+            logger.info("Background task finished")
         }
     }
 
@@ -63,12 +70,12 @@ class BackgroundSyncManager {
         guard let userId = Auth.auth().currentUser?.uid else {
             return false
         }
-        print("Syncing \(pendingSyncItems.count) items")
+        logger.debug("Syncing \(self.pendingSyncItems.count) items")
 
         var successIndices: [Int] = []
 
         for (index, item) in pendingSyncItems.enumerated() {
-            print("Syncing: \(item.food.foodName)")
+            logger.debug("Syncing: \(item.food.foodName)")
 
             do {
                 // Upload image if exists
@@ -80,7 +87,7 @@ class BackgroundSyncManager {
                 }
 
                 // Save to Firestore
-                print("Saving to Firestore")
+                logger.info("Saving to Firestore")
                 let foodData = RemoteModel(model: item.food, imageURL: imageURL)
                 let foodRef = db.collection("users")
                     .document(userId)
@@ -89,18 +96,18 @@ class BackgroundSyncManager {
 
                 try foodRef.setData(from: foodData)
 
-                print("Successfully synced: \(item.food.foodName)")
+                logger.info("Successfully synced: \(item.food.foodName)")
                 successIndices.append(index)
 
             } catch {
-                print("Failed to sync: \(error.localizedDescription)")
+                logger.error("Failed to sync: \(error.localizedDescription)")
             }
         }
 
         // Remove successfully synced items
         for index in successIndices.reversed() {
             let removed = pendingSyncItems.remove(at: index)
-            print("   ✓ Removed: \(removed.food.foodName)")
+            logger.info("Removed: \(removed.food.foodName)")
         }
 
         return successIndices.count > 0 || pendingSyncItems.isEmpty
