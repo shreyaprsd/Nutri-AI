@@ -5,6 +5,7 @@
 //  Created by Shreya Prasad on 25/11/25.
 //
 
+import OSLog
 import SwiftData
 import SwiftUI
 
@@ -16,6 +17,7 @@ struct FoodEntryDetails: View {
     private var vm: FoodEntryViewModel {
         FoodEntryViewModel(modelContext: modelContext)
     }
+    let logger = Logger(subsystem: "com.shreyaprasad.NutriAI", category: "FoodEntryDetails")
 
     var body: some View {
         VStack(spacing: 8) {
@@ -59,7 +61,7 @@ struct FoodEntryDetails: View {
                                     hideFloatingButton = false
                                 }
                             }
-                            print("Food Item deleted")
+                            logger.info("Food Item deleted")
                         }
                         Divider()
                         Button("Save Image") {
@@ -67,7 +69,7 @@ struct FoodEntryDetails: View {
                                 let imageSaver = ImageSaver()
                                 imageSaver.writeToPhotoAlbum(image: image)
                             }
-                            print("Food Image Saved to the photo's library")
+                            logger.info("Food Image Saved to the photo's library")
                         }
                     } label: {
                         Image(systemName: "ellipsis")
@@ -85,7 +87,7 @@ struct FoodEntryTextDetailsView: View {
     @Bindable var item: NutritionModel
     @Environment(\.modelContext) private var modelContext
     @FocusState private var isTextFieldFocused: Bool
-
+    let logger = Logger(subsystem: "com.shreyaprasad.NutriAI", category: "FoodEntryTextDetails")
     private var vm: FoodEntryViewModel {
         FoodEntryViewModel(modelContext: modelContext)
     }
@@ -337,7 +339,7 @@ struct FoodEntryTextDetailsView: View {
                 multiplier: multiplier
             )
         } catch {
-            print("Error saving:  the new serving quantity\(error)")
+            logger.error("Error saving:  the new serving quantity\(error)")
         }
     }
 }

@@ -10,6 +10,7 @@ import FirebaseAuth
 import FirebaseCore
 import Foundation
 import GoogleSignIn
+import OSLog
 import SwiftData
 import SwiftUI
 
@@ -36,6 +37,7 @@ class AuthViewModel: ObservableObject {
     @Published var authenticationState: AuthenticationState = .unauthenticated
     @Published var displayName: String = ""
     private var authStateHandler: AuthStateDidChangeListenerHandle?
+    let logger = Logger(subsystem: "com.shreyaprasad.NutriAI", category: "Authentication")
 
     func registerAuthStateHandler() {
         if authStateHandler == nil {
@@ -68,14 +70,14 @@ class AuthViewModel: ObservableObject {
         do {
             try Auth.auth().signOut()
         } catch {
-            print(error)
+            logger.error("\(error)")
             errorMessage = error.localizedDescription
         }
     }
 
-    func deleteAccount(foodViewModel: FoodEntryViewModel) async {
+    func deleteAccount(foodViewModel: FoodEntryViewModel) async throws {
         guard let user else {
-            return
+            throw AuthError.userNotAuthenticated
         }
         do {
             // delete the firebase document
@@ -86,7 +88,7 @@ class AuthViewModel: ObservableObject {
             try await user.delete()
 
         } catch {
-            print(error.localizedDescription)
+            logger.error("\(error.localizedDescription)")
             errorMessage = error.localizedDescription
         }
     }
@@ -107,7 +109,7 @@ extension AuthViewModel {
             let window = windowScene.windows.first,
             let rootViewController = window.rootViewController
         else {
-            print("There is no root view controller")
+            logger.info("There is no root view controller")
             return false
         }
 
@@ -128,15 +130,23 @@ extension AuthViewModel {
             )
             let result = try await Auth.auth().signIn(with: credential)
             let firebaseUser = result.user
-            print(
-                "User \(firebaseUser.uid) signed-in with email \(firebaseUser.email ?? "unknown")"
-            )
+            logger.info("User \(firebaseUser.uid) signed-in with email \(firebaseUser.email ?? "unknown")")
             return true
 
         } catch {
-            print(error.localizedDescription)
+            logger.error("\(error.localizedDescription)")
             errorMessage = error.localizedDescription
             return false
+        }
+    }
+}
+
+enum AuthError: Error {
+    case userNotAuthenticated
+    var errorDescription: String? {
+        switch self {
+        case .userNotAuthenticated:
+            "User not authenticated"
         }
     }
 }
