@@ -15,7 +15,9 @@ struct ContentView: View {
         VStack {
             switch viewModel.authenticationState {
             case .unauthenticated:
-                LoginView(viewModel: viewModel)
+                NavigationStack {
+                    NewUserOnboardingView()
+                }
             case .authenticating:
                 ProgressView("Signing in ..")
                     .progressViewStyle(CircularProgressViewStyle())

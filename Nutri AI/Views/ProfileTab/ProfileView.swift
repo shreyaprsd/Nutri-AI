@@ -18,9 +18,7 @@ struct ProfileView: View {
     var body: some View {
         List {
             Section("Account") {
-                NavigationLink {
-                    PersonalDetailsView()
-                } label: {
+                NavigationLink {} label: {
                     HStack {
                         Image(systemName: "person.text.rectangle")
                         Text("Personal Details")
@@ -67,7 +65,7 @@ struct ProfileView: View {
         .alert("Delete Account?", isPresented: $showDeleteAlert) {
             Button("Delete", role: .destructive) {
                 Task {
-                    await auth.deleteAccount(foodViewModel: foodViewModel)
+                    try await auth.deleteAccount(foodViewModel: foodViewModel)
                 }
             }
         } message: {

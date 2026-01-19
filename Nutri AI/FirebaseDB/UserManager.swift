@@ -59,29 +59,4 @@ class UserManager {
             logger.error("Error deleting user document: \(error.localizedDescription)")
         }
     }
-
-    func deleteUserDocument(for user: User) async {
-        let userRef = db.collection("users").document(user.uid)
-        print("Attempting to delete user document: \(user.uid)")
-        do {
-            // Delete all food entries first
-            let foodsCollection = userRef.collection("foods")
-            let foodDocs = try await foodsCollection.getDocuments()
-
-            for doc in foodDocs.documents {
-                if let imageURL = doc.data()["foodImageURL"] as? String {
-                    print("Deleting image: \(imageURL)")
-                    try? await StorageManager.shared.deleteImage(imageURL: imageURL)
-                }
-                try await doc.reference.delete()
-                print("Deleted food entry: \(doc.documentID)")
-            }
-            // Then delete the user document
-            try await userRef.delete()
-            print("User document deleted successfully: \(user.uid)")
-
-        } catch {
-            print("Error deleting user document: \(error.localizedDescription)")
-        }
-    }
 }

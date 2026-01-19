@@ -6,6 +6,7 @@
 //
 
 import BackgroundTasks
+import FirebaseAuth
 import FirebaseCore
 import SwiftData
 import SwiftUI
@@ -29,7 +30,7 @@ struct Nutri_AIApp: App {
         WindowGroup {
             AppRootView()
         }
-        .modelContainer(for: [NutritionModel.self])
+        .modelContainer(for: [NutritionModel.self, UserInfoModel.self])
     }
 }
 
