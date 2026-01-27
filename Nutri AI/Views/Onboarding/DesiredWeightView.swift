@@ -29,8 +29,7 @@ struct DesiredWeightView: View {
 
             if let goal = selectedGoal {
                 Text(goal.rawValue)
-                    .font(.system(size: 16, weight: .regular))
-                    .foregroundColor(.secondary)
+                    .font(.system(size: 20, weight: .regular))
                     .padding(.bottom, 8)
             }
 

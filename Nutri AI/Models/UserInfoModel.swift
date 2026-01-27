@@ -12,13 +12,27 @@ import SwiftData
 final class UserInfoModel {
     var gender: Gender?
     var workoutFrequency: WorkoutFrequency?
+    var age: Int = 0
     var heightInCm: Double = 0.0
     var weightInKg: Double = 0.0
     var dob: Date?
     var desiredGoal: Goal?
     var desiredWeightInKg: Double = 0.0
-
+    var calculations: Calculations?
     init(gender: Gender? = nil) {
         self.gender = gender
     }
+}
+
+struct Calculations: Codable {
+    var bmr: Int
+    var tdee: Int
+    var targetDailyCalories: Double
+    var macros: Macros
+}
+
+struct Macros: Codable {
+    var protein: Double
+    var carbs: Double
+    var fats: Double
 }

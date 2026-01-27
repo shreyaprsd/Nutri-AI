@@ -23,7 +23,7 @@ struct AppBenefitGraphView: View {
             Spacer()
         }
 
-        NavigationLink(destination: CustomPlanGenerationIView()) {
+        NavigationLink(destination: AllDoneView()) {
             Text("Continue")
                 .font(.system(size: 14, weight: .medium))
                 .foregroundStyle(.white)

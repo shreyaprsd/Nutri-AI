@@ -1,5 +1,5 @@
 //
-//  CustomPlanGenerationIView.swift
+//  AllDoneView.swift
 //  Nutri AI
 //
 //  Created by Shreya Prasad on 18/01/26.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CustomPlanGenerationIView: View {
+struct AllDoneView: View {
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
 
@@ -17,11 +17,11 @@ struct CustomPlanGenerationIView: View {
     }
 
     var body: some View {
-        AllDoneView(currentOnboardingStep: currentOnboardingStep, totalOnboardingSteps: totalOnboardingSteps)
+        AllDoneViewCard(currentOnboardingStep: currentOnboardingStep, totalOnboardingSteps: totalOnboardingSteps)
     }
 }
 
-struct AllDoneView: View {
+struct AllDoneViewCard: View {
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
 
@@ -55,7 +55,7 @@ struct AllDoneView: View {
 
             Spacer()
 
-            NavigationLink(destination: Text("Next View")) {
+            NavigationLink(destination: CustomPlanGenerationView()) {
                 Text("Continue")
                     .font(.system(size: 14, weight: .medium))
                     .foregroundStyle(.white)
@@ -78,6 +78,6 @@ struct AllDoneView: View {
 
 #Preview {
     NavigationStack {
-        CustomPlanGenerationIView()
+        AllDoneView()
     }
 }

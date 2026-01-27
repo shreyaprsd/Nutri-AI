@@ -184,6 +184,9 @@ struct DateOfBirthView: View {
         if let birthDate = calender.date(from: dateComponents) {
             let viewModel = UserInfoViewModel(modelContext: modelContext)
             viewModel.saveDateOfBirth(birthDate)
+            
+            let age = calculateAge()
+            viewModel.saveAge(age)
         }
     }
 
