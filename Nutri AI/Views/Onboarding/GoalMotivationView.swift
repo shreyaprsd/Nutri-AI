@@ -13,11 +13,13 @@ struct GoalMotivationView: View {
     @State private var goal: Goal?
     @State private var currentWeight = 0.0
     @State private var desiredWeight = 0.0
+    @ObservedObject var authViewModel: AuthViewModel
 
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
 
-    init(currentOnboardingStep: Int = 7, totalOnboardingSteps: Int = 12) {
+    init(authViewModel: AuthViewModel, currentOnboardingStep: Int = 7, totalOnboardingSteps: Int = 12) {
+        self.authViewModel = authViewModel
         self.currentOnboardingStep = currentOnboardingStep
         self.totalOnboardingSteps = totalOnboardingSteps
     }
@@ -76,7 +78,7 @@ struct GoalMotivationView: View {
 
             Spacer()
 
-            NavigationLink(destination: AppBenefitGraphView()) {
+            NavigationLink(destination: AppBenefitGraphView(authViewModel: authViewModel)) {
                 Text("Continue")
                     .font(.system(size: 14, weight: .medium))
                     .foregroundStyle(.white)
@@ -106,8 +108,4 @@ struct GoalMotivationView: View {
             desiredWeight = userInfo.desiredWeightInKg
         }
     }
-}
-
-#Preview {
-    GoalMotivationView()
 }

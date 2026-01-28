@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct AppBenefitGraphView: View {
+    @ObservedObject var authViewModel: AuthViewModel
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
 
-    init(currentOnboardingStep: Int = 8, totalOnboardingSteps: Int = 12) {
+    init(authViewModel: AuthViewModel, currentOnboardingStep: Int = 8, totalOnboardingSteps: Int = 12) {
+        self.authViewModel = authViewModel
         self.currentOnboardingStep = currentOnboardingStep
         self.totalOnboardingSteps = totalOnboardingSteps
     }
@@ -23,7 +25,7 @@ struct AppBenefitGraphView: View {
             Spacer()
         }
 
-        NavigationLink(destination: AllDoneView()) {
+        NavigationLink(destination: AllDoneView(authViewModel: authViewModel)) {
             Text("Continue")
                 .font(.system(size: 14, weight: .medium))
                 .foregroundStyle(.white)
@@ -114,8 +116,4 @@ struct ComparisonGraphView: View {
             .padding(.horizontal, 25)
         }
     }
-}
-
-#Preview {
-    AppBenefitGraphView()
 }

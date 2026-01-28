@@ -13,6 +13,7 @@ struct CustomPlanGenerationView: View {
     @State private var animationId = UUID()
     @State private var navigateToNextScreen: Bool = false
     @Environment(\.modelContext) var modelContext
+    @ObservedObject var authViewModel: AuthViewModel
     let setupItems = [
         "Calories",
         "Carbs",
@@ -58,7 +59,7 @@ struct CustomPlanGenerationView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .navigationDestination(isPresented: $navigateToNextScreen) {
-            CustomDailyPlanView()
+            CustomDailyPlanView(authViewModel: authViewModel)
         }
         .navigationBarBackButtonHidden(true)
         .task {
@@ -140,8 +141,4 @@ struct HorizontalProgressBar: View {
             }
         }
     }
-}
-
-#Preview {
-    CustomPlanGenerationView()
 }

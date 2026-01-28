@@ -11,11 +11,12 @@ import SwiftUI
 struct GenderView: View {
     @State private var selectedGender: Gender?
     @Environment(\.modelContext) private var modelContext
-
+    @ObservedObject var authViewModel: AuthViewModel
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
 
-    init(currentOnboardingStep: Int = 1, totalOnboardingSteps: Int = 12) {
+    init(authViewModel: AuthViewModel, currentOnboardingStep: Int = 1, totalOnboardingSteps: Int = 12) {
+        self.authViewModel = authViewModel
         self.currentOnboardingStep = currentOnboardingStep
         self.totalOnboardingSteps = totalOnboardingSteps
     }
@@ -28,9 +29,9 @@ struct GenderView: View {
                 .font(.system(size: 14, weight: .regular))
                 .foregroundColor(.secondary)
         }
-        
+
         Spacer()
-        
+
         VStack {
             ForEach(Gender.allCases, id: \.self) {
                 gender in
@@ -47,10 +48,10 @@ struct GenderView: View {
                 }
             }
         }
-        
+
         Spacer()
-        
-        NavigationLink(destination: WorkoutFrequencyView()) {
+
+        NavigationLink(destination: WorkoutFrequencyView(authViewModel: authViewModel)) {
             Text("Continue")
                 .font(.system(size: 14, weight: .medium))
                 .foregroundStyle(.white)
@@ -89,11 +90,5 @@ struct GenderView: View {
         if let userInfo = viewModel.loadUserInfo() {
             selectedGender = userInfo.gender
         }
-    }
-}
-
-#Preview {
-    NavigationStack {
-        GenderView()
     }
 }

@@ -11,7 +11,7 @@ class NutritionCalculation {
     private enum ActivityMultiplier: Double {
         case light = 1.375
         case moderate = 1.55
-        case heavy = 1.725 
+        case heavy = 1.725
     }
 
     private enum ProteinMultiplier: Double {
@@ -59,9 +59,7 @@ class NutritionCalculation {
         }
     }
 
-
     static func calculateMacros(targetCalories: Double, weightInKg: Double, goal: Goal) -> Macros {
-   
         let proteinMultiplier: ProteinMultiplier = switch goal {
         case .weightLoss:
             .weightLoss
@@ -86,9 +84,7 @@ class NutritionCalculation {
         )
     }
 
-
     static func calculateAll(userInfo: UserInfoModel) -> Calculations? {
-
         guard let gender = userInfo.gender,
               let workoutFrequency = userInfo.workoutFrequency,
               let goal = userInfo.desiredGoal,
@@ -105,7 +101,6 @@ class NutritionCalculation {
             heightInCm: userInfo.heightInCm,
             age: userInfo.age
         )
-
 
         let tdee = calculateTDEE(
             bmr: bmr,

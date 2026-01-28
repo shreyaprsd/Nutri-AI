@@ -15,6 +15,7 @@ struct DateOfBirthView: View {
     @State private var showAgeAlert = false
     @State private var navigateToNextScreen = false
     @Environment(\.modelContext) private var modelContext
+    @ObservedObject var authViewModel: AuthViewModel
 
     let months = [
         (1, "January"), (2, "February"), (3, "March"), (4, "April"),
@@ -27,7 +28,8 @@ struct DateOfBirthView: View {
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
 
-    init(currentOnboardingStep: Int = 4, totalOnboardingSteps: Int = 12) {
+    init(authViewModel: AuthViewModel, currentOnboardingStep: Int = 4, totalOnboardingSteps: Int = 12) {
+        self.authViewModel = authViewModel
         self.currentOnboardingStep = currentOnboardingStep
         self.totalOnboardingSteps = totalOnboardingSteps
     }
@@ -95,7 +97,7 @@ struct DateOfBirthView: View {
             Text("You must be at least 13 years old to use Nutri AI.")
         }
         .navigationDestination(isPresented: $navigateToNextScreen) {
-            DesiredGoalView()
+            DesiredGoalView(authViewModel: authViewModel)
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
@@ -184,7 +186,7 @@ struct DateOfBirthView: View {
         if let birthDate = calender.date(from: dateComponents) {
             let viewModel = UserInfoViewModel(modelContext: modelContext)
             viewModel.saveDateOfBirth(birthDate)
-            
+
             let age = calculateAge()
             viewModel.saveAge(age)
         }
@@ -207,11 +209,5 @@ struct DateOfBirthView: View {
                 selectedDay = day
             }
         }
-    }
-}
-
-#Preview {
-    NavigationStack {
-        DateOfBirthView()
     }
 }

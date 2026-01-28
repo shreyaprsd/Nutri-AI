@@ -212,6 +212,15 @@ class UserInfoViewModel {
         }
     }
 
+    func deleteUserInfo() throws {
+        let descriptor = FetchDescriptor<UserInfoModel>()
+        if let userInfo = try modelContext.fetch(descriptor).first {
+            modelContext.delete(userInfo)
+            try modelContext.save()
+            logger.info("Successfully deleted all UserInfo data")
+        }
+    }
+
     func loadUserInfo() -> UserInfoModel? {
         let descriptor = FetchDescriptor<UserInfoModel>()
         return try? modelContext.fetch(descriptor).first

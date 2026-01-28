@@ -12,10 +12,12 @@ struct DesiredWeightView: View {
     @Environment(\.modelContext) private var modelContext
     @State var weight: Double = 54.0
     @State private var selectedGoal: Goal?
+    @ObservedObject var authViewModel: AuthViewModel
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
 
-    init(currentOnboardingStep: Int = 6, totalOnboardingSteps: Int = 12) {
+    init(authViewModel: AuthViewModel, currentOnboardingStep: Int = 6, totalOnboardingSteps: Int = 12) {
+        self.authViewModel = authViewModel
         self.currentOnboardingStep = currentOnboardingStep
         self.totalOnboardingSteps = totalOnboardingSteps
     }
@@ -37,36 +39,21 @@ struct DesiredWeightView: View {
 
             Spacer()
 
-            if selectedGoal == .maintain {
-                NavigationLink(destination: AppBenefitGraphView()) {
-                    Text("Continue")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(.white)
-                        .frame(width: 310, height: 46)
-                        .background(
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(Color.black)
-                        )
-                }
-                .simultaneousGesture(TapGesture().onEnded {
-                    saveData()
-                })
-            } else {
-                NavigationLink(destination: GoalMotivationView()) {
-                    Text("Continue")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(.white)
-                        .frame(width: 310, height: 46)
-                        .background(
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(Color.black)
-                        )
-                }
-                .simultaneousGesture(TapGesture().onEnded {
-                    saveData()
-                })
+            NavigationLink(destination: GoalMotivationView(authViewModel: authViewModel)) {
+                Text("Continue")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(.white)
+                    .frame(width: 310, height: 46)
+                    .background(
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(Color.black)
+                    )
             }
+            .simultaneousGesture(TapGesture().onEnded {
+                saveData()
+            })
         }
+
         .toolbar {
             ToolbarItem(placement: .principal) {
                 ProgressBar(current: currentOnboardingStep, total: totalOnboardingSteps)
@@ -86,10 +73,12 @@ struct DesiredWeightView: View {
         let minWeight: Double = 30.0
         let maxWeight: Double = 200.0
         let step: Double = 0.5
-        
+
         var body: some View {
             HStack {
                 Button {
+                    isEditing = false
+                    isFocused = false
                     incrementWeight()
                 } label: {
                     Image(systemName: "plus.circle.fill")
@@ -102,7 +91,7 @@ struct DesiredWeightView: View {
                         .keyboardType(.decimalPad)
                         .multilineTextAlignment(.center)
                         .font(.system(size: 32, weight: .regular))
-                        .frame(width: 50)
+                        .frame(width: 70)
                         .focused($isFocused)
                 } else {
                     Button {
@@ -112,10 +101,13 @@ struct DesiredWeightView: View {
                         Text("\(String(format: "%.1f", weight))")
                             .font(.system(size: 32, weight: .regular))
                             .foregroundStyle(Color.black)
+                            .frame(width: 70)
                     }
                 }
 
                 Button {
+                    isFocused = false
+                    isEditing = false
                     decrementWeight()
                 } label: {
                     Image(systemName: "minus.circle.fill")
@@ -153,8 +145,4 @@ struct DesiredWeightView: View {
             selectedGoal = userInfo.desiredGoal
         }
     }
-}
-
-#Preview {
-    DesiredWeightView()
 }

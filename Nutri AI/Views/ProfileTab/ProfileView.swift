@@ -14,6 +14,7 @@ struct ProfileView: View {
     @State var foodViewModel: FoodEntryViewModel
     @State private var showLogoutAlert: Bool = false
     @State private var showDeleteAlert: Bool = false
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         List {
@@ -65,7 +66,7 @@ struct ProfileView: View {
         .alert("Delete Account?", isPresented: $showDeleteAlert) {
             Button("Delete", role: .destructive) {
                 Task {
-                    try await auth.deleteAccount(foodViewModel: foodViewModel)
+                    try await auth.deleteAccount(foodViewModel: foodViewModel, modelContext: modelContext)
                 }
             }
         } message: {

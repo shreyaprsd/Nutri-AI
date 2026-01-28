@@ -11,64 +11,89 @@ import SwiftUI
 struct DesiredGoalView: View {
     @State private var selectedGoal: Goal?
     @Environment(\.modelContext) private var modelContext
+    @ObservedObject var authViewModel: AuthViewModel
 
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
 
-    init(currentOnboardingStep: Int = 5, totalOnboardingSteps: Int = 12) {
+    init(authViewModel: AuthViewModel, currentOnboardingStep: Int = 5, totalOnboardingSteps: Int = 12) {
+        self.authViewModel = authViewModel
         self.currentOnboardingStep = currentOnboardingStep
         self.totalOnboardingSteps = totalOnboardingSteps
     }
 
     var body: some View {
         VStack(spacing: 8) {
-            Text("What is your goal?")
-                .font(.system(size: 32, weight: .semibold))
-            Text("This will be used to calibrate your custom plan.")
-                .font(.system(size: 14, weight: .regular))
-                .foregroundColor(.secondary)
-        }
-        
-        Spacer()
-        
-        VStack {
-            ForEach(Goal.allCases, id: \.self) { goal in
-                Button(action: {
-                    selectedGoal = goal
-                }) {
-                    Text(goal.rawValue)
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundColor(selectedGoal == goal ? .white : .primary)
-                        .frame(width: 310, height: 60)
-                        .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(selectedGoal == goal ? Color.black : Color(.systemGray6)))
+            VStack(spacing: 8) {
+                Text("What is your goal?")
+                    .font(.system(size: 32, weight: .semibold))
+                Text("This will be used to calibrate your custom plan.")
+                    .font(.system(size: 14, weight: .regular))
+                    .foregroundColor(.secondary)
+            }
+
+            Spacer()
+
+            VStack {
+                ForEach(Goal.allCases, id: \.self) { goal in
+                    Button(action: {
+                        selectedGoal = goal
+                    }) {
+                        Text(goal.rawValue)
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundColor(selectedGoal == goal ? .white : .primary)
+                            .frame(width: 310, height: 60)
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(selectedGoal == goal ? Color.black : Color(.systemGray6)))
+                    }
                 }
             }
-        }
-        
-        Spacer()
-        
-        NavigationLink(destination: DesiredWeightView()
-        ) {
-            Text("Continue")
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(.white)
-                .frame(width: 310, height: 46)
-                .background(
-                    RoundedRectangle(cornerRadius: 20)
-                        .fill(Color.black)
-                )
-        }
-        .simultaneousGesture(TapGesture()
-            .onEnded {
-                if let goal = selectedGoal {
-                    saveData(goal)
+
+            Spacer()
+
+            if selectedGoal == .maintain {
+                NavigationLink(destination: AppBenefitGraphView(authViewModel: authViewModel)) {
+                    Text("Continue")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundStyle(.white)
+                        .frame(width: 310, height: 46)
+                        .background(
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(Color.black)
+                        )
                 }
-            })
-        .disabled(selectedGoal == nil)
-        .opacity(selectedGoal == nil ? 0.3 : 1.0)
-        .padding(.bottom, 20)
+                .simultaneousGesture(TapGesture()
+                    .onEnded {
+                        if let goal = selectedGoal {
+                            saveData(goal)
+                        }
+                    })
+                .disabled(selectedGoal == nil)
+                .opacity(selectedGoal == nil ? 0.3 : 1.0)
+                .padding(.bottom, 20)
+            } else {
+                NavigationLink(destination: DesiredWeightView(authViewModel: authViewModel)) {
+                    Text("Continue")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundStyle(.white)
+                        .frame(width: 310, height: 46)
+                        .background(
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(Color.black)
+                        )
+                }
+                .simultaneousGesture(TapGesture()
+                    .onEnded {
+                        if let goal = selectedGoal {
+                            saveData(goal)
+                        }
+                    })
+                .disabled(selectedGoal == nil)
+                .opacity(selectedGoal == nil ? 0.3 : 1.0)
+                .padding(.bottom, 20)
+            }
+        }
         .toolbar {
             ToolbarItem(placement: .principal) {
                 ProgressBar(current: currentOnboardingStep, total: totalOnboardingSteps)
@@ -91,8 +116,4 @@ struct DesiredGoalView: View {
             selectedGoal = userInfo.desiredGoal
         }
     }
-}
-
-#Preview {
-    DesiredGoalView()
 }

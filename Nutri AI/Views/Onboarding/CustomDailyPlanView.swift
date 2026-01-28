@@ -11,6 +11,7 @@ import SwiftUI
 struct CustomDailyPlanView: View {
     @Query private var users: [UserInfoModel]
     @Environment(\.modelContext) var modelContext
+    @ObservedObject var authViewModel: AuthViewModel
     @State private var caloriesValue: Double = 0.0
     @State private var carbsValue: Double = 0.0
     @State private var proteinValue: Double = 0.0
@@ -24,7 +25,12 @@ struct CustomDailyPlanView: View {
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
 
-    init(currentOnboardingStep: Int = 9, totalOnboardingSteps: Int = 12) {
+    init(
+        authViewModel: AuthViewModel,
+        currentOnboardingStep: Int = 9,
+        totalOnboardingSteps: Int = 12
+    ) {
+        self.authViewModel = authViewModel
         self.currentOnboardingStep = currentOnboardingStep
         self.totalOnboardingSteps = totalOnboardingSteps
     }
@@ -80,7 +86,7 @@ struct CustomDailyPlanView: View {
 
             Spacer()
 
-            NavigationLink(destination: SaveProgressView()) {
+            NavigationLink(destination: SaveProgressView(viewModel: authViewModel)) {
                 Text("Let's get started!")
                     .font(.system(size: 14, weight: .medium))
                     .foregroundStyle(.white)
@@ -100,6 +106,11 @@ struct CustomDailyPlanView: View {
                     .frame(width: 300)
             }
         }
+        .onChange(of: authViewModel.authenticationState) { _, newValue in
+            if newValue == .authenticated {
+                NotificationCenter.default.post(name: .onboardingCompleted, object: nil)
+            }
+        }
     }
 
     private var title: some View {
@@ -110,7 +121,6 @@ struct CustomDailyPlanView: View {
                 .font(.system(size: 36, weight: .medium))
         }
     }
-
 
     private func loadValues() {
         guard let user = users.first else { return }

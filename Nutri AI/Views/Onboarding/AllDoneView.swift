@@ -8,20 +8,23 @@
 import SwiftUI
 
 struct AllDoneView: View {
+    @ObservedObject var authViewModel: AuthViewModel
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
 
-    init(currentOnboardingStep: Int = 9, totalOnboardingSteps: Int = 12) {
+    init(authViewModel: AuthViewModel, currentOnboardingStep: Int = 9, totalOnboardingSteps: Int = 12) {
+        self.authViewModel = authViewModel
         self.currentOnboardingStep = currentOnboardingStep
         self.totalOnboardingSteps = totalOnboardingSteps
     }
 
     var body: some View {
-        AllDoneViewCard(currentOnboardingStep: currentOnboardingStep, totalOnboardingSteps: totalOnboardingSteps)
+        AllDoneViewCard(authViewModel: authViewModel, currentOnboardingStep: currentOnboardingStep, totalOnboardingSteps: totalOnboardingSteps)
     }
 }
 
 struct AllDoneViewCard: View {
+    @ObservedObject var authViewModel: AuthViewModel
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
 
@@ -55,7 +58,7 @@ struct AllDoneViewCard: View {
 
             Spacer()
 
-            NavigationLink(destination: CustomPlanGenerationView()) {
+            NavigationLink(destination: CustomPlanGenerationView(authViewModel: authViewModel)) {
                 Text("Continue")
                     .font(.system(size: 14, weight: .medium))
                     .foregroundStyle(.white)
@@ -73,11 +76,5 @@ struct AllDoneViewCard: View {
                     .frame(width: 300)
             }
         }
-    }
-}
-
-#Preview {
-    NavigationStack {
-        AllDoneView()
     }
 }

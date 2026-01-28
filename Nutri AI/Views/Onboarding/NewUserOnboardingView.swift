@@ -9,6 +9,8 @@ import SwiftUI
 
 struct NewUserOnboardingView: View {
     @State private var presentLoginSheet = false
+    @ObservedObject var authViewModel: AuthViewModel
+    
     var body: some View {
         VStack {
             Spacer()
@@ -17,10 +19,10 @@ struct NewUserOnboardingView: View {
             made easy 📝
             """)
             .font(.system(size: 32, weight: .semibold))
-            
+
             Spacer()
-            
-            NavigationLink(destination: GenderView()) {
+
+            NavigationLink(destination: GenderView(authViewModel: authViewModel)) {
                 Text("Get Started")
                     .font(.system(size: 14, weight: .medium))
                     .foregroundStyle(.white)
@@ -31,7 +33,7 @@ struct NewUserOnboardingView: View {
                     )
             }
             .padding()
-            
+
             HStack {
                 Text("Already have an account?")
                     .font(.system(size: 14, weight: .regular))
@@ -44,7 +46,7 @@ struct NewUserOnboardingView: View {
         }
         .sheet(isPresented: $presentLoginSheet) {
             NavigationView {
-                LoginView(viewModel: AuthViewModel())
+                LoginView(viewModel: authViewModel)
                     .presentationDetents([.medium])
                     .toolbar {
                         ToolbarItem(placement: .topBarLeading) {
@@ -58,8 +60,4 @@ struct NewUserOnboardingView: View {
             }
         }
     }
-}
-
-#Preview {
-    NewUserOnboardingView()
 }

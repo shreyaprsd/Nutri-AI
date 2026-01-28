@@ -13,6 +13,7 @@ struct HeightWeightView: View {
     @State private var heightInCm: Double = 168
     @State private var weightInKg: Double = 54
     @Environment(\.modelContext) private var modelContext
+    @ObservedObject var authViewModel: AuthViewModel
 
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
@@ -21,7 +22,8 @@ struct HeightWeightView: View {
     let metricWeights = Array(20 ... 360).map { "\($0) kg" }
     let imperialWeights = Array(50 ... 700).map { "\($0) lb" }
 
-    init(currentOnboardingStep: Int = 3, totalOnboardingSteps: Int = 12) {
+    init(authViewModel: AuthViewModel, currentOnboardingStep: Int = 3, totalOnboardingSteps: Int = 12) {
+        self.authViewModel = authViewModel
         self.currentOnboardingStep = currentOnboardingStep
         self.totalOnboardingSteps = totalOnboardingSteps
     }
@@ -222,7 +224,7 @@ struct HeightWeightView: View {
     }
 
     private var continueButton: some View {
-        NavigationLink(destination: DateOfBirthView()) {
+        NavigationLink(destination: DateOfBirthView(authViewModel: authViewModel)) {
             Text("Continue")
                 .font(.system(size: 14, weight: .medium))
                 .foregroundStyle(.white)

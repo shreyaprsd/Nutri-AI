@@ -11,11 +11,12 @@ import SwiftUI
 struct WorkoutFrequencyView: View {
     @State private var selectedFrequency: WorkoutFrequency?
     @Environment(\.modelContext) private var modelContext
-
+    @ObservedObject var authViewModel: AuthViewModel
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
 
-    init(currentOnboardingStep: Int = 2, totalOnboardingSteps: Int = 12) {
+    init(authViewModel: AuthViewModel, currentOnboardingStep: Int = 2, totalOnboardingSteps: Int = 12) {
+        self.authViewModel = authViewModel
         self.currentOnboardingStep = currentOnboardingStep
         self.totalOnboardingSteps = totalOnboardingSteps
     }
@@ -24,12 +25,13 @@ struct WorkoutFrequencyView: View {
         VStack(spacing: 8) {
             Text("How many workouts do you do per week?")
                 .font(.system(size: 32, weight: .semibold))
+                .padding(12)
             Text("This will be used to calibrate your custom plan.")
                 .font(.system(size: 14, weight: .regular))
                 .foregroundColor(.secondary)
-            
+
             Spacer()
-            
+
             VStack {
                 ForEach(WorkoutFrequency.allCases) { frequency in
                     WorkoutFrequencyCardview(frequency: frequency, isSelected: frequency == selectedFrequency)
@@ -38,10 +40,10 @@ struct WorkoutFrequencyView: View {
                         }
                 }
             }
-            
+
             Spacer()
-            
-            NavigationLink(destination: HeightWeightView()) {
+
+            NavigationLink(destination: HeightWeightView(authViewModel: authViewModel)) {
                 Text("Continue")
                     .font(.system(size: 14, weight: .medium))
                     .foregroundStyle(.white)
@@ -100,16 +102,16 @@ struct WorkoutFrequencyCardview: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(frequency.title)
-                    .font(.system(size: 14, weight: .regular))
+                    .font(.system(size: 16, weight: .regular))
                     .foregroundStyle(isSelected ? Color.white : Color.black)
                 Text(frequency.description)
-                    .font(.system(size: 12, weight: .regular))
+                    .font(.system(size: 14, weight: .regular))
                     .foregroundColor(isSelected ? Color.white : Color.black)
             }
             Spacer()
         }
         .padding(20)
-        .frame(width: 284, height: 74)
+        .frame(width: 310, height: 74)
         .background(
             RoundedRectangle(cornerRadius: 18)
                 .fill(isSelected ? Color.black : Color.white)
