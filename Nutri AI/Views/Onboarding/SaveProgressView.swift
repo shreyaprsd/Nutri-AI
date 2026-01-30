@@ -63,10 +63,17 @@ struct SaveProgressView: View {
                     .frame(width: 300)
             }
         }
+
         .onChange(of: viewModel.authenticationState) { _, newValue in
             if newValue == .authenticated {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    NotificationCenter.default.post(name: .onboardingCompleted, object: nil)
+                Task {
+                    let infoViewModel = UserInfoViewModel(modelContext: modelContext)
+                    
+                    await infoViewModel.uploadLocalData()
+
+                    await MainActor.run {
+                        NotificationCenter.default.post(name: .onboardingCompleted, object: nil)
+                    }
                 }
             }
         }

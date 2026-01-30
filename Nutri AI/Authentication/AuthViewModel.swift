@@ -79,18 +79,17 @@ class AuthViewModel: ObservableObject {
         guard let user else { throw AuthError.userNotAuthenticated }
         do {
             let userInfoVM = UserInfoViewModel(modelContext: modelContext)
-            try userInfoVM.deleteUserInfo()
-            try await  foodViewModel.deleteAllLocalFoodEntries()
-            
+            try await userInfoVM.deleteUserInfo()
+            try await foodViewModel.deleteAllLocalFoodEntries()
+
             await UserManager.shared.deleteUserDocument(for: user)
-            
+
             UserDefaults.standard.set(false, forKey: "hasStartedOnboarding")
-            
+
             try await user.delete()
-        }
-        catch {
+        } catch {
             logger.error("\(error.localizedDescription)")
-                       errorMessage = error.localizedDescription
+            errorMessage = error.localizedDescription
         }
     }
 }

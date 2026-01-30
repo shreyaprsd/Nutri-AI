@@ -10,6 +10,7 @@ import SwiftData
 
 @Model
 final class UserInfoModel {
+    @Attribute(.unique) var id = UUID()
     var gender: Gender?
     var workoutFrequency: WorkoutFrequency?
     var age: Int = 0

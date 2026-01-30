@@ -12,10 +12,6 @@ struct CustomDailyPlanView: View {
     @Query private var users: [UserInfoModel]
     @Environment(\.modelContext) var modelContext
     @ObservedObject var authViewModel: AuthViewModel
-    @State private var caloriesValue: Double = 0.0
-    @State private var carbsValue: Double = 0.0
-    @State private var proteinValue: Double = 0.0
-    @State private var fatsValue: Double = 0.0
 
     private var gridColumn = [
         GridItem(.flexible()),
@@ -57,25 +53,48 @@ struct CustomDailyPlanView: View {
                     Spacer()
 
                     LazyVGrid(columns: gridColumn, spacing: 16) {
-                        NutritionCard(
-                            nutrientType: .calories,
-                            nutrientValue: $caloriesValue
-                        )
+                        if let user = users.first {
+                            NutritionCard(
+                                nutrientType: .calories,
+                                nutrientValue: Binding(
+                                    get: { user.calculations?.targetDailyCalories ?? 0.0 },
+                                    set: { newValue in
+                                        let vm = UserInfoViewModel(modelContext: modelContext)
+                                        vm.updateNutrient(nutrientType: .calories, value: newValue)
+                                    }
+                                )
+                            )
 
-                        NutritionCard(
-                            nutrientType: .carbs,
-                            nutrientValue: $carbsValue
-                        )
+                            NutritionCard(
+                                nutrientType: .carbs,
+                                nutrientValue: Binding(
+                                    get: { user.calculations?.macros.carbs ?? 0.0 },
+                                    set: { newValue in
+                                        user.calculations?.macros.carbs = newValue
+                                    }
+                                )
+                            )
 
-                        NutritionCard(
-                            nutrientType: .protein,
-                            nutrientValue: $proteinValue
-                        )
+                            NutritionCard(
+                                nutrientType: .protein,
+                                nutrientValue: Binding(
+                                    get: { user.calculations?.macros.protein ?? 0.0 },
+                                    set: { newValue in
+                                        user.calculations?.macros.protein = newValue
+                                    }
+                                )
+                            )
 
-                        NutritionCard(
-                            nutrientType: .fats,
-                            nutrientValue: $fatsValue
-                        )
+                            NutritionCard(
+                                nutrientType: .fats,
+                                nutrientValue: Binding(
+                                    get: { user.calculations?.macros.fats ?? 0.0 },
+                                    set: { newValue in
+                                        user.calculations?.macros.fats = newValue
+                                    }
+                                )
+                            )
+                        }
                     }
                     Spacer()
                 }
@@ -98,7 +117,10 @@ struct CustomDailyPlanView: View {
             }
         }
         .onAppear {
-            loadValues()
+            let infoViewModel = UserInfoViewModel(modelContext: modelContext)
+            if users.first?.calculations == nil {
+                infoViewModel.calculateAndSaveNutrition()
+            }
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
@@ -120,14 +142,5 @@ struct CustomDailyPlanView: View {
             Text("Congratulations \nYour custom plan is ready!")
                 .font(.system(size: 36, weight: .medium))
         }
-    }
-
-    private func loadValues() {
-        guard let user = users.first else { return }
-
-        caloriesValue = user.calculations?.targetDailyCalories ?? 0.0
-        carbsValue = user.calculations?.macros.carbs ?? 0.0
-        proteinValue = user.calculations?.macros.protein ?? 0.0
-        fatsValue = user.calculations?.macros.fats ?? 0.0
     }
 }
