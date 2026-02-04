@@ -8,19 +8,30 @@ import SwiftData
 import SwiftUI
 
 struct ContentView: View {
-    @ObservedObject var viewModel: AuthViewModel
+    @ObservedObject var authViewModel: AuthViewModel
     @State var foodEntryViewModel: FoodEntryViewModel
     @Environment(\.modelContext) private var modelContext
     @State private var hasCompletedOnboarding = false
     @State private var isCheckingOnboardingStatus = true
     @State private var justFinishedOnboarding = false
+    @State private var userInfoViewModel: UserInfoViewModel?
+    @Environment(OnboardingState.self) private var onboardingState
+
+    private var viewModel: UserInfoViewModel {
+        if let existing = userInfoViewModel {
+            return existing
+        }
+        let vm = UserInfoViewModel(modelContext: modelContext)
+        userInfoViewModel = vm
+        return vm
+    }
 
     var body: some View {
         VStack {
-            switch viewModel.authenticationState {
+            switch authViewModel.authenticationState {
             case .unauthenticated:
                 NavigationStack {
-                    NewUserOnboardingView(authViewModel: viewModel)
+                    NewUserOnboardingView(authViewModel: authViewModel)
                 }
             case .authenticating:
                 ProgressView("Signing in...")
@@ -33,18 +44,18 @@ struct ContentView: View {
                             checkOnboardingStatus()
                         }
                 } else if hasCompletedOnboarding {
-                    MainView(viewModel: viewModel, foodViewModel: foodEntryViewModel)
+                    MainView(viewModel: authViewModel, foodViewModel: foodEntryViewModel)
                 } else {
                     NavigationStack {
-                        GenderView(authViewModel: viewModel)
+                        GenderView(authViewModel: authViewModel)
                     }
                 }
             }
         }
         .onAppear {
-            viewModel.registerAuthStateHandler()
+            authViewModel.registerAuthStateHandler()
         }
-        .onChange(of: viewModel.authenticationState) { _, newValue in
+        .onChange(of: authViewModel.authenticationState) { _, newValue in
             if newValue == .authenticated {
                 markUserStartedOnboarding()
 
@@ -69,8 +80,7 @@ struct ContentView: View {
     }
 
     private func checkOnboardingStatus() {
-        let userInfoVM = UserInfoViewModel(modelContext: modelContext)
-        let userInfo = userInfoVM.loadUserInfo()
+        let userInfo = viewModel.loadUserInfo()
 
         if let userInfo, userInfo.calculations != nil {
             hasCompletedOnboarding = true

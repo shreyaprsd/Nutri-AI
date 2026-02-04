@@ -9,20 +9,31 @@ import SwiftData
 import SwiftUI
 
 struct SaveProgressView: View {
-    @ObservedObject var viewModel: AuthViewModel
+    @ObservedObject var authViewModel: AuthViewModel
     @Environment(\.modelContext) private var modelContext
+    @Environment(OnboardingState.self) private var onboardingState
+    @State private var userInfoViewModel: UserInfoViewModel?
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
 
-    init(viewModel: AuthViewModel, currentOnboardingStep: Int = 11, totalOnboardingSteps: Int = 12) {
-        self.viewModel = viewModel
+    private var viewModel: UserInfoViewModel {
+        if let existing = userInfoViewModel {
+            return existing
+        }
+        let vm = UserInfoViewModel(modelContext: modelContext)
+        userInfoViewModel = vm
+        return vm
+    }
+
+    init(authViewModel: AuthViewModel, currentOnboardingStep: Int = 11, totalOnboardingSteps: Int = 12) {
+        self.authViewModel = authViewModel
         self.currentOnboardingStep = currentOnboardingStep
         self.totalOnboardingSteps = totalOnboardingSteps
     }
 
     var body: some View {
         VStack {
-            if viewModel.authenticationState == .authenticated {
+            if authViewModel.authenticationState == .authenticated {
                 VStack(spacing: 20) {
                     Text("Save your progress")
                         .font(.system(size: 36, weight: .medium))
@@ -39,7 +50,7 @@ struct SaveProgressView: View {
                 Spacer()
 
                 Button {
-                    NotificationCenter.default.post(name: .onboardingCompleted, object: nil)
+                    onboardingState.isCompleted = true
                 } label: {
                     Text("Finish Setup")
                         .font(.system(size: 14, weight: .medium))
@@ -53,7 +64,7 @@ struct SaveProgressView: View {
                 Text("Save your progress")
                     .font(.system(size: 36, weight: .medium))
                 Spacer()
-                LoginView(viewModel: viewModel)
+                LoginView(viewModel: authViewModel)
                 Spacer()
             }
         }
@@ -64,15 +75,13 @@ struct SaveProgressView: View {
             }
         }
 
-        .onChange(of: viewModel.authenticationState) { _, newValue in
+        .onChange(of: authViewModel.authenticationState) { _, newValue in
             if newValue == .authenticated {
                 Task {
-                    let infoViewModel = UserInfoViewModel(modelContext: modelContext)
-                    
-                    await infoViewModel.uploadLocalData()
+                    await viewModel.uploadLocalData()
 
                     await MainActor.run {
-                        NotificationCenter.default.post(name: .onboardingCompleted, object: nil)
+                        onboardingState.isCompleted = true
                     }
                 }
             }

@@ -23,8 +23,19 @@ class UserInfoViewModel {
 
     let logger = Logger(subsystem: "com.shreyaprasad.NutriAI", category: "UserInfoViewModel")
 
+    private func fetchOrCreateUserInfo() -> UserInfoModel {
+        let descriptor = FetchDescriptor<UserInfoModel>()
+        if let existing = try? modelContext.fetch(descriptor).first {
+            return existing
+        }
+        let newUserInfo = UserInfoModel()
+        modelContext.insert(newUserInfo)
+        return newUserInfo
+    }
+
     private func syncToFirestore(_ userInfo: UserInfoModel) {
-        Task {
+        Task { [weak self] in
+            guard let self else { return }
             do {
                 try await repository.saveUserInfoToFirestore(userInfo)
             } catch {
@@ -32,210 +43,121 @@ class UserInfoViewModel {
             }
         }
     }
-    
+
     func saveGender(_ gender: Gender) {
-        let descriptor = FetchDescriptor<UserInfoModel>()
-        if let userInfo = try? modelContext.fetch(descriptor).first {
-            userInfo.gender = gender
-        } else {
-            let newUserInfo = UserInfoModel(gender: gender)
-            modelContext.insert(newUserInfo)
-        }
-        do {
-            try modelContext.save()
-            logger.info("Saved gender sucessfully")
-            if let userInfo = loadUserInfo() {
-                syncToFirestore(userInfo)
-            }
-        } catch {
-            logger.error(" Saving gender failed:\(error.localizedDescription)")
-        }
+        let userInfo = fetchOrCreateUserInfo()
+        userInfo.gender = gender
+        saveAndSync(userInfo, context: "Gender")
     }
 
     func saveWorkoutFrequency(_ workoutFrequency: WorkoutFrequency) {
-        let descriptor = FetchDescriptor<UserInfoModel>()
-        if let userInfo = try? modelContext.fetch(descriptor).first {
-            userInfo.workoutFrequency = workoutFrequency
-            do {
-                try modelContext.save()
-                logger.info("Saved workoutFrequency sucessfully")
-                syncToFirestore(userInfo)
-            } catch {
-                logger.error(" Saving workout frequency  failed:\(error.localizedDescription)")
-            }
-        }
+        let userInfo = fetchOrCreateUserInfo()
+        userInfo.workoutFrequency = workoutFrequency
+        saveAndSync(userInfo, context: "Workout Frequency")
     }
 
     func saveHeightAndWeight(height: Double, weight: Double) {
-        let descriptor = FetchDescriptor<UserInfoModel>()
-        if let userInfo = try? modelContext.fetch(descriptor).first {
-            userInfo.heightInCm = height
-            userInfo.weightInKg = weight
-            do {
-                try modelContext.save()
-                logger.info("Saved height and weight sucessfully")
-                syncToFirestore(userInfo)
-            } catch {
-                logger.error(" Saving height and weight failed:\(error.localizedDescription)")
-            }
-        }
+        let userInfo = fetchOrCreateUserInfo()
+        userInfo.heightInCm = height
+        userInfo.weightInKg = weight
+        saveAndSync(userInfo, context: "Height and Weight")
     }
 
     func saveDateOfBirth(_ dateOfBirth: Date) {
-        let descriptor = FetchDescriptor<UserInfoModel>()
-        if let userInfo = try? modelContext.fetch(descriptor).first {
-            userInfo.dob = dateOfBirth
-            do {
-                try modelContext.save()
-                logger.info("Saved date of birth sucessfully")
-                syncToFirestore(userInfo)
-            } catch {
-                logger.error("Saving date of birth failed:\(error.localizedDescription)")
-            }
-        }
+        let userInfo = fetchOrCreateUserInfo()
+        userInfo.dob = dateOfBirth
+        saveAndSync(userInfo, context: "Date of Birth")
     }
 
     func saveDesiredGoal(_ desiredGoal: Goal) {
-        let descriptor = FetchDescriptor<UserInfoModel>()
-        if let userInfo = try? modelContext.fetch(descriptor).first {
-            userInfo.desiredGoal = desiredGoal
-            do {
-                try modelContext.save()
-                logger.info("Saved desired goal sucessfully")
-                syncToFirestore(userInfo)
-            } catch {
-                logger.error("Saving desired goal failed:\(error.localizedDescription)")
-            }
-        }
+        let userInfo = fetchOrCreateUserInfo()
+        userInfo.desiredGoal = desiredGoal
+        saveAndSync(userInfo, context: "Desired Goal")
     }
 
     func saveDesiredWeight(_ desiredWeight: Double) {
-        let descriptor = FetchDescriptor<UserInfoModel>()
-        if let userInfo = try? modelContext.fetch(descriptor).first {
-            userInfo.desiredWeightInKg = desiredWeight
-            do {
-                try modelContext.save()
-                logger.info("Saved desired weight sucessfully")
-                syncToFirestore(userInfo)
-            } catch {
-                logger.error("Saving desired weight failed:\(error.localizedDescription)")
-            }
-        }
+        let userInfo = fetchOrCreateUserInfo()
+        userInfo.desiredWeightInKg = desiredWeight
+        saveAndSync(userInfo, context: "Desired Weight")
     }
 
     func saveAge(_ age: Int) {
-        let descriptor = FetchDescriptor<UserInfoModel>()
-        if let userInfo = try? modelContext.fetch(descriptor).first {
-            userInfo.age = age
-            do {
-                try modelContext.save()
-                logger.info("Saved age sucessfully")
-                syncToFirestore(userInfo)
-            } catch {
-                logger.error("Failed to save the user's age \(error.localizedDescription)")
-            }
-        }
+        let userInfo = fetchOrCreateUserInfo()
+        userInfo.age = age
+        saveAndSync(userInfo, context: "Age")
     }
 
     func calculateAndSaveNutrition() {
-        let descriptor = FetchDescriptor<UserInfoModel>()
-        guard let userInfo = try? modelContext.fetch(descriptor).first else {
-            logger.error("No user info found to calculate nutrition")
-            return
-        }
-
-        if let calculations = NutritionCalculation.calculateAll(userInfo: userInfo) {
-            userInfo.calculations = calculations
-            do {
-                try modelContext.save()
-                logger.info("Saved nutrition calculations successfully")
-                logger.info("BMR: \(calculations.bmr), TDEE: \(calculations.tdee), Target Calories: \(calculations.targetDailyCalories)")
-                logger.info("Macros - Protein: \(calculations.macros.protein)g, Carbs: \(calculations.macros.carbs)g, Fats: \(calculations.macros.fats)g")
-                syncToFirestore(userInfo)
-            } catch {
-                logger.error("Failed to save nutrition calculations: \(error.localizedDescription)")
-            }
-        } else {
-            logger.error("Failed to calculate nutrition - missing required user data")
-        }
+        let userInfo = fetchOrCreateUserInfo()
+        let calculations = NutritionCalculation.calculateAll(userInfo: userInfo)
+        userInfo.calculations = calculations
+        saveAndSync(userInfo, context: "Nutrition Calculations")
     }
 
     func updateCalories(_ calories: Double) {
-        let descriptor = FetchDescriptor<UserInfoModel>()
-        if let userInfo = try? modelContext.fetch(descriptor).first {
-            if userInfo.calculations == nil {
-                userInfo.calculations = Calculations(bmr: 0, tdee: 0, targetDailyCalories: calories,
-                                                     macros: Macros(protein: 0, carbs: 0, fats: 0))
-            } else {
-                userInfo.calculations?.targetDailyCalories = calories
-            }
-            saveAndSync(userInfo)
+        let userInfo = fetchOrCreateUserInfo()
+        if userInfo.calculations == nil {
+            userInfo.calculations = Calculations(bmr: 0, tdee: 0, targetDailyCalories: calories,
+                                                 macros: Macros(protein: 0, carbs: 0, fats: 0))
+        } else {
+            userInfo.calculations?.targetDailyCalories = calories
         }
+        saveAndSync(userInfo, context: "Target Daily Calories")
     }
 
     func updateCarbs(_ carbs: Double) {
-        let descriptor = FetchDescriptor<UserInfoModel>()
-        if let userInfo = try? modelContext.fetch(descriptor).first {
-            if userInfo.calculations == nil {
-                userInfo.calculations = Calculations(bmr: 0, tdee: 0, targetDailyCalories: 0,
-                                                     macros: Macros(protein: 0, carbs: carbs, fats: 0))
-            } else {
-                userInfo.calculations?.macros.carbs = carbs
-            }
-            saveAndSync(userInfo)
+        let userInfo = fetchOrCreateUserInfo()
+        if userInfo.calculations == nil {
+            userInfo.calculations = Calculations(bmr: 0, tdee: 0, targetDailyCalories: 0,
+                                                 macros: Macros(protein: 0, carbs: carbs, fats: 0))
+        } else {
+            userInfo.calculations?.macros.carbs = carbs
         }
+        saveAndSync(userInfo, context: "Carbs")
     }
 
     func updateProtein(_ protein: Double) {
-        let descriptor = FetchDescriptor<UserInfoModel>()
-        if let userInfo = try? modelContext.fetch(descriptor).first {
-            if userInfo.calculations == nil {
-                userInfo.calculations = Calculations(bmr: 0, tdee: 0, targetDailyCalories: 0,
-                                                     macros: Macros(protein: protein, carbs: 0, fats: 0))
-            } else {
-                userInfo.calculations?.macros.protein = protein
-            }
-            saveAndSync(userInfo)
+        let userInfo = fetchOrCreateUserInfo()
+        if userInfo.calculations == nil {
+            userInfo.calculations = Calculations(bmr: 0, tdee: 0, targetDailyCalories: 0,
+                                                 macros: Macros(protein: protein, carbs: 0, fats: 0))
+        } else {
+            userInfo.calculations?.macros.protein = protein
         }
+        saveAndSync(userInfo, context: "Protein")
     }
 
     func updateFats(_ fats: Double) {
-        let descriptor = FetchDescriptor<UserInfoModel>()
-        if let userInfo = try? modelContext.fetch(descriptor).first {
-            if userInfo.calculations == nil {
-                userInfo.calculations = Calculations(bmr: 0, tdee: 0, targetDailyCalories: 0,
-                                                     macros: Macros(protein: 0, carbs: 0, fats: fats))
-            } else {
-                userInfo.calculations?.macros.fats = fats
-            }
-            saveAndSync(userInfo)
+        let userInfo = fetchOrCreateUserInfo()
+        if userInfo.calculations == nil {
+            userInfo.calculations = Calculations(bmr: 0, tdee: 0, targetDailyCalories: 0,
+                                                 macros: Macros(protein: 0, carbs: 0, fats: fats))
+        } else {
+            userInfo.calculations?.macros.fats = fats
         }
+        saveAndSync(userInfo, context: "Fats")
     }
 
-    private func saveAndSync(_ userInfo: UserInfoModel) {
+    private func saveAndSync(_ userInfo: UserInfoModel, context: String) {
         do {
             try modelContext.save()
-            logger.info("Local SwiftData update successful")
+            logger.info("\(context) SwiftData update successful")
             if Auth.auth().currentUser != nil {
                 syncToFirestore(userInfo)
             } else {
                 logger.info("Skipping Firestore sync: User not authenticated")
             }
         } catch {
-            logger.error("Failed to save nutrient update: \(error.localizedDescription)")
+            logger.error("\(context) save failed \(error.localizedDescription)")
         }
     }
 
     func updateNutrient(nutrientType: NutrientType, value: Double) {
-        let descriptor = FetchDescriptor<UserInfoModel>()
-        guard let userInfo = try? modelContext.fetch(descriptor).first else {
-            logger.error("No user info found")
-            return
-        }
+        let userInfo = fetchOrCreateUserInfo()
 
         guard let currentCalc = userInfo.calculations else {
             logger.error("No calculations found - initializing with new value")
-            
+
             let newMacros = Macros(
                 protein: nutrientType == .protein ? value : 0,
                 carbs: nutrientType == .carbs ? value : 0,

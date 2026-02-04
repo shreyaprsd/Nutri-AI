@@ -34,10 +34,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct Nutri_AIApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject var viewModel: AuthViewModel = .init()
+    @State private var onboardingState = OnboardingState()
 
     var body: some Scene {
         WindowGroup {
             AppRootView(viewModel: viewModel)
+                .environment(onboardingState)
         }
         .modelContainer(for: [NutritionModel.self, UserInfoModel.self])
     }
@@ -49,7 +51,7 @@ struct AppRootView: View {
 
     var body: some View {
         ContentView(
-            viewModel: viewModel,
+            authViewModel: viewModel,
             foodEntryViewModel: FoodEntryViewModel(modelContext: modelContext)
         )
     }

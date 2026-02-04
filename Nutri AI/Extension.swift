@@ -35,10 +35,8 @@ extension Double {
 
         return formatter.string(from: NSNumber(value: rounded)) ?? "\(Int(rounded))"
     }
-}
 
-// Rounds the double to specified decimal places
-extension Double {
+    // Rounds the double to specified decimal places
     func rounded(toPlaces places: Int) -> Double {
         let divisor = pow(10.0, Double(places))
         return (self * divisor).rounded() / divisor

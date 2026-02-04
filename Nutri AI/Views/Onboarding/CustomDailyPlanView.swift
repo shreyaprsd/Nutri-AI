@@ -12,6 +12,7 @@ struct CustomDailyPlanView: View {
     @Query private var users: [UserInfoModel]
     @Environment(\.modelContext) var modelContext
     @ObservedObject var authViewModel: AuthViewModel
+    @State private var userInfoViewModel: UserInfoViewModel?
 
     private var gridColumn = [
         GridItem(.flexible()),
@@ -20,6 +21,15 @@ struct CustomDailyPlanView: View {
 
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
+
+    private var viewModel: UserInfoViewModel {
+        if let existing = userInfoViewModel {
+            return existing
+        }
+        let vm = UserInfoViewModel(modelContext: modelContext)
+        userInfoViewModel = vm
+        return vm
+    }
 
     init(
         authViewModel: AuthViewModel,
@@ -59,8 +69,7 @@ struct CustomDailyPlanView: View {
                                 nutrientValue: Binding(
                                     get: { user.calculations?.targetDailyCalories ?? 0.0 },
                                     set: { newValue in
-                                        let vm = UserInfoViewModel(modelContext: modelContext)
-                                        vm.updateNutrient(nutrientType: .calories, value: newValue)
+                                        viewModel.updateNutrient(nutrientType: .calories, value: newValue)
                                     }
                                 )
                             )
@@ -70,7 +79,7 @@ struct CustomDailyPlanView: View {
                                 nutrientValue: Binding(
                                     get: { user.calculations?.macros.carbs ?? 0.0 },
                                     set: { newValue in
-                                        user.calculations?.macros.carbs = newValue
+                                        viewModel.updateNutrient(nutrientType: .carbs, value: newValue)
                                     }
                                 )
                             )
@@ -80,7 +89,7 @@ struct CustomDailyPlanView: View {
                                 nutrientValue: Binding(
                                     get: { user.calculations?.macros.protein ?? 0.0 },
                                     set: { newValue in
-                                        user.calculations?.macros.protein = newValue
+                                        viewModel.updateNutrient(nutrientType: .protein, value: newValue)
                                     }
                                 )
                             )
@@ -90,7 +99,7 @@ struct CustomDailyPlanView: View {
                                 nutrientValue: Binding(
                                     get: { user.calculations?.macros.fats ?? 0.0 },
                                     set: { newValue in
-                                        user.calculations?.macros.fats = newValue
+                                        viewModel.updateNutrient(nutrientType: .fats, value: newValue)
                                     }
                                 )
                             )
@@ -105,7 +114,7 @@ struct CustomDailyPlanView: View {
 
             Spacer()
 
-            NavigationLink(destination: SaveProgressView(viewModel: authViewModel)) {
+            NavigationLink(destination: SaveProgressView(authViewModel: authViewModel)) {
                 Text("Let's get started!")
                     .font(.system(size: 14, weight: .medium))
                     .foregroundStyle(.white)
@@ -117,9 +126,8 @@ struct CustomDailyPlanView: View {
             }
         }
         .onAppear {
-            let infoViewModel = UserInfoViewModel(modelContext: modelContext)
             if users.first?.calculations == nil {
-                infoViewModel.calculateAndSaveNutrition()
+                viewModel.calculateAndSaveNutrition()
             }
         }
         .toolbar {

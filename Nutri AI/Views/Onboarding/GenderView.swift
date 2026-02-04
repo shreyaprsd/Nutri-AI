@@ -11,9 +11,19 @@ import SwiftUI
 struct GenderView: View {
     @State private var selectedGender: Gender?
     @Environment(\.modelContext) private var modelContext
+    @State private var userInfoViewModel: UserInfoViewModel?
     @ObservedObject var authViewModel: AuthViewModel
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
+
+    private var viewModel: UserInfoViewModel {
+        if let existing = userInfoViewModel {
+            return existing
+        }
+        let vm = UserInfoViewModel(modelContext: modelContext)
+        userInfoViewModel = vm
+        return vm
+    }
 
     init(authViewModel: AuthViewModel, currentOnboardingStep: Int = 1, totalOnboardingSteps: Int = 12) {
         self.authViewModel = authViewModel
@@ -81,12 +91,10 @@ struct GenderView: View {
     }
 
     private func saveData(_ gender: Gender) {
-        let viewModel = UserInfoViewModel(modelContext: modelContext)
         viewModel.saveGender(gender)
     }
 
     private func loadSavedData() {
-        let viewModel = UserInfoViewModel(modelContext: modelContext)
         if let userInfo = viewModel.loadUserInfo() {
             selectedGender = userInfo.gender
         }

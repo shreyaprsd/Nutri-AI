@@ -52,3 +52,7 @@ enum Goal: String, CaseIterable, Codable {
     case maintain = "Maintain Weight"
     case weightGain = "Weight Gain"
 }
+
+enum UserDefaultsKey {
+    static let hasStartedOnboarding = "hasStartedOnboarding"
+}

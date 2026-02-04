@@ -15,6 +15,7 @@ struct DateOfBirthView: View {
     @State private var showAgeAlert = false
     @State private var navigateToNextScreen = false
     @Environment(\.modelContext) private var modelContext
+    @State private var userInfoViewModel: UserInfoViewModel?
     @ObservedObject var authViewModel: AuthViewModel
 
     let months = [
@@ -27,6 +28,15 @@ struct DateOfBirthView: View {
 
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
+
+    private var viewModel: UserInfoViewModel {
+        if let existing = userInfoViewModel {
+            return existing
+        }
+        let vm = UserInfoViewModel(modelContext: modelContext)
+        userInfoViewModel = vm
+        return vm
+    }
 
     init(authViewModel: AuthViewModel, currentOnboardingStep: Int = 4, totalOnboardingSteps: Int = 12) {
         self.authViewModel = authViewModel
@@ -184,7 +194,6 @@ struct DateOfBirthView: View {
         dateComponents.day = selectedDay
 
         if let birthDate = calender.date(from: dateComponents) {
-            let viewModel = UserInfoViewModel(modelContext: modelContext)
             viewModel.saveDateOfBirth(birthDate)
 
             let age = calculateAge()
@@ -193,7 +202,6 @@ struct DateOfBirthView: View {
     }
 
     private func loadSavedData() {
-        let viewModel = UserInfoViewModel(modelContext: modelContext)
         if let userInfo = viewModel.loadUserInfo(),
            let savedDate = userInfo.dob
         {

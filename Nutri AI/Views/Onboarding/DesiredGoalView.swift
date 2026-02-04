@@ -11,10 +11,20 @@ import SwiftUI
 struct DesiredGoalView: View {
     @State private var selectedGoal: Goal?
     @Environment(\.modelContext) private var modelContext
+    @State private var userInfoViewModel: UserInfoViewModel?
     @ObservedObject var authViewModel: AuthViewModel
 
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
+
+    private var viewModel: UserInfoViewModel {
+        if let existing = userInfoViewModel {
+            return existing
+        }
+        let vm = UserInfoViewModel(modelContext: modelContext)
+        userInfoViewModel = vm
+        return vm
+    }
 
     init(authViewModel: AuthViewModel, currentOnboardingStep: Int = 5, totalOnboardingSteps: Int = 12) {
         self.authViewModel = authViewModel
@@ -106,12 +116,10 @@ struct DesiredGoalView: View {
     }
 
     private func saveData(_ goal: Goal) {
-        let viewModel = UserInfoViewModel(modelContext: modelContext)
         viewModel.saveDesiredGoal(goal)
     }
 
     private func loadSavedData() {
-        let viewModel = UserInfoViewModel(modelContext: modelContext)
         if let userInfo = viewModel.loadUserInfo() {
             selectedGoal = userInfo.desiredGoal
         }

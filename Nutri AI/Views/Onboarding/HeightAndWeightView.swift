@@ -12,6 +12,7 @@ struct HeightWeightView: View {
     @State private var isMetric = true
     @State private var heightInCm: Double = 168
     @State private var weightInKg: Double = 54
+    @State private var userInfoViewModel: UserInfoViewModel?
     @Environment(\.modelContext) private var modelContext
     @ObservedObject var authViewModel: AuthViewModel
 
@@ -21,6 +22,15 @@ struct HeightWeightView: View {
     let metricHeights = Array(60 ... 243).map { "\($0) cm" }
     let metricWeights = Array(20 ... 360).map { "\($0) kg" }
     let imperialWeights = Array(50 ... 700).map { "\($0) lb" }
+
+    private var viewModel: UserInfoViewModel {
+        if let existing = userInfoViewModel {
+            return existing
+        }
+        let vm = UserInfoViewModel(modelContext: modelContext)
+        userInfoViewModel = vm
+        return vm
+    }
 
     init(authViewModel: AuthViewModel, currentOnboardingStep: Int = 3, totalOnboardingSteps: Int = 12) {
         self.authViewModel = authViewModel
@@ -240,12 +250,10 @@ struct HeightWeightView: View {
     }
 
     private func saveData() {
-        let viewModel = UserInfoViewModel(modelContext: modelContext)
         viewModel.saveHeightAndWeight(height: heightInCm, weight: weightInKg)
     }
 
     private func loadSavedData() {
-        let viewModel = UserInfoViewModel(modelContext: modelContext)
         if let userInfo = viewModel.loadUserInfo() {
             if userInfo.heightInCm > 0 {
                 heightInCm = userInfo.heightInCm

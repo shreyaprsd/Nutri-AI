@@ -12,9 +12,19 @@ struct DesiredWeightView: View {
     @Environment(\.modelContext) private var modelContext
     @State var weight: Double = 54.0
     @State private var selectedGoal: Goal?
+    @State private var userInfoViewModel: UserInfoViewModel?
     @ObservedObject var authViewModel: AuthViewModel
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
+
+    private var viewModel: UserInfoViewModel {
+        if let existing = userInfoViewModel {
+            return existing
+        }
+        let vm = UserInfoViewModel(modelContext: modelContext)
+        userInfoViewModel = vm
+        return vm
+    }
 
     init(authViewModel: AuthViewModel, currentOnboardingStep: Int = 6, totalOnboardingSteps: Int = 12) {
         self.authViewModel = authViewModel
@@ -132,12 +142,10 @@ struct DesiredWeightView: View {
     }
 
     private func saveData() {
-        let viewModel = UserInfoViewModel(modelContext: modelContext)
         viewModel.saveDesiredWeight(weight)
     }
 
     private func loadSavedData() {
-        let viewModel = UserInfoViewModel(modelContext: modelContext)
         if let userInfo = viewModel.loadUserInfo() {
             if userInfo.desiredWeightInKg > 0 {
                 weight = userInfo.desiredWeightInKg

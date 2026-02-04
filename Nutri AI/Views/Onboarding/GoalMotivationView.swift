@@ -13,10 +13,20 @@ struct GoalMotivationView: View {
     @State private var goal: Goal?
     @State private var currentWeight = 0.0
     @State private var desiredWeight = 0.0
+    @State private var userInfoViewModel: UserInfoViewModel?
     @ObservedObject var authViewModel: AuthViewModel
 
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
+
+    private var viewModel: UserInfoViewModel {
+        if let existing = userInfoViewModel {
+            return existing
+        }
+        let vm = UserInfoViewModel(modelContext: modelContext)
+        userInfoViewModel = vm
+        return vm
+    }
 
     init(authViewModel: AuthViewModel, currentOnboardingStep: Int = 7, totalOnboardingSteps: Int = 12) {
         self.authViewModel = authViewModel
@@ -101,7 +111,6 @@ struct GoalMotivationView: View {
     }
 
     private func loadSavedData() {
-        let viewModel = UserInfoViewModel(modelContext: modelContext)
         if let userInfo = viewModel.loadUserInfo() {
             goal = userInfo.desiredGoal
             currentWeight = userInfo.weightInKg

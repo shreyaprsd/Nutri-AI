@@ -36,20 +36,17 @@ class UserInfoRepository {
 
         let docRef = db.collection("users").document(userId).collection("userInfo").document("profile")
 
-        do {
+        
             let document = try await docRef.getDocument()
 
-            if document.exists {
-                try await docRef.delete()
-                
-                let verifyDoc = try await docRef.getDocument()
-                if verifyDoc.exists {
-                    throw UserInfoError.onlineDeletionFailed
-                }
-            }
-        } catch {
-            throw error
+            guard document.exists else { return }
+
+            try await docRef.delete()
+            let verifyDoc = try await docRef.getDocument()
+            if verifyDoc.exists {
+                throw UserInfoError.onlineDeletionFailed
         }
+        logger.info("Successfully deleted UserInfo from Firestore")
     }
 
     func deleteUserInfoFromBothDB(_ userInfo: UserInfoModel) async throws {
@@ -68,7 +65,7 @@ class UserInfoRepository {
         }
     }
 
-    enum UserInfoError: Error {
+    enum UserInfoError: LocalizedError {
         case userNotAuthenticated
         case localDeletionFailed
         case onlineDeletionFailed

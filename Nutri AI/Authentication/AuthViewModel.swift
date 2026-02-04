@@ -84,7 +84,7 @@ class AuthViewModel: ObservableObject {
 
             await UserManager.shared.deleteUserDocument(for: user)
 
-            UserDefaults.standard.set(false, forKey: "hasStartedOnboarding")
+            UserDefaults.standard.set(false, forKey: UserDefaultsKey.hasStartedOnboarding)
 
             try await user.delete()
         } catch {

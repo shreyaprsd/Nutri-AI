@@ -11,9 +11,19 @@ import SwiftUI
 struct WorkoutFrequencyView: View {
     @State private var selectedFrequency: WorkoutFrequency?
     @Environment(\.modelContext) private var modelContext
+    @State private var userInfoViewModel: UserInfoViewModel?
     @ObservedObject var authViewModel: AuthViewModel
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
+
+    private var viewModel: UserInfoViewModel {
+        if let existing = userInfoViewModel {
+            return existing
+        }
+        let vm = UserInfoViewModel(modelContext: modelContext)
+        userInfoViewModel = vm
+        return vm
+    }
 
     init(authViewModel: AuthViewModel, currentOnboardingStep: Int = 2, totalOnboardingSteps: Int = 12) {
         self.authViewModel = authViewModel
@@ -73,12 +83,10 @@ struct WorkoutFrequencyView: View {
     }
 
     private func saveData(_ frequency: WorkoutFrequency) {
-        let viewModel = UserInfoViewModel(modelContext: modelContext)
         viewModel.saveWorkoutFrequency(frequency)
     }
 
     private func loadSavedData() {
-        let viewModel = UserInfoViewModel(modelContext: modelContext)
         if let userInfo = viewModel.loadUserInfo() {
             selectedFrequency = userInfo.workoutFrequency
         }

@@ -14,6 +14,17 @@ struct CustomPlanGenerationView: View {
     @State private var navigateToNextScreen: Bool = false
     @Environment(\.modelContext) var modelContext
     @ObservedObject var authViewModel: AuthViewModel
+    @State private var userInfoViewModel: UserInfoViewModel?
+
+    private var viewModel: UserInfoViewModel {
+        if let existing = userInfoViewModel {
+            return existing
+        }
+        let vm = UserInfoViewModel(modelContext: modelContext)
+        userInfoViewModel = vm
+        return vm
+    }
+
     let setupItems = [
         "Calories",
         "Carbs",
@@ -74,7 +85,6 @@ struct CustomPlanGenerationView: View {
     }
 
     private func calculateNutrition() {
-        let viewModel = UserInfoViewModel(modelContext: modelContext)
         viewModel.calculateAndSaveNutrition()
     }
 }
