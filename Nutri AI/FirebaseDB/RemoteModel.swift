@@ -175,6 +175,9 @@ struct RemoteModel: Codable, Identifiable {
             imageData: imageData,
             response: response
         )
+        if let id, let uuid = UUID(uuidString: id) {
+            model.id = uuid
+        }
         model.servingMultiplier = servingMultiplier
 
         return model

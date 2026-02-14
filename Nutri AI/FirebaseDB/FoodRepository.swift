@@ -140,6 +140,113 @@ class FoodRepository {
         logger.info("All local foods deleted")
     }
 
+    func pullFoodsFromFirestore(dayStart: Date, dayEnd: Date) async throws {
+        let remoteFoods = try await fetchFoodsFromFirestore(dayStart: dayStart, dayEnd: dayEnd)
+        try await MainActor.run {
+            try upsertFoods(remoteFoods)
+        }
+    }
+
+    private func fetchFoodsFromFirestore(dayStart: Date, dayEnd: Date) async throws -> [RemoteModel] {
+        guard let userId = Auth.auth().currentUser?.uid else {
+            throw FoodDataError.userNotAuthenticated
+        }
+        let startTimestamp = Timestamp(date: dayStart)
+        let endTimestamp = Timestamp(date: dayEnd)
+        let query = db.collection("users")
+            .document(userId)
+            .collection("foods")
+            .whereField("created_At", isGreaterThanOrEqualTo: startTimestamp)
+            .whereField("created_At", isLessThan: endTimestamp)
+            .order(by: "created_At", descending: true)
+        let snapshot = try await query.getDocuments()
+        return try snapshot.documents.map { try $0.data(as: RemoteModel.self) }
+    }
+
+    @MainActor
+    private func upsertFoods(_ remoteFoods: [RemoteModel]) throws {
+        for remote in remoteFoods {
+            guard let id = remote.id, let uuid = UUID(uuidString: id) else { continue }
+            let descriptor = FetchDescriptor<NutritionModel>(
+                predicate: #Predicate { $0.id == uuid }
+            )
+            if let existing = try modelContext.fetch(descriptor).first {
+                apply(remote: remote, to: existing)
+            } else {
+                let model = remote.toNutritionModel()
+                modelContext.insert(model)
+            }
+        }
+        try modelContext.save()
+    }
+
+    private func apply(remote: RemoteModel, to model: NutritionModel) {
+        model.createdAt = remote.createdAt.dateValue()
+        model.foodName = remote.foodName
+        model.servingSize = remote.servingSize
+        model.foodDescription = remote.foodDescription
+        model.servingMultiplier = remote.servingMultiplier
+        model.nutrients = NutritionModel.NutrientsData(
+            calories: remote.nutrients.calories,
+            carbs: NutritionModel.StoredNutrient(
+                total: remote.nutrients.carbs.total,
+                unit: remote.nutrients.carbs.unit
+            ),
+            protein: NutritionModel.StoredNutrient(
+                total: remote.nutrients.protein.total,
+                unit: remote.nutrients.protein.unit
+            ),
+            fats: NutritionModel.StoredNutrient(
+                total: remote.nutrients.fats.total,
+                unit: remote.nutrients.fats.unit
+            ),
+            saturatedFats: NutritionModel.StoredNutrient(
+                total: remote.nutrients.saturatedFats.total,
+                unit: remote.nutrients.saturatedFats.unit
+            ),
+            polyunsaturatedFats: NutritionModel.StoredNutrient(
+                total: remote.nutrients.polyunsaturatedFats.total,
+                unit: remote.nutrients.polyunsaturatedFats.unit
+            ),
+            cholesterol: NutritionModel.StoredNutrient(
+                total: remote.nutrients.cholesterol.total,
+                unit: remote.nutrients.cholesterol.unit
+            ),
+            sodium: NutritionModel.StoredNutrient(
+                total: remote.nutrients.sodium.total,
+                unit: remote.nutrients.sodium.unit
+            ),
+            potassium: NutritionModel.StoredNutrient(
+                total: remote.nutrients.potassium.total,
+                unit: remote.nutrients.potassium.unit
+            ),
+            vitaminA: NutritionModel.StoredNutrient(
+                total: remote.nutrients.vitaminA.total,
+                unit: remote.nutrients.vitaminA.unit
+            ),
+            vitaminC: NutritionModel.StoredNutrient(
+                total: remote.nutrients.vitaminC.total,
+                unit: remote.nutrients.vitaminC.unit
+            ),
+            iron: NutritionModel.StoredNutrient(
+                total: remote.nutrients.iron.total,
+                unit: remote.nutrients.iron.unit
+            ),
+            calcium: NutritionModel.StoredNutrient(
+                total: remote.nutrients.calcium.total,
+                unit: remote.nutrients.calcium.unit
+            ),
+            fiber: NutritionModel.StoredNutrient(
+                total: remote.nutrients.fiber.total,
+                unit: remote.nutrients.fiber.unit
+            ),
+            sugar: NutritionModel.StoredNutrient(
+                total: remote.nutrients.sugar.total,
+                unit: remote.nutrients.sugar.unit
+            )
+        )
+    }
+
     enum FoodDataError: Error {
         case userNotAuthenticated
         case localSavingFailed

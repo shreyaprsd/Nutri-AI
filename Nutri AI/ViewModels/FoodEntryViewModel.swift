@@ -41,4 +41,18 @@ class FoodEntryViewModel {
     func deleteAllLocalFoodEntries() async throws {
         try await foodRepository.deleteAllLocalFoods()
     }
+
+    // background sync for specific date food entry
+    func refreshEntries(for selectedDate: Date) async {
+        let calendar = Calendar.current
+        let dayStart = calendar.startOfDay(for: selectedDate)
+        guard let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else {
+            return
+        }
+        await BackgroundSyncManager.shared.refreshFoodsForDate(
+            dayStart: dayStart,
+            dayEnd: dayEnd,
+            modelContext: modelContext
+        )
+    }
 }

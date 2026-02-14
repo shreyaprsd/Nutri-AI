@@ -112,4 +112,14 @@ class BackgroundSyncManager {
 
         return successIndices.count > 0 || pendingSyncItems.isEmpty
     }
+
+    func refreshFoodsForDate(dayStart: Date, dayEnd: Date, modelContext: ModelContext) async {
+        let repository = FoodRepository(modelContext: modelContext)
+        do {
+            try await repository.pullFoodsFromFirestore(dayStart: dayStart, dayEnd: dayEnd)
+            logger.info("Background refresh completed")
+        } catch {
+            logger.error("Background refresh failed: \(error.localizedDescription)")
+        }
+    }
 }
