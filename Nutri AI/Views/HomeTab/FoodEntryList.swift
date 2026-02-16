@@ -25,32 +25,23 @@ struct FoodEntryList: View {
     }
 
     var body: some View {
-        VStack {
-            List {
-                HStack {
-                    Text("Recently logged")
-                        .font(.system(size: 16, weight: .semibold))
-                    Spacer()
-                }
-                .padding()
-                .listRowSeparator(.hidden)
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("Recently logged")
+                    .font(.system(size: 16, weight: .semibold))
+                Spacer()
+            }
+
+            LazyVStack(spacing: 8) {
                 if analysisVM.isLoading, let image = selectedImage {
                     LoadingFoodRow(image: image)
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets())
                 }
+
                 if filteredEntries.isEmpty, !analysisVM.isLoading {
                     FoodEntryEmptyList()
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets())
                 } else {
                     ForEach(filteredEntries, id: \.id) { entry in
                         FoodEntryRow(item: entry)
-                            .listRowBackground(Color.clear)
-                            .listRowSeparator(.hidden)
-                            .listRowInsets(EdgeInsets())
                             .onTapGesture {
                                 hideFloatingButton = true
                                 selectedFoodEntry = entry
@@ -58,21 +49,19 @@ struct FoodEntryList: View {
                     }
                 }
             }
-            .listStyle(.plain)
-            .scrollContentBackground(.hidden)
-            .padding(.horizontal)
-            .navigationDestination(item: $selectedFoodEntry) { entry in
-                FoodEntryDetails(item: entry, hideFloatingButton: $hideFloatingButton)
+        }
+        .frame(width: 330, alignment: .leading)
+        .navigationDestination(item: $selectedFoodEntry) { entry in
+            FoodEntryDetails(item: entry, hideFloatingButton: $hideFloatingButton)
+        }
+        .onChange(of: selectedFoodEntry) { _, newValue in
+            if newValue == nil {
+                hideFloatingButton = false
             }
-            .onChange(of: selectedFoodEntry) { _, newValue in
-                if newValue == nil {
-                    hideFloatingButton = false
-                }
-            }
-            .onChange(of: selectedDate) { _, _ in
-                if filteredEntries.isEmpty, !analysisVM.isLoading {
-                    logger.info("No food entry found")
-                }
+        }
+        .onChange(of: selectedDate) { _, _ in
+            if filteredEntries.isEmpty, !analysisVM.isLoading {
+                logger.info("No food entry found")
             }
         }
     }

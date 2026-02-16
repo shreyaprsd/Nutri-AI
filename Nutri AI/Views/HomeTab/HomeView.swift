@@ -25,15 +25,15 @@ struct HomeView: View {
     }
 
     var body: some View {
-        VStack {
-            NavigationStack {
-                VStack {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 16) {
                     WeeklyCalendarView(selectedDate: $selectedDate)
                     DayWiseCalorieCard(
                         nutrientType: nutrientType[0],
                         ringColor: nutrientType[0].ringColor,
                         nutrientIcon: nutrientType[0].icon,
-                        cardHeight: 124,
+                        cardHeight: 132,
                         cardWidth: 330
                     )
                     HStack(spacing: 8) {
@@ -41,21 +41,21 @@ struct HomeView: View {
                             nutrientType: nutrientType[1],
                             ringColor: nutrientType[1].ringColor,
                             nutrientIcon: nutrientType[1].icon,
-                            cardHeight: 128,
+                            cardHeight: 132,
                             cardWidth: 104
                         )
                         DayWiseMacroCards(
                             nutrientType: nutrientType[2],
                             ringColor: nutrientType[2].ringColor,
                             nutrientIcon: nutrientType[2].icon,
-                            cardHeight: 128,
+                            cardHeight: 132,
                             cardWidth: 104
                         )
                         DayWiseMacroCards(
                             nutrientType: nutrientType[3],
                             ringColor: nutrientType[3].ringColor,
                             nutrientIcon: nutrientType[3].icon,
-                            cardHeight: 128,
+                            cardHeight: 132,
                             cardWidth: 104
                         )
                     }
@@ -65,6 +65,7 @@ struct HomeView: View {
                         selectedDate: $selectedDate, analysisVM: analysisVM,
                         hideFloatingButton: $hideFloatingButton
                     )
+                    .padding(.top, 4)
                 }
                 .safeAreaInset(edge: .top) {
                     HStack {
@@ -92,6 +93,9 @@ struct HomeView: View {
         }
         .onChange(of: foodEntries) { _, newValue in
             cardsStore.foodEntries = newValue
+        }
+        .onChange(of: foodEntries.map(\.servingMultiplier)) { _, _ in
+            cardsStore.foodEntries = foodEntries
         }
         .onChange(of: users) { _, newValue in
             cardsStore.users = newValue

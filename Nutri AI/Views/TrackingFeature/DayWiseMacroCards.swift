@@ -85,6 +85,25 @@ struct DayWiseMacroCards: View {
                     .frame(width: cardWidth, height: cardHeight)
                     .overlay(alignment: .center) {
                         VStack(spacing: 4) {
+                            HStack(alignment: .firstTextBaseline, spacing: 2) {
+                                Text(
+                                    Int(abs(cardsData.remaining).rounded()),
+                                    format: .number.grouping(.never)
+                                )
+                                Text(nutrientType.unit)
+                            }
+                            .font(Font.system(size: 20, weight: .medium))
+                            Text(
+                                cardsData.totalIntake > cardsData.targetIntake
+                                    ? "\(nutrientType.displayName) eaten "
+                                    : "\(nutrientType.displayName) left "
+                            )
+                            .font(Font.system(size: 12, weight: .regular))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                            .multilineTextAlignment(.center)
+                            .padding(.bottom, 8)
+
                             ZStack {
                                 DynamicProgressRing(
                                     intake: cardsData.progress,
@@ -96,22 +115,7 @@ struct DayWiseMacroCards: View {
                                     .frame(width: 26, height: 26)
                                     .minimumScaleFactor(0.8)
                             }
-                            Text(
-                                Int(abs(cardsData.remaining).rounded()),
-                                format: .number.grouping(.never)
-                            )
-                            .font(Font.system(size: 20, weight: .medium))
-                            Text(
-                                cardsData.totalIntake > cardsData.targetIntake
-                                    ? "\(nutrientType.displayName) eaten "
-                                    : "\(nutrientType.displayName) left "
-                            )
-                            .font(Font.system(size: 16, weight: .regular))
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.7)
-                            .multilineTextAlignment(.center)
                         }
-                        .padding()
                     }
             }
         }

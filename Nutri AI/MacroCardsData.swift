@@ -54,20 +54,29 @@ struct MacroCardsData {
     var remaining: Double { totalIntake - targetIntake }
 
     func intakeValue(for entry: NutritionModel) -> Double {
+        let multiplier = entry.servingMultiplier
         switch nutrientType {
-        case .calories: Double(entry.nutrients.calories) ?? 0
-        case .carbs: entry.nutrients.carbs.total
-        case .protein: entry.nutrients.protein.total
-        case .fats: entry.nutrients.fats.total
+        case .calories:
+            return (Double(entry.nutrients.calories) ?? 0) * multiplier
+        case .carbs:
+            return entry.nutrients.carbs.total * multiplier
+        case .protein:
+            return entry.nutrients.protein.total * multiplier
+        case .fats:
+            return entry.nutrients.fats.total * multiplier
         }
     }
 
     func targetValue(calculations: Calculations) -> Double {
         switch nutrientType {
-        case .calories: calculations.targetDailyCalories
-        case .carbs: calculations.macros.carbs
-        case .protein: calculations.macros.protein
-        case .fats: calculations.macros.fats
+        case .calories:
+            calculations.targetDailyCalories
+        case .carbs:
+            calculations.macros.carbs
+        case .protein:
+            calculations.macros.protein
+        case .fats:
+            calculations.macros.fats
         }
     }
 }
