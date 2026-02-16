@@ -175,6 +175,7 @@ struct RemoteModel: Codable, Identifiable {
             imageData: imageData,
             response: response
         )
+        // Preserve the Firestore document id to avoid duplicate local entries on sync.
         if let id, let uuid = UUID(uuidString: id) {
             model.id = uuid
         }

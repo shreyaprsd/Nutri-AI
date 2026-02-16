@@ -171,8 +171,10 @@ class FoodRepository {
                 predicate: #Predicate { $0.id == uuid }
             )
             if let existing = try modelContext.fetch(descriptor).first {
+                // Update the existing local object to keep SwiftData references intact.
                 apply(remote: remote, to: existing)
             } else {
+                // Insert new item when no local match exists.
                 let model = remote.toNutritionModel()
                 modelContext.insert(model)
             }
@@ -181,6 +183,7 @@ class FoodRepository {
     }
 
     private func apply(remote: RemoteModel, to model: NutritionModel) {
+        // Map Firestore fields onto the existing local object during a pull.
         model.createdAt = remote.createdAt.dateValue()
         model.foodName = remote.foodName
         model.servingSize = remote.servingSize

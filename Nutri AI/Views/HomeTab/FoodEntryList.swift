@@ -30,6 +30,10 @@ struct FoodEntryList: View {
     var body: some View {
         VStack {
             List {
+                Text("Recently logged")
+                    .font(.system(size: 16, weight: .semibold))
+                    .padding(.trailing, 174)
+                    .listRowSeparator(.hidden)
                 if analysisVM.isLoading, let image = selectedImage {
                     LoadingFoodRow(image: image)
                         .listRowBackground(Color.clear)
@@ -42,10 +46,6 @@ struct FoodEntryList: View {
                         .listRowSeparator(.hidden)
                         .listRowInsets(EdgeInsets())
                 } else {
-                    Text("Recently logged")
-                        .font(.system(size: 16, weight: .semibold))
-                        .padding(.trailing, 174)
-                        .listRowSeparator(.hidden)
                     ForEach(filteredEntries, id: \.id) { entry in
                         FoodEntryRow(item: entry)
                             .listRowBackground(Color.clear)

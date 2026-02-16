@@ -9,16 +9,17 @@ import SwiftUI
 
 struct WeeklyCalendarView: View {
     @Binding var selectedDate: Date
-
     private let calendar = Calendar.current
-
     private var currentWeek: [Date] {
         let startOfWeek = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: selectedDate))!
         return (0 ..< 7).compactMap { calendar.date(byAdding: .day, value: $0, to: startOfWeek) }
     }
 
     var body: some View {
-        HStack(spacing: 16) {
+        LazyVGrid(
+            columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7),
+            spacing: 8
+        ) {
             ForEach(currentWeek, id: \.self) { date in
                 let isFuture = date > Date()
 
@@ -27,12 +28,13 @@ struct WeeklyCalendarView: View {
                     isSelected: calendar.isDate(date, inSameDayAs: selectedDate),
                     isFuture: isFuture
                 )
+                .frame(maxWidth: .infinity)
                 .onTapGesture {
                     if !isFuture { selectedDate = date }
                 }
             }
         }
-        .padding()
+        .frame(width: 330)
     }
 }
 
