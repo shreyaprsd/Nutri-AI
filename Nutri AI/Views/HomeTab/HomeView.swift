@@ -18,15 +18,10 @@ struct HomeView: View {
     @Binding var hideFloatingButton: Bool
     @Environment(\.modelContext) private var modelContext
     let nutrientType: [NutrientType] = [.calories, .protein, .carbs, .fats]
-    private var foodEntryViewModel: FoodEntryViewModel {
-        FoodEntryViewModel(modelContext: modelContext)
-    }
+    @EnvironmentObject private var cardsStore: MacroCardsStore
 
     private var filteredEntries: [NutritionModel] {
-        let calendar = Calendar.current
-        return foodEntries.filter {
-            calendar.isDate($0.createdAt, inSameDayAs: selectedDate)
-        }
+        foodEntries.entries(for: selectedDate)
     }
 
     var body: some View {
@@ -35,7 +30,6 @@ struct HomeView: View {
                 VStack {
                     WeeklyCalendarView(selectedDate: $selectedDate)
                     DayWiseCalorieCard(
-                        selectedDate: $selectedDate,
                         nutrientType: nutrientType[0],
                         ringColor: nutrientType[0].ringColor,
                         nutrientIcon: nutrientType[0].icon,
@@ -44,7 +38,6 @@ struct HomeView: View {
                     )
                     HStack(spacing: 8) {
                         DayWiseMacroCards(
-                            selectedDate: $selectedDate,
                             nutrientType: nutrientType[1],
                             ringColor: nutrientType[1].ringColor,
                             nutrientIcon: nutrientType[1].icon,
@@ -52,7 +45,6 @@ struct HomeView: View {
                             cardWidth: 104
                         )
                         DayWiseMacroCards(
-                            selectedDate: $selectedDate,
                             nutrientType: nutrientType[2],
                             ringColor: nutrientType[2].ringColor,
                             nutrientIcon: nutrientType[2].icon,
@@ -60,7 +52,6 @@ struct HomeView: View {
                             cardWidth: 104
                         )
                         DayWiseMacroCards(
-                            selectedDate: $selectedDate,
                             nutrientType: nutrientType[3],
                             ringColor: nutrientType[3].ringColor,
                             nutrientIcon: nutrientType[3].icon,
@@ -79,26 +70,34 @@ struct HomeView: View {
                     HStack {
                         Image(systemName: "carrot.fill")
                         Text("Nutri AI")
+                        Spacer()
                     }
                     .font(.system(size: 24, weight: .semibold))
                     .frame(maxWidth: .infinity)
                     .padding(.leading, 20)
-                    .padding(.trailing, 240)
+                    .padding(.horizontal, 20)
                     .padding(.bottom, 8)
                     .background(.clear)
                 }
             }
         }
         .task(id: selectedDate) {
-            await foodEntryViewModel.refreshEntries(for: selectedDate)
+            let viewModel = FoodEntryViewModel(modelContext: modelContext)
+            await viewModel.refreshEntries(for: selectedDate)
+        }
+        .onAppear {
+            cardsStore.foodEntries = foodEntries
+            cardsStore.users = users
+            cardsStore.selectedDate = selectedDate
+        }
+        .onChange(of: foodEntries) { _, newValue in
+            cardsStore.foodEntries = newValue
+        }
+        .onChange(of: users) { _, newValue in
+            cardsStore.users = newValue
+        }
+        .onChange(of: selectedDate) { _, newValue in
+            cardsStore.selectedDate = newValue
         }
     }
-}
-
-#Preview {
-    HomeView(
-        selectedDate: .constant(Date()), selectedImage: .constant(nil),
-        analysisVM: NutrientAnalysisViewModel(),
-        hideFloatingButton: .constant(false)
-    )
 }

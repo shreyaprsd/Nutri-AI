@@ -11,7 +11,7 @@ struct WeeklyCalendarView: View {
     @Binding var selectedDate: Date
     private let calendar = Calendar.current
     private var currentWeek: [Date] {
-        let startOfWeek = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: selectedDate))!
+        guard let startOfWeek = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: selectedDate)) else { return [] }
         return (0 ..< 7).compactMap { calendar.date(byAdding: .day, value: $0, to: startOfWeek) }
     }
 

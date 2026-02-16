@@ -9,6 +9,7 @@ import BackgroundTasks
 import FirebaseAuth
 import FirebaseFirestore
 import OSLog
+import SwiftData
 import UIKit
 
 class BackgroundSyncManager {

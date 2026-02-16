@@ -21,19 +21,19 @@ struct FoodEntryList: View {
     private let logger = Logger(subsystem: "com.shreyaprasad.NutriAI", category: "FoodEntryList")
 
     private var filteredEntries: [NutritionModel] {
-        let calendar = Calendar.current
-        return foodEntries.filter {
-            calendar.isDate($0.createdAt, inSameDayAs: selectedDate)
-        }
+        foodEntries.entries(for: selectedDate)
     }
 
     var body: some View {
         VStack {
             List {
-                Text("Recently logged")
-                    .font(.system(size: 16, weight: .semibold))
-                    .padding(.trailing, 174)
-                    .listRowSeparator(.hidden)
+                HStack {
+                    Text("Recently logged")
+                        .font(.system(size: 16, weight: .semibold))
+                    Spacer()
+                }
+                .padding()
+                .listRowSeparator(.hidden)
                 if analysisVM.isLoading, let image = selectedImage {
                     LoadingFoodRow(image: image)
                         .listRowBackground(Color.clear)

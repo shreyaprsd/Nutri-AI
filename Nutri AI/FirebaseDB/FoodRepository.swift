@@ -165,16 +165,26 @@ class FoodRepository {
 
     @MainActor
     private func upsertFoods(_ remoteFoods: [RemoteModel]) throws {
-        for remote in remoteFoods {
-            guard let id = remote.id, let uuid = UUID(uuidString: id) else { continue }
-            let descriptor = FetchDescriptor<NutritionModel>(
-                predicate: #Predicate { $0.id == uuid }
-            )
-            if let existing = try modelContext.fetch(descriptor).first {
-                // Update the existing local object to keep SwiftData references intact.
+        // collect all valid UUIDs from remote foods
+        let remoteMapping: [(UUID, RemoteModel)] = remoteFoods.compactMap { remote in
+            guard let id = remote.id, let uuid = UUID(uuidString: id) else { return nil }
+            return (uuid, remote)
+        }
+        let allIDs = remoteMapping.map(\.0)
+
+        // one query to fetch all matching local foods
+        let descriptor = FetchDescriptor<NutritionModel>(
+            predicate: #Predicate<NutritionModel> { allIDs.contains($0.id) }
+        )
+        let existingFoods = try modelContext.fetch(descriptor)
+
+        // build a dictionary for instant lookup by ID
+        let existingByID = Dictionary(uniqueKeysWithValues: existingFoods.map { ($0.id, $0) })
+
+        for (uuid, remote) in remoteMapping {
+            if let existing = existingByID[uuid] {
                 apply(remote: remote, to: existing)
             } else {
-                // Insert new item when no local match exists.
                 let model = remote.toNutritionModel()
                 modelContext.insert(model)
             }
@@ -182,6 +192,7 @@ class FoodRepository {
         try modelContext.save()
     }
 
+    @MainActor
     private func apply(remote: RemoteModel, to model: NutritionModel) {
         // Map Firestore fields onto the existing local object during a pull.
         model.createdAt = remote.createdAt.dateValue()
