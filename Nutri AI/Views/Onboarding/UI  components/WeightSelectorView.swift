@@ -17,7 +17,7 @@ struct WeightSelectorView: View {
     let step: Double
 
     init(weight: Binding<Double>, minWeight: Double = 30.0, maxWeight: Double = 200.0, step: Double = 0.5) {
-        self._weight = weight
+        _weight = weight
         self.minWeight = minWeight
         self.maxWeight = maxWeight
         self.step = step
@@ -41,7 +41,7 @@ struct WeightSelectorView: View {
                     .keyboardType(.decimalPad)
                     .multilineTextAlignment(.center)
                     .font(.system(size: 32, weight: .regular))
-                    .frame(width: 70)
+                    .frame(width: 90)
                     .focused($isFocused)
             } else {
                 Button {
@@ -51,7 +51,9 @@ struct WeightSelectorView: View {
                     Text(verbatim: String(format: "%.1f", weight))
                         .font(.system(size: 32, weight: .regular))
                         .foregroundStyle(Color.black)
-                        .frame(width: 70)
+                        .frame(width: 90)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
                 }
             }
 

@@ -12,6 +12,7 @@ import SwiftUI
 struct ProfileView: View {
     @ObservedObject var auth: AuthViewModel
     @State var foodViewModel: FoodEntryViewModel
+    @Binding var hideFloatingButton: Bool
     @State private var showLogoutAlert: Bool = false
     @State private var showDeleteAlert: Bool = false
     @Environment(\.modelContext) private var modelContext
@@ -19,7 +20,9 @@ struct ProfileView: View {
     var body: some View {
         List {
             Section("Account") {
-                NavigationLink {} label: {
+                NavigationLink {
+                    PersonalDetailsView(hideFloatingButton: $hideFloatingButton)
+                } label: {
                     HStack {
                         Image(systemName: "person.text.rectangle")
                         Text("Personal Details")

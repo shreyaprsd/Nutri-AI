@@ -42,7 +42,7 @@ struct MainView: View {
                 }
                 .tag(1)
                 NavigationStack {
-                    ProfileView(auth: viewModel, foodViewModel: foodViewModel)
+                    ProfileView(auth: viewModel, foodViewModel: foodViewModel, hideFloatingButton: $hideFloatingButton)
                 }
                 .tabItem {
                     Label("Profile", systemImage: "person")
