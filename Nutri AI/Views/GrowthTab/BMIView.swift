@@ -62,10 +62,12 @@ struct BMIView: View {
                                 Text("Your weight is")
                                 ZStack {
                                     RoundedRectangle(cornerRadius: 12)
-                                        .frame(width: 80, height: 30)
+                                        .frame(width: 110, height: 30)
                                         .foregroundStyle(bmiCategoryColor)
                                         .overlay {
                                             Text(bmiCategoryText)
+                                                .lineLimit(1)
+                                                .minimumScaleFactor(0.8)
                                         }
                                 }
                             }

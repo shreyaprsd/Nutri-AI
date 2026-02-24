@@ -19,7 +19,6 @@ struct HeightWeightView: View {
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
 
-    let metricHeights = Array(60 ... 243).map { "\($0) cm" }
     let metricWeights = Array(20 ... 360).map { "\($0) kg" }
     let imperialWeights = Array(50 ... 700).map { "\($0) lb" }
 
@@ -93,37 +92,13 @@ struct HeightWeightView: View {
 
     private var pickerSection: some View {
         HStack(spacing: 45) {
+            HeightPickerView(heightInCm: $heightInCm, isMetric: $isMetric)
             if isMetric {
-                metricHeightPicker
                 metricWeightPicker
             } else {
-                imperialHeightPicker
                 imperialWeightPicker
             }
         }
-    }
-
-    private var metricHeightPicker: some View {
-        VStack {
-            Text("Height")
-                .font(.system(size: 14, weight: .medium))
-
-            Picker("Height", selection: Binding(
-                get: { "\(Int(heightInCm)) cm" },
-                set: { newValue in
-                    if let value = Int(newValue.replacingOccurrences(of: " cm", with: "")) {
-                        heightInCm = Double(value)
-                    }
-                }
-            )) {
-                ForEach(metricHeights, id: \.self) { height in
-                    Text(height).tag(height)
-                }
-            }
-            .pickerStyle(.wheel)
-            .frame(width: 120, height: 150)
-        }
-        .padding()
     }
 
     private var metricWeightPicker: some View {
@@ -149,32 +124,6 @@ struct HeightWeightView: View {
         .padding()
     }
 
-    private var imperialHeightPicker: some View {
-        VStack {
-            Text("Height")
-                .font(.system(size: 14, weight: .medium))
-
-            HStack(spacing: 0) {
-                Picker("Feet", selection: createFeetBinding()) {
-                    ForEach(2 ... 8, id: \.self) { feet in
-                        Text("\(feet) ft").tag(feet)
-                    }
-                }
-                .pickerStyle(.wheel)
-                .frame(width: 80, height: 150)
-
-                Picker("Inches", selection: createInchesBinding()) {
-                    ForEach(0 ... 11, id: \.self) { inches in
-                        Text("\(inches) in").tag(inches)
-                    }
-                }
-                .pickerStyle(.wheel)
-                .frame(width: 80, height: 150)
-            }
-        }
-        .padding()
-    }
-
     private var imperialWeightPicker: some View {
         VStack {
             Text("Weight")
@@ -189,34 +138,6 @@ struct HeightWeightView: View {
             .frame(width: 120, height: 150)
         }
         .padding()
-    }
-
-    private func createFeetBinding() -> Binding<Int> {
-        Binding(
-            get: {
-                let totalInches = heightInCm / 2.54
-                return Int(totalInches / 12)
-            },
-            set: { newFeet in
-                let currentInches = Int((heightInCm / 2.54).truncatingRemainder(dividingBy: 12))
-                let totalInches = Double(newFeet * 12 + currentInches)
-                heightInCm = totalInches * 2.54
-            }
-        )
-    }
-
-    private func createInchesBinding() -> Binding<Int> {
-        Binding(
-            get: {
-                let totalInches = heightInCm / 2.54
-                return Int(totalInches.truncatingRemainder(dividingBy: 12))
-            },
-            set: { newInches in
-                let currentFeet = Int(heightInCm / 2.54 / 12)
-                let totalInches = Double(currentFeet * 12 + newInches)
-                heightInCm = totalInches * 2.54
-            }
-        )
     }
 
     private func createImperialWeightBinding() -> Binding<String> {
