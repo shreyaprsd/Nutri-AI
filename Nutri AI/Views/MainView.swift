@@ -31,14 +31,16 @@ struct MainView: View {
                     Label("Home", systemImage: "house")
                 }
                 .tag(0)
-                GrowthView()
-                    .tabItem {
-                        Label(
-                            "Progress",
-                            systemImage: "chart.line.uptrend.xyaxis"
-                        )
-                    }
-                    .tag(1)
+                NavigationStack {
+                    GrowthView(hideFloatingButton: $hideFloatingButton)
+                }
+                .tabItem {
+                    Label(
+                        "Progress",
+                        systemImage: "chart.line.uptrend.xyaxis"
+                    )
+                }
+                .tag(1)
                 NavigationStack {
                     ProfileView(auth: viewModel, foodViewModel: foodViewModel)
                 }
