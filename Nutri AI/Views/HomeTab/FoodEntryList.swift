@@ -27,7 +27,11 @@ struct FoodEntryList: View {
             }
 
             LazyVStack(spacing: 8) {
-                if analysisVM.isLoading, let image = selectedImage {
+                let shouldShowLoadingRow = analysisVM.isLoading
+                    && selectedImage != nil
+                    && Calendar.current.isDateInToday(selectedDate)
+
+                if shouldShowLoadingRow, let image = selectedImage {
                     LoadingFoodRow(image: image)
                 }
 

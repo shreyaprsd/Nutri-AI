@@ -11,6 +11,7 @@ import OSLog
 import SwiftData
 import UIKit
 
+@MainActor
 @Observable
 class UserInfoViewModel {
     private var modelContext: ModelContext
@@ -61,6 +62,12 @@ class UserInfoViewModel {
         userInfo.heightInCm = height
         userInfo.weightInKg = weight
         saveAndSync(userInfo, context: "Height and Weight")
+    }
+
+    func saveHeight(height: Double) {
+        let userInfo = fetchOrCreateUserInfo()
+        userInfo.heightInCm = height
+        saveAndSync(userInfo, context: "Height")
     }
 
     func saveDateOfBirth(_ dateOfBirth: Date) {

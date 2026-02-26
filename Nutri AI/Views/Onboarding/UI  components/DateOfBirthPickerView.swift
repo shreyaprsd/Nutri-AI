@@ -49,29 +49,10 @@ struct DateOfBirthPickerView: View {
     }
 
     private func daysInMonth(month: Int, year: Int) -> Int {
-        switch month {
-        case 1, 3, 5, 7, 8, 10, 12:
-            31
-        case 4, 6, 9, 11:
-            30
-        case 2:
-            isLeapYear(year: year) ? 29 : 28
-        default:
-            31
-        }
-    }
-
-    private func isLeapYear(year: Int) -> Bool {
-        if year % 400 == 0 {
-            return true
-        }
-        if year % 100 == 0 {
-            return false
-        }
-        if year % 4 == 0 {
-            return true
-        }
-        return false
+        let components = DateComponents(year: year, month: month)
+        let calendar = Calendar.current
+        guard let date = calendar.date(from: components) else { return 31 }
+        return calendar.range(of: .day, in: .month, for: date)?.count ?? 31
     }
 
     private func adjustDayIfNeeded() {
