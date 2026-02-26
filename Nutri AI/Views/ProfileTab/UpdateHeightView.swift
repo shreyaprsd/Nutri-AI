@@ -7,7 +7,6 @@ struct UpdateHeightView: View {
     @Binding var hideFloatingButton: Bool
     @State private var isMetric = true
     @State private var heightInCm: Double = 168
-    @State private var existingWeightInKg: Double = 0
     @State private var userInfoViewModel: UserInfoViewModel?
 
     private var viewModel: UserInfoViewModel {
@@ -64,7 +63,7 @@ struct UpdateHeightView: View {
                 .tint(Color.black)
                 .labelsHidden()
 
-            Text("Metrics")
+            Text("Metric")
                 .foregroundStyle(isMetric ? .secondary : .primary)
                 .padding(.leading, 40)
         }
@@ -73,7 +72,7 @@ struct UpdateHeightView: View {
     }
 
     private func saveData() {
-        viewModel.saveHeightAndWeight(height: heightInCm, weight: existingWeightInKg)
+        viewModel.saveHeight(height: heightInCm)
         viewModel.calculateAndSaveNutrition()
     }
 
@@ -81,9 +80,6 @@ struct UpdateHeightView: View {
         guard let userInfo = viewModel.loadUserInfo() else { return }
         if userInfo.heightInCm > 0 {
             heightInCm = userInfo.heightInCm
-        }
-        if userInfo.weightInKg > 0 {
-            existingWeightInKg = userInfo.weightInKg
         }
     }
 }

@@ -33,11 +33,15 @@ struct FoodEntryList: View {
             }
 
             LazyVStack(spacing: 8) {
-                if analysisVM.isLoading, let image = selectedImage {
+                let shouldShowLoadingRow = analysisVM.isLoading
+                    && selectedImage != nil
+                    && Calendar.current.isDateInToday(selectedDate)
+
+                if shouldShowLoadingRow, let image = selectedImage {
                     LoadingFoodRow(image: image)
                 }
 
-                if filteredEntries.isEmpty, !analysisVM.isLoading {
+                if filteredEntries.isEmpty, !shouldShowLoadingRow {
                     FoodEntryEmptyList()
                 } else {
                     ForEach(filteredEntries, id: \.id) { entry in

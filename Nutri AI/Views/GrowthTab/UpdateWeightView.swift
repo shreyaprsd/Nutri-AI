@@ -87,7 +87,7 @@ struct UpdateWeightView: View {
                 .tint(Color.black)
                 .labelsHidden()
 
-            Text("Metrics")
+            Text("Metric")
                 .foregroundStyle(isMetric ? .secondary : .primary)
                 .padding(.leading, 40)
         }

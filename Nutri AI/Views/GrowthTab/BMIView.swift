@@ -33,7 +33,7 @@ struct BMIView: View {
     private var bmiCategoryColor: Color {
         guard let bmiValue else { return .clear }
         let category = BMIValue(bmi: bmiValue)
-        return BMIColor(bmiValue: category).color
+        return category.color
     }
 
     private var bmiNormalizedPosition: CGFloat {
@@ -142,49 +142,20 @@ enum BMIValue: String {
 
     init(bmi: Double) {
         switch bmi {
-        case ..<18.5:
-            self = .underweight
-        case 18.5 ..< 25:
-            self = .normal
-        case 25 ..< 30:
-            self = .overweight
-        case 30...:
-            self = .obese
-        default:
-            self = .underweight
-        }
-    }
-}
-
-enum BMIColor {
-    case underweight
-    case normal
-    case overweight
-    case obese
-
-    init(bmiValue: BMIValue) {
-        switch bmiValue {
-        case .underweight:
-            self = .underweight
-        case .normal:
-            self = .normal
-        case .overweight:
-            self = .overweight
-        case .obese:
-            self = .obese
+        case ..<18.5: self = .underweight
+        case 18.5 ..< 25: self = .normal
+        case 25 ..< 30: self = .overweight
+        case 30...: self = .obese
+        default: self = .underweight
         }
     }
 
     var color: Color {
         switch self {
-        case .underweight:
-            .blue
-        case .normal:
-            .green
-        case .overweight:
-            .yellow
-        case .obese:
-            .green
+        case .underweight: .blue
+        case .normal: .green
+        case .overweight: .yellow
+        case .obese: .red
         }
     }
 }
