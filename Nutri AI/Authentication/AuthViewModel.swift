@@ -75,18 +75,18 @@ class AuthViewModel: ObservableObject {
         }
     }
 
-    func deleteAccount(foodViewModel: FoodEntryViewModel) async throws {
-        guard let user else {
-            throw AuthError.userNotAuthenticated
-        }
+    func deleteAccount(foodViewModel: FoodEntryViewModel, modelContext: ModelContext) async throws {
+        guard let user else { throw AuthError.userNotAuthenticated }
         do {
-            // delete the firebase document
-            await UserManager.shared.deleteUserDocument(for: user)
-            // delete the local data
+            let userInfoVM = UserInfoViewModel(modelContext: modelContext)
+            try await userInfoVM.deleteUserInfo()
             try await foodViewModel.deleteAllLocalFoodEntries()
-            // delete the auth account
-            try await user.delete()
 
+            await UserManager.shared.deleteUserDocument(for: user)
+
+            UserDefaults.standard.set(false, forKey: UserDefaultsKey.hasStartedOnboarding)
+
+            try await user.delete()
         } catch {
             logger.error("\(error.localizedDescription)")
             errorMessage = error.localizedDescription
