@@ -88,7 +88,7 @@ struct FoodEntryTextDetailsView: View {
     @Bindable var item: NutritionModel
     @Environment(\.modelContext) private var modelContext
     @FocusState private var isTextFieldFocused: Bool
-    @EnvironmentObject private var cardsStore: MacroCardsStore
+
     let logger = Logger(subsystem: "com.shreyaprasad.NutriAI", category: "FoodEntryTextDetails")
     private var vm: FoodEntryViewModel {
         FoodEntryViewModel(modelContext: modelContext)
@@ -340,9 +340,7 @@ struct FoodEntryTextDetailsView: View {
                 for: item,
                 multiplier: multiplier
             )
-            await MainActor.run {
-                cardsStore.foodEntries = cardsStore.foodEntries
-            }
+
         } catch {
             logger.error("Error saving:  the new serving quantity\(error)")
         }

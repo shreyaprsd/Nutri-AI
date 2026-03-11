@@ -1,5 +1,5 @@
 //
-//  WeeklyCalenderView.swift
+//  WeeklyCalendarView.swift
 //  Nutri AI
 //
 //  Created by Shreya Prasad on 12/02/26.
@@ -10,18 +10,14 @@ import SwiftUI
 struct WeeklyCalendarView: View {
     @Binding var selectedDate: Date
     private let calendar = Calendar.current
-    private var currentWeek: [Date] {
-        guard let startOfWeek = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: selectedDate)) else { return [] }
-        return (0 ..< 7).compactMap { calendar.date(byAdding: .day, value: $0, to: startOfWeek) }
-    }
-
+    @State private var currentWeek: [Date] = []
     var body: some View {
         LazyVGrid(
             columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7),
             spacing: 8
         ) {
             ForEach(currentWeek, id: \.self) { date in
-                let isFuture = date > Date()
+                let isFuture = calendar.compare(date, to: Date(), toGranularity: .day) == .orderedDescending
 
                 DayView(
                     date: date,
@@ -35,6 +31,15 @@ struct WeeklyCalendarView: View {
             }
         }
         .frame(width: 330)
+        .onChange(of: selectedDate, initial: true) { _, newDate in
+            currentWeek = Self.buildWeek(for: newDate)
+        }
+    }
+
+    private static func buildWeek(for date: Date) -> [Date] {
+        let cal = Calendar.current
+        guard let start = cal.date(from: cal.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)) else { return [] }
+        return (0 ..< 7).compactMap { cal.date(byAdding: .day, value: $0, to: start) }
     }
 }
 

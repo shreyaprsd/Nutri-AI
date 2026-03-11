@@ -170,95 +170,25 @@ class FoodRepository {
             guard let id = remote.id, let uuid = UUID(uuidString: id) else { return nil }
             return (uuid, remote)
         }
-        let allIDs = remoteMapping.map(\.0)
 
-        // one query to fetch all matching local foods
-        let descriptor = FetchDescriptor<NutritionModel>(
-            predicate: #Predicate<NutritionModel> { allIDs.contains($0.id) }
-        )
-        let existingFoods = try modelContext.fetch(descriptor)
+        // Fetch all local entries unfiltered, then filter in-memory.
+        let allIDs = Set(remoteMapping.map(\.0))
+        let descriptor = FetchDescriptor<NutritionModel>()
+        let allLocal = try modelContext.fetch(descriptor)
+        let existingFoods = allLocal.filter { allIDs.contains($0.id) }
 
         // build a dictionary for instant lookup by ID
         let existingByID = Dictionary(uniqueKeysWithValues: existingFoods.map { ($0.id, $0) })
 
         for (uuid, remote) in remoteMapping {
             if let existing = existingByID[uuid] {
-                apply(remote: remote, to: existing)
+                remote.applyTo(existing)
             } else {
                 let model = remote.toNutritionModel()
                 modelContext.insert(model)
             }
         }
         try modelContext.save()
-    }
-
-    @MainActor
-    private func apply(remote: RemoteModel, to model: NutritionModel) {
-        // Map Firestore fields onto the existing local object during a pull.
-        model.createdAt = remote.createdAt.dateValue()
-        model.foodName = remote.foodName
-        model.servingSize = remote.servingSize
-        model.foodDescription = remote.foodDescription
-        model.servingMultiplier = remote.servingMultiplier
-        model.nutrients = NutritionModel.NutrientsData(
-            calories: remote.nutrients.calories,
-            carbs: NutritionModel.StoredNutrient(
-                total: remote.nutrients.carbs.total,
-                unit: remote.nutrients.carbs.unit
-            ),
-            protein: NutritionModel.StoredNutrient(
-                total: remote.nutrients.protein.total,
-                unit: remote.nutrients.protein.unit
-            ),
-            fats: NutritionModel.StoredNutrient(
-                total: remote.nutrients.fats.total,
-                unit: remote.nutrients.fats.unit
-            ),
-            saturatedFats: NutritionModel.StoredNutrient(
-                total: remote.nutrients.saturatedFats.total,
-                unit: remote.nutrients.saturatedFats.unit
-            ),
-            polyunsaturatedFats: NutritionModel.StoredNutrient(
-                total: remote.nutrients.polyunsaturatedFats.total,
-                unit: remote.nutrients.polyunsaturatedFats.unit
-            ),
-            cholesterol: NutritionModel.StoredNutrient(
-                total: remote.nutrients.cholesterol.total,
-                unit: remote.nutrients.cholesterol.unit
-            ),
-            sodium: NutritionModel.StoredNutrient(
-                total: remote.nutrients.sodium.total,
-                unit: remote.nutrients.sodium.unit
-            ),
-            potassium: NutritionModel.StoredNutrient(
-                total: remote.nutrients.potassium.total,
-                unit: remote.nutrients.potassium.unit
-            ),
-            vitaminA: NutritionModel.StoredNutrient(
-                total: remote.nutrients.vitaminA.total,
-                unit: remote.nutrients.vitaminA.unit
-            ),
-            vitaminC: NutritionModel.StoredNutrient(
-                total: remote.nutrients.vitaminC.total,
-                unit: remote.nutrients.vitaminC.unit
-            ),
-            iron: NutritionModel.StoredNutrient(
-                total: remote.nutrients.iron.total,
-                unit: remote.nutrients.iron.unit
-            ),
-            calcium: NutritionModel.StoredNutrient(
-                total: remote.nutrients.calcium.total,
-                unit: remote.nutrients.calcium.unit
-            ),
-            fiber: NutritionModel.StoredNutrient(
-                total: remote.nutrients.fiber.total,
-                unit: remote.nutrients.fiber.unit
-            ),
-            sugar: NutritionModel.StoredNutrient(
-                total: remote.nutrients.sugar.total,
-                unit: remote.nutrients.sugar.unit
-            )
-        )
     }
 
     enum FoodDataError: Error {

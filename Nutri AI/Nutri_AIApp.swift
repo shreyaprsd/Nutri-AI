@@ -35,13 +35,11 @@ struct Nutri_AIApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject var viewModel: AuthViewModel = .init()
     @State private var onboardingState = OnboardingState()
-    @StateObject private var cardsStore = MacroCardsStore()
 
     var body: some Scene {
         WindowGroup {
             AppRootView(viewModel: viewModel)
                 .environment(onboardingState)
-                .environmentObject(cardsStore)
         }
         .modelContainer(for: [NutritionModel.self, UserInfoModel.self])
     }

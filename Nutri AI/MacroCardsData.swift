@@ -8,21 +8,6 @@
 internal import Combine
 import SwiftUI
 
-final class MacroCardsStore: ObservableObject {
-    @Published var foodEntries: [NutritionModel] = []
-    @Published var users: [UserInfoModel] = []
-    @Published var selectedDate: Date = .init()
-
-    func data(for nutrientType: NutrientType) -> MacroCardsData {
-        MacroCardsData(
-            foodEntries: foodEntries,
-            users: users,
-            nutrientType: nutrientType,
-            selectedDate: selectedDate
-        )
-    }
-}
-
 struct MacroCardsData {
     let foodEntries: [NutritionModel]
     let users: [UserInfoModel]

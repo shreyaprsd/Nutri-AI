@@ -8,16 +8,12 @@
 import SwiftUI
 
 struct DayWiseCalorieCard: View {
-    @EnvironmentObject private var cardsStore: MacroCardsStore
+    let data: MacroCardsData
     let nutrientType: NutrientType
     let ringColor: Color
     let nutrientIcon: String
     let cardHeight: CGFloat
     let cardWidth: CGFloat
-
-    private var cardsData: MacroCardsData {
-        cardsStore.data(for: nutrientType)
-    }
 
     var body: some View {
         VStack {
@@ -29,7 +25,7 @@ struct DayWiseCalorieCard: View {
                     .overlay(alignment: .trailing) {
                         ZStack {
                             DynamicProgressRing(
-                                intake: cardsData.progress,
+                                intake: data.progress,
                                 ringColor: ringColor
                             )
                             .frame(width: 90, height: 90)
@@ -43,12 +39,12 @@ struct DayWiseCalorieCard: View {
                     .overlay(alignment: .leading) {
                         VStack(spacing: 4) {
                             Text(
-                                Int(abs(cardsData.remaining).rounded()),
+                                Int(abs(data.remaining).rounded()),
                                 format: .number.grouping(.never)
                             )
                             .font(Font.system(size: 36, weight: .medium))
                             Text(
-                                cardsData.totalIntake > cardsData.targetIntake
+                                data.totalIntake > data.targetIntake
                                     ? "\(nutrientType.displayName) eaten "
                                     : "\(nutrientType.displayName) left "
                             )
@@ -65,16 +61,12 @@ struct DayWiseCalorieCard: View {
 }
 
 struct DayWiseMacroCards: View {
-    @EnvironmentObject private var cardsStore: MacroCardsStore
+    let data: MacroCardsData
     let nutrientType: NutrientType
     let ringColor: Color
     let nutrientIcon: String
     let cardHeight: CGFloat
     let cardWidth: CGFloat
-
-    private var cardsData: MacroCardsData {
-        cardsStore.data(for: nutrientType)
-    }
 
     var body: some View {
         VStack {
@@ -87,14 +79,14 @@ struct DayWiseMacroCards: View {
                         VStack(spacing: 4) {
                             HStack(alignment: .firstTextBaseline, spacing: 2) {
                                 Text(
-                                    Int(abs(cardsData.remaining).rounded()),
+                                    Int(abs(data.remaining).rounded()),
                                     format: .number.grouping(.never)
                                 )
                                 Text(nutrientType.unit)
                             }
                             .font(Font.system(size: 20, weight: .medium))
                             Text(
-                                cardsData.totalIntake > cardsData.targetIntake
+                                data.totalIntake > data.targetIntake
                                     ? "\(nutrientType.displayName) eaten "
                                     : "\(nutrientType.displayName) left "
                             )
@@ -106,7 +98,7 @@ struct DayWiseMacroCards: View {
 
                             ZStack {
                                 DynamicProgressRing(
-                                    intake: cardsData.progress,
+                                    intake: data.progress,
                                     ringColor: ringColor
                                 )
                                 .frame(width: 60, height: 60)

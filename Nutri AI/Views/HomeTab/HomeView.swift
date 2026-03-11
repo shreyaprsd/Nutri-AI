@@ -18,7 +18,6 @@ struct HomeView: View {
     @Binding var hideFloatingButton: Bool
     @Environment(\.modelContext) private var modelContext
     let nutrientType: [NutrientType] = [.calories, .protein, .carbs, .fats]
-    @EnvironmentObject private var cardsStore: MacroCardsStore
 
     private var filteredEntries: [NutritionModel] {
         foodEntries.entries(for: selectedDate)
@@ -30,6 +29,7 @@ struct HomeView: View {
                 VStack(spacing: 16) {
                     WeeklyCalendarView(selectedDate: $selectedDate)
                     DayWiseCalorieCard(
+                        data: macroData(for: .calories),
                         nutrientType: nutrientType[0],
                         ringColor: nutrientType[0].ringColor,
                         nutrientIcon: nutrientType[0].icon,
@@ -38,6 +38,7 @@ struct HomeView: View {
                     )
                     HStack(spacing: 8) {
                         DayWiseMacroCards(
+                            data: macroData(for: .protein),
                             nutrientType: nutrientType[1],
                             ringColor: nutrientType[1].ringColor,
                             nutrientIcon: nutrientType[1].icon,
@@ -45,6 +46,7 @@ struct HomeView: View {
                             cardWidth: 104
                         )
                         DayWiseMacroCards(
+                            data: macroData(for: .carbs),
                             nutrientType: nutrientType[2],
                             ringColor: nutrientType[2].ringColor,
                             nutrientIcon: nutrientType[2].icon,
@@ -52,6 +54,7 @@ struct HomeView: View {
                             cardWidth: 104
                         )
                         DayWiseMacroCards(
+                            data: macroData(for: .fats),
                             nutrientType: nutrientType[3],
                             ringColor: nutrientType[3].ringColor,
                             nutrientIcon: nutrientType[3].icon,
@@ -83,25 +86,14 @@ struct HomeView: View {
             }
         }
         .task(id: selectedDate) {
+            // Only refresh if local data is empty for this date
+            guard filteredEntries.isEmpty else { return }
             let viewModel = FoodEntryViewModel(modelContext: modelContext)
             await viewModel.refreshEntries(for: selectedDate)
         }
-        .onAppear {
-            cardsStore.foodEntries = foodEntries
-            cardsStore.users = users
-            cardsStore.selectedDate = selectedDate
-        }
-        .onChange(of: foodEntries) { _, newValue in
-            cardsStore.foodEntries = newValue
-        }
-        .onChange(of: foodEntries.map(\.servingMultiplier)) { _, _ in
-            cardsStore.foodEntries = foodEntries
-        }
-        .onChange(of: users) { _, newValue in
-            cardsStore.users = newValue
-        }
-        .onChange(of: selectedDate) { _, newValue in
-            cardsStore.selectedDate = newValue
-        }
+    }
+
+    private func macroData(for type: NutrientType) -> MacroCardsData {
+        MacroCardsData(foodEntries: foodEntries, users: users, nutrientType: type, selectedDate: selectedDate)
     }
 }
