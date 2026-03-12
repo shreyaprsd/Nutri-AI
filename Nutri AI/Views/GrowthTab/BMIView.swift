@@ -17,7 +17,7 @@ struct BMIView: View {
         let height = userInfo?.heightInCm ?? 0
 
         guard weight > 0, height > 0 else { return nil }
-        return NutritionCalculation.calculateBMI(weightInkg: weight, heightInCm: height)
+        return NutritionCalculation.calculateBMI(weightInKg: weight, heightInCm: height)
     }
 
     private var bmiText: String {
@@ -131,32 +131,6 @@ struct BMIGradientBar: View {
             }
         }
         .frame(width: 280, height: 10)
-    }
-}
-
-enum BMIValue: String {
-    case underweight = "Underweight"
-    case normal = "Normal"
-    case overweight = "Overweight"
-    case obese = "Obese"
-
-    init(bmi: Double) {
-        switch bmi {
-        case ..<18.5: self = .underweight
-        case 18.5 ..< 25: self = .normal
-        case 25 ..< 30: self = .overweight
-        case 30...: self = .obese
-        default: self = .underweight
-        }
-    }
-
-    var color: Color {
-        switch self {
-        case .underweight: .blue
-        case .normal: .green
-        case .overweight: .yellow
-        case .obese: .red
-        }
     }
 }
 

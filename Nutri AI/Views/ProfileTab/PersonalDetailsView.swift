@@ -25,6 +25,10 @@ struct PersonalDetailsView: View {
         return vm
     }
 
+    private var currentUserInfo: UserInfoModel? {
+        users.first ?? viewModel.loadUserInfo()
+    }
+
     var body: some View {
         VStack(spacing: 12) {
             Text("Personal Details")
@@ -63,15 +67,13 @@ struct PersonalDetailsView: View {
         func valueText(userInfo: UserInfoModel?) -> String {
             switch self {
             case .currentWeight:
-                let value = userInfo?.weightInKg
-                return value.flatMap { $0 > 0 ? String(format: "%.1f kg", $0) : nil } ?? "Not set"
+                userInfo?.weightInKg.formattedWeight() ?? "Not set"
             case .height:
-                let value = userInfo?.heightInCm
-                return value.flatMap { $0 > 0 ? String(format: "%.0f cm", $0) : nil } ?? "Not set"
+                userInfo?.heightInCm.formattedHeight() ?? "Not set"
             case .dateOfBirth:
-                return userInfo?.dob.map { Self.dateFormatter.string(from: $0) } ?? "Not set"
+                userInfo?.dob.map { Self.dateFormatter.string(from: $0) } ?? "Not set"
             case .gender:
-                return userInfo?.gender?.rawValue.capitalized ?? "Not set"
+                userInfo?.gender?.rawValue.capitalized ?? "Not set"
             }
         }
 
@@ -129,10 +131,6 @@ struct PersonalDetailsView: View {
         .padding(.horizontal, 20)
     }
 
-    private var currentUserInfo: UserInfoModel? {
-        users.first ?? viewModel.loadUserInfo()
-    }
-
     private var personalInfoCardView: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 18)
@@ -181,9 +179,7 @@ struct PersonalDetailsView: View {
     }
 
     private var goalWeightText: String {
-        (desiredWeight ?? users.first?.desiredWeightInKg ?? viewModel.loadUserInfo()?.desiredWeightInKg)
-            .flatMap { $0 > 0 ? String(format: "%.1f kg", $0) : nil }
-            ?? "Not set"
+        currentUserInfo?.desiredWeightInKg.formattedWeight() ?? "Not set"
     }
 
     private func loadSavedData() {

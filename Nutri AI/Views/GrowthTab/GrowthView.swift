@@ -25,6 +25,10 @@ struct GrowthView: View {
         return vm
     }
 
+    private var currentUserInfo: UserInfoModel? {
+        users.first ?? viewModel.loadUserInfo()
+    }
+
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 12) {
@@ -77,9 +81,7 @@ struct GrowthView: View {
     }
 
     private var goalWeightText: String {
-        (desiredWeight ?? users.first?.desiredWeightInKg ?? viewModel.loadUserInfo()?.desiredWeightInKg)
-            .flatMap { $0 > 0 ? String(format: "%.1f kg", $0) : nil }
-            ?? "Not set"
+        currentUserInfo?.desiredWeightInKg.formattedWeight() ?? "Not set"
     }
 
     private var currentWeightView: some View {
@@ -128,9 +130,7 @@ struct GrowthView: View {
     }
 
     private var currentWeightText: String {
-        (currentWeight ?? users.first?.weightInKg ?? viewModel.loadUserInfo()?.weightInKg)
-            .flatMap { $0 > 0 ? String(format: "%.1f kg", $0) : nil }
-            ?? "Not set"
+        currentUserInfo?.weightInKg.formattedWeight() ?? "Not set"
     }
 
     private func loadSavedData() {

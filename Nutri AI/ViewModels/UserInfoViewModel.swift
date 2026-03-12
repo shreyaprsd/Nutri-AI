@@ -73,6 +73,7 @@ class UserInfoViewModel {
     func saveDateOfBirth(_ dateOfBirth: Date) {
         let userInfo = fetchOrCreateUserInfo()
         userInfo.dob = dateOfBirth
+        userInfo.age = Calendar.current.dateComponents([.year], from: dateOfBirth, to: Date()).year ?? 0
         saveAndSync(userInfo, context: "Date of Birth")
     }
 

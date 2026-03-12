@@ -49,3 +49,13 @@ extension [NutritionModel] {
         return filter { calendar.isDate($0.createdAt, inSameDayAs: date) }
     }
 }
+
+extension Double {
+    func formattedWeight(unit: String = "kg") -> String? {
+        self > 0 ? String(format: "%.1f \(unit)", self) : nil
+    }
+
+    func formattedHeight(unit: String = "cm") -> String? {
+        self > 0 ? String(format: "%.0f \(unit)", self) : nil
+    }
+}
