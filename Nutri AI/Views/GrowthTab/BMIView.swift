@@ -55,14 +55,18 @@ struct BMIView: View {
                 RoundedRectangle(cornerRadius: 12)
                     .shadow(color: Color.gray.opacity(0.2), radius: 5)
                     .foregroundStyle(Color.white)
-                    .frame(width: 320, height: 160)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 160)
+                    .padding(.horizontal, 4)
                     .overlay {
                         VStack(alignment: .leading, spacing: 8) {
                             HStack {
                                 Text("Your weight is")
                                 ZStack {
                                     RoundedRectangle(cornerRadius: 12)
-                                        .frame(width: 110, height: 30)
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height:30)
+                                        .padding(.horizontal, 4)
                                         .foregroundStyle(bmiCategoryColor)
                                         .overlay {
                                             Text(bmiCategoryText)
@@ -90,7 +94,8 @@ struct BMIView: View {
                     }
             }
         }
-        .frame(width: 320)
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 4)
     }
 }
 
@@ -130,7 +135,9 @@ struct BMIGradientBar: View {
                     .offset(x: max(0, min(markerPosition, 1)) * (proxy.size.width - 2))
             }
         }
-        .frame(width: 280, height: 10)
+        .frame(maxWidth: .infinity)
+        .frame(height: 10)
+        .padding(.horizontal, 4)
     }
 }
 

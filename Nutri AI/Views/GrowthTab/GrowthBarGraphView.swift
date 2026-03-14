@@ -36,6 +36,7 @@ struct GrowthBarGraphView: View {
                 .font(.system(size: 16, weight: .regular))
                 .foregroundStyle(Color.black)
                 .frame(width: 320, alignment: .leading)
+            
             VStack(alignment: .leading, spacing: 12) {
                 Text("Total Calories")
                     .font(.system(size: 16, weight: .regular))
@@ -95,7 +96,8 @@ struct GrowthBarGraphView: View {
                 }
             }
             .padding()
-            .frame(width: 320)
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 4)
             .background(
                 RoundedRectangle(cornerRadius: 16)
                     .fill(Color.white)

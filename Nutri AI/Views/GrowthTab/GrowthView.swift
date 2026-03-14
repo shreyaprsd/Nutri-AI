@@ -77,7 +77,8 @@ struct GrowthView: View {
             .frame(width: 64, height: 20)
             .padding(.trailing, 15)
         }
-        .frame(width: 320)
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 4)
     }
 
     private var goalWeightText: String {
@@ -88,7 +89,9 @@ struct GrowthView: View {
         ZStack {
             RoundedRectangle(cornerRadius: 12)
                 .stroke(Color.gray, lineWidth: 1)
-                .frame(width: 320, height: 136)
+                .frame(maxWidth: .infinity)
+                .frame( height: 136)
+                .padding(.horizontal, 4)
                 .foregroundStyle(Color.white)
                 .overlay {
                     VStack(alignment: .leading) {

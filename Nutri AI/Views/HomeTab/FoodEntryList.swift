@@ -23,6 +23,7 @@ struct FoodEntryList: View {
             HStack {
                 Text("Recently logged")
                     .font(.system(size: 16, weight: .semibold))
+                    .padding(.horizontal,20)
                 Spacer()
             }
 
@@ -48,7 +49,8 @@ struct FoodEntryList: View {
                 }
             }
         }
-        .frame(width: 330, alignment: .leading)
+        .frame(maxWidth: .infinity,alignment: .leading)
+        .padding(.horizontal, 4)
         .navigationDestination(item: $selectedFoodEntry) { entry in
             FoodEntryDetails(item: entry)
         }
@@ -79,7 +81,9 @@ struct FoodEntryEmptyList: View {
                     )
                 }
             }
-            .frame(width: 330, height: 120)
+            .frame(maxWidth: .infinity)
+            .frame(height:120)
+            .padding(.horizontal, 4)
             .padding(8)
     }
 }
@@ -143,7 +147,9 @@ struct FoodEntryRow: View {
                     .padding()
                 }
             }
-            .frame(width: 330, height: 120)
+            .frame(maxWidth: .infinity)
+            .frame(height:120)
+            .padding(.horizontal, 4)
             .padding(8)
     }
 }

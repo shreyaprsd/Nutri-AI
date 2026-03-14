@@ -9,7 +9,6 @@ import SwiftUI
 
 struct MainView: View {
     @StateObject var viewModel: AuthViewModel
-    @State private var showOptions = false
     @State private var showImagePicker = false
     @State private var selectedImage: UIImage?
     @State private var selectedDate = Date()
@@ -49,82 +48,21 @@ struct MainView: View {
                 }
                 .tag(2)
             }
-
-            if showOptions {
-                Color.black.opacity(0.4)
-                    .ignoresSafeArea()
-                    .onTapGesture {
-                        showOptions = false
-                    }
-            }
-
-            // Options Grid
-            if showOptions {
-                VStack {
-                    Spacer()
-                    VStack(spacing: 20) {
-                        HStack(spacing: 20) {
-                            OptionButton(
-                                icon: "dumbbell",
-                                title: "Log exercise"
-                            ) {
-                                showOptions = false
-                                // Handle log exercise
-                            }
-
-                            OptionButton(
-                                icon: "bookmark.fill",
-                                title: "Saved foods"
-                            ) {
-                                showOptions = false
-                                // Handle saved foods
-                            }
-                        }
-
-                        HStack(spacing: 20) {
-                            OptionButton(
-                                icon: "magnifyingglass",
-                                title: "Food Database"
-                            ) {
-                                showOptions = false
-                                // Handle food database
-                            }
-
-                            OptionButton(
-                                icon: "camera.viewfinder",
-                                title: "Scan food"
-                            ) {
-                                showOptions = false
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                                    showImagePicker = true
-                                }
-                            }
-                        }
-                    }
-                    .padding(30)
-                    .background(Color.clear)
-                    .transition(.move(edge: .bottom))
-                    Spacer()
-                        .frame(height: 150)
-                }
-            }
             if !floatingButtonVisibilty.isHidden {
                 VStack {
                     Spacer()
                     HStack {
                         Spacer()
                         Button(action: {
-                            withAnimation(.spring()) {
-                                showOptions.toggle()
-                            }
+                            showImagePicker = true
                         }) {
                             ZStack {
                                 Circle()
                                     .fill(Color.black)
                                     .frame(width: 50, height: 50)
 
-                                Image(systemName: "plus")
-                                    .font(.system(size: 30, weight: .medium))
+                                Image(systemName: "camera")
+                                    .font(.system(size: 20, weight: .medium))
                                     .foregroundColor(.white)
                             }
                         }
