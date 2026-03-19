@@ -63,6 +63,7 @@ class FoodRepository {
 
                 if let imageURL = remoteFood.foodImageURL {
                     try await StorageManager.shared.deleteImage(imageURL: imageURL)
+                    logger.log("Food image deleted from storage\(food.foodName)")
                 }
                 try await foodRef.delete()
             }

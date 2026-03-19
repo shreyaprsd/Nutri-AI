@@ -13,7 +13,6 @@ struct HomeView: View {
         [NutritionModel]
     @Query private var users: [UserInfoModel]
     @Binding var selectedDate: Date
-    @Binding var selectedImage: UIImage?
     var analysisVM: NutrientAnalysisViewModel
     @Environment(\.modelContext) private var modelContext
     @Environment(FloatingButtonVisibility.self) private var floatingButtonVisibility
@@ -56,7 +55,6 @@ struct HomeView: View {
                     .frame(width: 330)
                     FoodEntryList(
                         entries: filteredEntries,
-                        selectedImage: $selectedImage,
                         selectedDate: $selectedDate, analysisVM: analysisVM
                     )
                     .padding(.top, 4)

@@ -16,14 +16,13 @@ struct MainView: View {
     @State private var floatingButtonVisibilty = FloatingButtonVisibility()
     @State private var analysisVM = NutrientAnalysisViewModel()
     @State var foodViewModel: FoodEntryViewModel
-    @State private var imageID = UUID()
     @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         ZStack {
             TabView(selection: $selectedTab) {
                 HomeView(
-                    selectedDate: $selectedDate, selectedImage: $selectedImage,
+                    selectedDate: $selectedDate,
                     analysisVM: analysisVM
                 )
                 .tabItem {
@@ -76,18 +75,13 @@ struct MainView: View {
             CameraView(image: $selectedImage)
                 .ignoresSafeArea()
         }
-        .task(id: imageID) {
-            if let selectedImage {
-                await analysisVM.analyzeFood(image: selectedImage, modelContext: modelContext) {
-                    self.selectedImage = nil
-                }
-            }
-        }
-
         .onChange(of: selectedImage) { _, newValue in
-            if newValue != nil {
-                imageID = UUID()
+            if let image = newValue {
                 selectedTab = 0
+                selectedImage = nil // clear immediately
+                Task {
+                    await analysisVM.analyzeFood(image: image, modelContext: modelContext)
+                }
             }
         }
         .environment(floatingButtonVisibilty)
