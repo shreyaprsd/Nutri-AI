@@ -12,10 +12,6 @@ struct GrowthMacroEntry: Identifiable {
 struct GrowthBarGraphView: View {
     @Query(sort: \NutritionModel.createdAt, order: .reverse) private var foodEntries: [NutritionModel]
 
-    private var weekInterval: DateInterval? {
-        Calendar.current.dateInterval(of: .weekOfYear, for: Date())
-    }
-
     private let chartBuilder = GrowthChartBuilder(calendar: .current)
 
     private var chartEntries: [GrowthMacroEntry] {
@@ -36,7 +32,7 @@ struct GrowthBarGraphView: View {
                 .font(.system(size: 16, weight: .regular))
                 .foregroundStyle(Color.black)
                 .frame(width: 320, alignment: .leading)
-            
+
             VStack(alignment: .leading, spacing: 12) {
                 Text("Total Calories")
                     .font(.system(size: 16, weight: .regular))

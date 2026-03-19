@@ -62,18 +62,15 @@ struct BMIView: View {
                         VStack(alignment: .leading, spacing: 8) {
                             HStack {
                                 Text("Your weight is")
-                                ZStack {
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .frame(maxWidth: .infinity)
-                                        .frame(height:30)
-                                        .padding(.horizontal, 4)
-                                        .foregroundStyle(bmiCategoryColor)
-                                        .overlay {
-                                            Text(bmiCategoryText)
-                                                .lineLimit(1)
-                                                .minimumScaleFactor(0.8)
-                                        }
-                                }
+                                Text(bmiCategoryText)
+                                    .font(.system(size: 14, weight: .medium))
+                                    .foregroundStyle(.white)
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 4)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .fill(bmiCategoryColor)
+                                    )
                             }
                             Text(bmiText)
                                 .font(.system(size: 20, weight: .medium))

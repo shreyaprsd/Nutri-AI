@@ -13,7 +13,7 @@ import UIKit
 
 @MainActor
 @Observable
-class UserInfoViewModel {
+final class UserInfoViewModel {
     private var modelContext: ModelContext
     private var repository: UserInfoRepository
 
@@ -70,10 +70,10 @@ class UserInfoViewModel {
         saveAndSync(userInfo, context: "Height")
     }
 
-    func saveDateOfBirth(_ dateOfBirth: Date) {
+    func saveDateOfBirth(_ dateOfBirth: Date, now: Date = .now, calendar: Calendar = .current) {
         let userInfo = fetchOrCreateUserInfo()
         userInfo.dob = dateOfBirth
-        userInfo.age = Calendar.current.dateComponents([.year], from: dateOfBirth, to: Date()).year ?? 0
+        userInfo.age = calendar.dateComponents([.year], from: dateOfBirth, to: now).year ?? 0
         saveAndSync(userInfo, context: "Date of Birth")
     }
 

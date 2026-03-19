@@ -52,10 +52,10 @@ extension [NutritionModel] {
 
 extension Double {
     func formattedWeight(unit: String = "kg") -> String? {
-        self > 0 ? String(format: "%.1f \(unit)", self) : nil
+        self > 0 ? String(format: "%.1f ", self) + "" + unit : nil
     }
 
     func formattedHeight(unit: String = "cm") -> String? {
-        self > 0 ? String(format: "%.0f \(unit)", self) : nil
+        self > 0 ? String(format: "%.0f ", self) + "" + unit : nil
     }
 }

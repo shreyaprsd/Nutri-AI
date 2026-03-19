@@ -76,12 +76,11 @@ struct MainView: View {
                 .ignoresSafeArea()
         }
         .onChange(of: selectedImage) { _, newValue in
-            if let image = newValue {
-                selectedTab = 0
-                selectedImage = nil // clear immediately
-                Task {
-                    await analysisVM.analyzeFood(image: image, modelContext: modelContext)
-                }
+            guard let image = newValue else { return }
+            selectedTab = 0
+            selectedImage = nil // clear immediately
+            Task {
+                await analysisVM.analyzeFood(image: image, modelContext: modelContext)
             }
         }
         .environment(floatingButtonVisibilty)

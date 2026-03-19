@@ -26,7 +26,7 @@ struct GrowthView: View {
     }
 
     private var currentUserInfo: UserInfoModel? {
-        users.first ?? viewModel.loadUserInfo()
+        users.first
     }
 
     var body: some View {
@@ -47,6 +47,9 @@ struct GrowthView: View {
         .onAppear {
             loadSavedData()
             floatingButtonVisibility.isHidden = true
+            if users.isEmpty {
+                _ = viewModel.loadUserInfo()
+            }
         }
     }
 
@@ -90,7 +93,7 @@ struct GrowthView: View {
             RoundedRectangle(cornerRadius: 12)
                 .stroke(Color.gray, lineWidth: 1)
                 .frame(maxWidth: .infinity)
-                .frame( height: 136)
+                .frame(height: 136)
                 .padding(.horizontal, 4)
                 .foregroundStyle(Color.white)
                 .overlay {

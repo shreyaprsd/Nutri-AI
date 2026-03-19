@@ -26,7 +26,7 @@ struct PersonalDetailsView: View {
     }
 
     private var currentUserInfo: UserInfoModel? {
-        users.first ?? viewModel.loadUserInfo()
+        users.first
     }
 
     var body: some View {
@@ -45,6 +45,11 @@ struct PersonalDetailsView: View {
             floatingButtonVisibility.isHidden = true
         }
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            if users.isEmpty {
+                _ = viewModel.loadUserInfo()
+            }
+        }
     }
 
     private enum PersonalInfoRow: CaseIterable, Identifiable {

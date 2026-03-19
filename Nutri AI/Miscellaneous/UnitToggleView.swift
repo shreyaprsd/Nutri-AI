@@ -19,7 +19,7 @@ struct UnitToggleView: View {
                 .tint(Color.black)
                 .labelsHidden()
             Text("Metric")
-                .foregroundStyle(isMetric ? .secondary : .primary)
+                .foregroundStyle(isMetric ? .primary : .secondary)
                 .padding(.leading, 40)
         }
         .font(.system(size: 16, weight: .bold))

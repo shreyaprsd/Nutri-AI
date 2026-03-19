@@ -10,9 +10,16 @@ import Foundation
 struct GrowthChartBuilder {
     let calendar: Calendar
 
+    private static let dayFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEE"
+        return formatter
+    }()
+
     func makeWeeklyEntries(from foodEntries: [NutritionModel], now: Date = .now) -> [GrowthMacroEntry] {
         guard let interval = calendar.dateInterval(of: .weekOfYear, for: now) else { return [] }
 
+        let formatter = Self.dayFormatter
         let filtered = foodEntries.filter { interval.contains($0.createdAt) }
         var totalsByDay: [Date: (protein: Double, carbs: Double, fats: Double)] = [:]
 
@@ -27,12 +34,8 @@ struct GrowthChartBuilder {
             totalsByDay[day] = totals
         }
 
-        let formatter = DateFormatter()
-        formatter.locale = calendar.locale ?? .current
-        formatter.dateFormat = "EEE"
-
-        return stride(from: 0, to: 7, by: 1).flatMap { offset in
-            let day = calendar.date(byAdding: .day, value: offset, to: interval.start)!
+        return stride(from: 0, to: 7, by: 1).flatMap { offset -> [GrowthMacroEntry] in
+            guard let day = calendar.date(byAdding: .day, value: offset, to: interval.start) else { return [] }
             let dayStart = calendar.startOfDay(for: day)
             let label = formatter.string(from: dayStart)
             let totals = totalsByDay[dayStart] ?? (0, 0, 0)
