@@ -10,19 +10,13 @@ import SwiftData
 import SwiftUI
 
 struct FoodEntryList: View {
-    @Query(sort: \NutritionModel.createdAt, order: .reverse) var foodEntries:
-        [NutritionModel]
+    let entries: [NutritionModel]
     @Binding var selectedImage: UIImage?
     @Binding var selectedDate: Date
     var analysisVM: NutrientAnalysisViewModel
     @State private var selectedFoodEntry: NutritionModel?
-    @Environment(\.modelContext) private var modelContext
     @Binding var hideFloatingButton: Bool
     private let logger = Logger(subsystem: "com.shreyaprasad.NutriAI", category: "FoodEntryList")
-
-    private var filteredEntries: [NutritionModel] {
-        foodEntries.entries(for: selectedDate)
-    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -37,10 +31,10 @@ struct FoodEntryList: View {
                     LoadingFoodRow(image: image)
                 }
 
-                if filteredEntries.isEmpty, !analysisVM.isLoading {
+                if entries.isEmpty, !analysisVM.isLoading {
                     FoodEntryEmptyList()
                 } else {
-                    ForEach(filteredEntries, id: \.id) { entry in
+                    ForEach(entries, id: \.id) { entry in
                         FoodEntryRow(item: entry)
                             .onTapGesture {
                                 hideFloatingButton = true
@@ -60,7 +54,7 @@ struct FoodEntryList: View {
             }
         }
         .onChange(of: selectedDate) { _, _ in
-            if filteredEntries.isEmpty, !analysisVM.isLoading {
+            if entries.isEmpty, !analysisVM.isLoading {
                 logger.info("No food entry found")
             }
         }

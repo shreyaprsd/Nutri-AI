@@ -42,11 +42,11 @@ class FoodRepository {
         }
 
         let docRef = db.collection("users").document(userId).collection("foods").document(food.id.uuidString)
-        let document = try await docRef.getDocument()
-        var foodRemote = try document.data(as: RemoteModel.self)
-
-        foodRemote.servingMultiplier = food.servingMultiplier
-        try docRef.setData(from: foodRemote, merge: true)
+        // Update only the serving multiplier to avoid decoding failures from incomplete docs.
+        try await docRef.setData(
+            ["serving_multiplier": food.servingMultiplier],
+            merge: true
+        )
         logger.info("Food nutrients updated in firestore db")
     }
 
@@ -89,7 +89,7 @@ class FoodRepository {
             logger.info("Data saved to Firestore")
         } catch {
             logger.error("Firestore save failed, scheduling background sync")
-            BackgroundSyncManager.shared.addPendingSync(food: food, image: image)
+            FirestoreDataSyncManager.shared.addPendingSync(food: food, image: image)
         }
     }
 

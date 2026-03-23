@@ -23,11 +23,8 @@ struct MacroCardsData {
     }
 
     var targetIntake: Double {
-        guard let user = users.first,
-              let calculations = user.calculations ?? NutritionCalculation.calculateAll(userInfo: user)
-        else {
-            return 0
-        }
+        guard let user = users.first else { return 0 }
+        guard let calculations = user.calculations else { return 0 }
         return targetValue(calculations: calculations)
     }
 

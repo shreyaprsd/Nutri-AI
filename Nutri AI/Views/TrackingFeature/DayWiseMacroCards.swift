@@ -10,10 +10,16 @@ import SwiftUI
 struct DayWiseCalorieCard: View {
     let data: MacroCardsData
     let nutrientType: NutrientType
-    let ringColor: Color
-    let nutrientIcon: String
     let cardHeight: CGFloat
     let cardWidth: CGFloat
+
+    private var ringColor: Color {
+        nutrientType.ringColor
+    }
+
+    private var nutrientIcon: String {
+        nutrientType.icon
+    }
 
     var body: some View {
         VStack {

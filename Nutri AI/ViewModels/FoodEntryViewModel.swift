@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import OSLog
 import SwiftData
 import UIKit
 
@@ -13,6 +14,7 @@ import UIKit
 class FoodEntryViewModel {
     private var modelContext: ModelContext
     private var foodRepository: FoodRepository
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "Nutri AI", category: "FoodEntryViewModel")
 
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
@@ -49,10 +51,10 @@ class FoodEntryViewModel {
         guard let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else {
             return
         }
-        await BackgroundSyncManager.shared.refreshFoodsForDate(
-            dayStart: dayStart,
-            dayEnd: dayEnd,
-            modelContext: modelContext
-        )
+        do {
+            try await foodRepository.pullFoodsFromFirestore(dayStart: dayStart, dayEnd: dayEnd)
+        } catch {
+            logger.error("Refresh failed :\(error.localizedDescription)")
+        }
     }
 }

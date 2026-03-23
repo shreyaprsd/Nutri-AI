@@ -10,7 +10,10 @@ import SwiftUI
 struct WeeklyCalendarView: View {
     @Binding var selectedDate: Date
     private let calendar = Calendar.current
-    @State private var currentWeek: [Date] = []
+    private var currentWeek: [Date] {
+        Self.buildWeek(for: selectedDate)
+    }
+
     var body: some View {
         LazyVGrid(
             columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7),
@@ -31,9 +34,6 @@ struct WeeklyCalendarView: View {
             }
         }
         .frame(width: 330)
-        .onChange(of: selectedDate, initial: true) { _, newDate in
-            currentWeek = Self.buildWeek(for: newDate)
-        }
     }
 
     private static func buildWeek(for date: Date) -> [Date] {

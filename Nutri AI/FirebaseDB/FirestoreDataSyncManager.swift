@@ -12,8 +12,8 @@ import OSLog
 import SwiftData
 import UIKit
 
-class BackgroundSyncManager {
-    static let shared = BackgroundSyncManager()
+class FirestoreDataSyncManager {
+    static let shared = FirestoreDataSyncManager()
     static let taskIdentifier = "com.shreyaprasad.NutriAI.firestoresync"
     private let queue = DispatchQueue(label: "com.shreyaprasad.NutriAI.syncQueue")
     private var pendingSyncItems: [(food: NutritionModel, image: UIImage?)] = []
@@ -112,15 +112,5 @@ class BackgroundSyncManager {
         }
 
         return successIndices.count > 0 || pendingSyncItems.isEmpty
-    }
-
-    func refreshFoodsForDate(dayStart: Date, dayEnd: Date, modelContext: ModelContext) async {
-        let repository = FoodRepository(modelContext: modelContext)
-        do {
-            try await repository.pullFoodsFromFirestore(dayStart: dayStart, dayEnd: dayEnd)
-            logger.info("Background refresh completed")
-        } catch {
-            logger.error("Background refresh failed: \(error.localizedDescription)")
-        }
     }
 }
