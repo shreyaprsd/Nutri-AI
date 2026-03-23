@@ -88,26 +88,27 @@ class UserInfoViewModel {
         saveAndSync(userInfo, context: "Desired Weight")
     }
 
+    private func syncDerivedGoal(for userInfo: UserInfoModel) {
+        guard userInfo.weightInKg > 0, userInfo.desiredWeightInKg > 0 else { return }
+
+        switch userInfo.desiredWeightInKg {
+        case let desired where desired > userInfo.weightInKg: userInfo.desiredGoal = .weightGain
+        case let desired where desired < userInfo.weightInKg: userInfo.desiredGoal = .weightLoss
+        default: userInfo.desiredGoal = .maintain
+        }
+    }
+
     func saveDesiredWeightAndGoal(_ desiredWeight: Double) {
         let userInfo = fetchOrCreateUserInfo()
         userInfo.desiredWeightInKg = desiredWeight
-
-        if userInfo.weightInKg > 0 {
-            if desiredWeight > userInfo.weightInKg {
-                userInfo.desiredGoal = .weightGain
-            } else if desiredWeight < userInfo.weightInKg {
-                userInfo.desiredGoal = .weightLoss
-            } else {
-                userInfo.desiredGoal = .maintain
-            }
-        }
-
+        syncDerivedGoal(for: userInfo)
         saveAndSync(userInfo, context: "Desired Weight + Goal")
     }
 
     func saveCurrentWeight(_ weight: Double) {
         let userInfo = fetchOrCreateUserInfo()
         userInfo.weightInKg = weight
+        syncDerivedGoal(for: userInfo)
         saveAndSync(userInfo, context: "Current Weight")
     }
 

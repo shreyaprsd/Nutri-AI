@@ -14,7 +14,7 @@ struct GrowthView: View {
     @State private var userInfoViewModel: UserInfoViewModel?
     @State private var desiredWeight: Double?
     @State private var currentWeight: Double?
-    @Binding var hideFloatingButton: Bool
+    @Environment(FloatingButtonVisibility.self) private var floatingButtonVisibility
     @Environment(\.modelContext) private var modelContext
     private var viewModel: UserInfoViewModel {
         if let existing = userInfoViewModel {
@@ -42,6 +42,7 @@ struct GrowthView: View {
         .navigationTitle(Text("Progress"))
         .onAppear {
             loadSavedData()
+            floatingButtonVisibility.isHidden = true
         }
     }
 
@@ -61,7 +62,7 @@ struct GrowthView: View {
                 .font(.system(size: 14, weight: .regular))
             Spacer()
             NavigationLink {
-                UpdateWeightView(hideFloatingButton: $hideFloatingButton, mode: .goalWeight)
+                UpdateWeightView(mode: .goalWeight)
             } label: {
                 Text("Update")
                     .frame(width: 64, height: 20)
@@ -111,7 +112,7 @@ struct GrowthView: View {
                         .fixedSize(horizontal: false, vertical: true)
                         Spacer()
                         NavigationLink {
-                            UpdateWeightView(hideFloatingButton: $hideFloatingButton, mode: .currentWeight)
+                            UpdateWeightView(mode: .currentWeight)
                         } label: {
                             Text("Update your weight")
                                 .frame(maxWidth: 320)
@@ -146,6 +147,6 @@ struct GrowthView: View {
 
 #Preview {
     NavigationStack {
-        GrowthView(hideFloatingButton: .constant(false))
+        GrowthView()
     }
 }

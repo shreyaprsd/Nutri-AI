@@ -5,8 +5,8 @@ struct UpdateGenderView: View {
     @State private var selectedGender: Gender?
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    @Binding var hideFloatingButton: Bool
     @State private var userInfoViewModel: UserInfoViewModel?
+    @Environment(FloatingButtonVisibility.self) private var floatingButtonVisibility
 
     private var viewModel: UserInfoViewModel {
         if let existing = userInfoViewModel {
@@ -44,11 +44,11 @@ struct UpdateGenderView: View {
         }
         .navigationTitle("Gender")
         .onAppear {
-            hideFloatingButton = true
+            floatingButtonVisibility.isHidden = true
             loadSavedData()
         }
         .onDisappear {
-            hideFloatingButton = false
+            floatingButtonVisibility.isHidden = false
         }
     }
 
@@ -67,6 +67,6 @@ struct UpdateGenderView: View {
 }
 
 #Preview {
-    UpdateGenderView(hideFloatingButton: .constant(false))
+    UpdateGenderView()
         .modelContainer(for: UserInfoModel.self, inMemory: true)
 }

@@ -13,8 +13,8 @@ struct PersonalDetailsView: View {
     @State private var userInfoViewModel: UserInfoViewModel?
     @State private var desiredWeight: Double?
     @State private var currentWeight: Double?
-    @Binding var hideFloatingButton: Bool
     @Environment(\.modelContext) private var modelContext
+    @Environment(FloatingButtonVisibility.self) private var floatingButtonVisibility
 
     private var viewModel: UserInfoViewModel {
         if let existing = userInfoViewModel {
@@ -36,6 +36,9 @@ struct PersonalDetailsView: View {
             goalWeightView
 
             personalInfoCardView
+        }
+        .onAppear {
+            floatingButtonVisibility.isHidden = true
         }
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -73,16 +76,16 @@ struct PersonalDetailsView: View {
         }
 
         @ViewBuilder
-        func destination(hideFloatingButton: Binding<Bool>) -> some View {
+        func destination() -> some View {
             switch self {
             case .currentWeight:
-                UpdateWeightView(hideFloatingButton: hideFloatingButton, mode: .currentWeight)
+                UpdateWeightView(mode: .currentWeight)
             case .height:
-                UpdateHeightView(hideFloatingButton: hideFloatingButton)
+                UpdateHeightView()
             case .dateOfBirth:
-                UpdateDateOfBirthView(hideFloatingButton: hideFloatingButton)
+                UpdateDateOfBirthView()
             case .gender:
-                UpdateGenderView(hideFloatingButton: hideFloatingButton)
+                UpdateGenderView()
             }
         }
 
@@ -108,7 +111,7 @@ struct PersonalDetailsView: View {
                 }
                 Spacer()
                 NavigationLink {
-                    UpdateWeightView(hideFloatingButton: $hideFloatingButton, mode: .goalWeight)
+                    UpdateWeightView(mode: .goalWeight)
                 } label: {
                     Text("Change Goal")
                         .font(.system(size: 13, weight: .semibold))
@@ -153,7 +156,7 @@ struct PersonalDetailsView: View {
 
     private func personalInfoRowView(_ row: PersonalInfoRow) -> some View {
         NavigationLink {
-            row.destination(hideFloatingButton: $hideFloatingButton)
+            row.destination()
         } label: {
             personalInfoRowContent(row)
         }
@@ -197,6 +200,6 @@ struct PersonalDetailsView: View {
 
 #Preview {
     NavigationStack {
-        PersonalDetailsView(hideFloatingButton: .constant(false))
+        PersonalDetailsView()
     }
 }

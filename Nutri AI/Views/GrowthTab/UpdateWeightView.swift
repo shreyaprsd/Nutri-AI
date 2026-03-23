@@ -16,16 +16,11 @@ struct UpdateWeightView: View {
 
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    @Binding var hideFloatingButton: Bool
     let mode: Mode
     @State private var isMetric = true
     @State private var weight: Double = 54.0
     @State private var userInfoViewModel: UserInfoViewModel?
-
-    init(hideFloatingButton: Binding<Bool>, mode: Mode = .goalWeight) {
-        _hideFloatingButton = hideFloatingButton
-        self.mode = mode
-    }
+    @Environment(FloatingButtonVisibility.self) private var floatingButtonVisibility
 
     private var viewModel: UserInfoViewModel {
         if let existing = userInfoViewModel {
@@ -69,11 +64,11 @@ struct UpdateWeightView: View {
         }
         .navigationTitle(Text(navigationTitle))
         .onAppear {
-            hideFloatingButton = true
+            floatingButtonVisibility.isHidden = true
             loadSavedData()
         }
         .onDisappear {
-            hideFloatingButton = false
+            floatingButtonVisibility.isHidden = false
         }
     }
 
@@ -102,8 +97,11 @@ struct UpdateWeightView: View {
                 return roundedToSingleDecimal(value)
             },
             set: { newValue in
-                let roundedValue = roundedToSingleDecimal(newValue)
-                weight = isMetric ? roundedValue : (roundedValue / 2.20462)
+                let minValue = isMetric ? 30.0 : 66.0
+                let maxValue = isMetric ? 200.0 : 440.0
+                let bounded = min(max(newValue, minValue), maxValue)
+                let rounded = roundedToSingleDecimal(bounded)
+                weight = isMetric ? rounded : (rounded / 2.20462)
             }
         )
     }
@@ -148,6 +146,6 @@ struct UpdateWeightView: View {
 }
 
 #Preview {
-    UpdateWeightView(hideFloatingButton: .constant(false))
+    UpdateWeightView(mode: .currentWeight)
         .modelContainer(for: UserInfoModel.self, inMemory: true)
 }

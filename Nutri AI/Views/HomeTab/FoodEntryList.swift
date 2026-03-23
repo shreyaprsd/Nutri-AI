@@ -15,7 +15,7 @@ struct FoodEntryList: View {
     @Binding var selectedDate: Date
     var analysisVM: NutrientAnalysisViewModel
     @State private var selectedFoodEntry: NutritionModel?
-    @Binding var hideFloatingButton: Bool
+    @Environment(FloatingButtonVisibility.self) private var floatingButtonVisibility
     private let logger = Logger(subsystem: "com.shreyaprasad.NutriAI", category: "FoodEntryList")
 
     var body: some View {
@@ -41,7 +41,7 @@ struct FoodEntryList: View {
                     ForEach(entries, id: \.id) { entry in
                         FoodEntryRow(item: entry)
                             .onTapGesture {
-                                hideFloatingButton = true
+                                floatingButtonVisibility.isHidden = true
                                 selectedFoodEntry = entry
                             }
                     }
@@ -50,11 +50,11 @@ struct FoodEntryList: View {
         }
         .frame(width: 330, alignment: .leading)
         .navigationDestination(item: $selectedFoodEntry) { entry in
-            FoodEntryDetails(item: entry, hideFloatingButton: $hideFloatingButton)
+            FoodEntryDetails(item: entry)
         }
         .onChange(of: selectedFoodEntry) { _, newValue in
             if newValue == nil {
-                hideFloatingButton = false
+                floatingButtonVisibility.isHidden = false
             }
         }
         .onChange(of: selectedDate) { _, _ in

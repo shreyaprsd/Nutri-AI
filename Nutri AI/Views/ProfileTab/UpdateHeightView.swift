@@ -4,10 +4,10 @@ import SwiftUI
 struct UpdateHeightView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    @Binding var hideFloatingButton: Bool
     @State private var isMetric = true
     @State private var heightInCm: Double = 168
     @State private var userInfoViewModel: UserInfoViewModel?
+    @Environment(FloatingButtonVisibility.self) private var floatingButtonVisibility
 
     private var viewModel: UserInfoViewModel {
         if let existing = userInfoViewModel {
@@ -45,11 +45,11 @@ struct UpdateHeightView: View {
         }
         .navigationTitle("Height")
         .onAppear {
-            hideFloatingButton = true
+            floatingButtonVisibility.isHidden = true
             loadSavedData()
         }
         .onDisappear {
-            hideFloatingButton = false
+            floatingButtonVisibility.isHidden = false
         }
     }
 
@@ -85,6 +85,6 @@ struct UpdateHeightView: View {
 }
 
 #Preview {
-    UpdateHeightView(hideFloatingButton: .constant(false))
+    UpdateHeightView()
         .modelContainer(for: UserInfoModel.self, inMemory: true)
 }

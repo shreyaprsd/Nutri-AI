@@ -5,10 +5,11 @@ struct UpdateDateOfBirthView: View {
     @State private var selectedMonth = 7
     @State private var selectedDay = 23
     @State private var selectedYear = 2003
+    @State private var validationMessage: String?
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    @Binding var hideFloatingButton: Bool
     @State private var userInfoViewModel: UserInfoViewModel?
+    @Environment(FloatingButtonVisibility.self) private var floatingButtonVisibility
 
     private var viewModel: UserInfoViewModel {
         if let existing = userInfoViewModel {
@@ -32,8 +33,7 @@ struct UpdateDateOfBirthView: View {
             Spacer()
 
             Button {
-                saveData()
-                dismiss()
+                validateAndSave()
             } label: {
                 Text("Save")
                     .font(.system(size: 14, weight: .medium))
@@ -44,47 +44,55 @@ struct UpdateDateOfBirthView: View {
                             .fill(Color.black)
                     )
             }
+            .alert("Invalid date of birth", isPresented: .constant(validationMessage != nil)) {
+                Button("OK", role: .cancel) { validationMessage = nil }
+            } message: {
+                Text(validationMessage ?? "")
+            }
             .padding(.bottom, 16)
         }
         .navigationTitle("Date of Birth")
         .onAppear {
-            hideFloatingButton = true
+            floatingButtonVisibility.isHidden = true
             loadSavedData()
         }
         .onDisappear {
-            hideFloatingButton = false
+            floatingButtonVisibility.isHidden = false
         }
     }
 
-    private func calculateAge() -> Int {
+    private var birthDate: Date? {
         let calendar = Calendar.current
-        let today = Date()
-
         var dateComponents = DateComponents()
         dateComponents.year = selectedYear
         dateComponents.month = selectedMonth
         dateComponents.day = selectedDay
+        return calendar.date(from: dateComponents)
+    }
 
-        guard let birthDate = calendar.date(from: dateComponents) else {
-            return 0
-        }
-
+    private func calculateAge(from birthDate: Date) -> Int {
+        let calendar = Calendar.current
+        let today = Date()
         let ageComponents = calendar.dateComponents([.year], from: birthDate, to: today)
         return ageComponents.year ?? 0
     }
 
-    private func saveData() {
-        let calender = Calendar.current
-        var dateComponents = DateComponents()
-        dateComponents.year = selectedYear
-        dateComponents.month = selectedMonth
-        dateComponents.day = selectedDay
-
-        if let birthDate = calender.date(from: dateComponents) {
-            viewModel.saveDateOfBirth(birthDate)
-            viewModel.saveAge(calculateAge())
-            viewModel.calculateAndSaveNutrition()
+    private func validateAndSave() {
+        guard let birthDate else {
+            validationMessage = "Please select a valid date."
+            return
         }
+
+        let age = calculateAge(from: birthDate)
+        guard age >= 13 else {
+            validationMessage = "You must be at least 13 years old to use Nutri AI."
+            return
+        }
+
+        viewModel.saveDateOfBirth(birthDate)
+        viewModel.saveAge(age)
+        viewModel.calculateAndSaveNutrition()
+        dismiss()
     }
 
     private func loadSavedData() {
@@ -107,6 +115,6 @@ struct UpdateDateOfBirthView: View {
 }
 
 #Preview {
-    UpdateDateOfBirthView(hideFloatingButton: .constant(false))
+    UpdateDateOfBirthView()
         .modelContainer(for: UserInfoModel.self, inMemory: true)
 }

@@ -12,16 +12,16 @@ import SwiftUI
 struct ProfileView: View {
     @ObservedObject var auth: AuthViewModel
     @State var foodViewModel: FoodEntryViewModel
-    @Binding var hideFloatingButton: Bool
     @State private var showLogoutAlert: Bool = false
     @State private var showDeleteAlert: Bool = false
     @Environment(\.modelContext) private var modelContext
+    @Environment(FloatingButtonVisibility.self) private var floatingButtonVisibility
 
     var body: some View {
         List {
             Section("Account") {
                 NavigationLink {
-                    PersonalDetailsView(hideFloatingButton: $hideFloatingButton)
+                    PersonalDetailsView()
                 } label: {
                     HStack {
                         Image(systemName: "person.text.rectangle")
@@ -74,6 +74,9 @@ struct ProfileView: View {
             }
         } message: {
             Text("Are you sure you want to permanently delete your account? This action cannot be undone.")
+        }
+        .onAppear {
+            floatingButtonVisibility.isHidden = true
         }
     }
 }
