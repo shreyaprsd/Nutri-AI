@@ -289,6 +289,32 @@ final class UserInfoViewModel {
         return try? modelContext.fetch(descriptor).first
     }
 
+    func clearLocalUserInfo() {
+        let descriptor = FetchDescriptor<UserInfoModel>()
+        if let existing = try? modelContext.fetch(descriptor).first {
+            modelContext.delete(existing)
+            try? modelContext.save()
+            logger.info("Cleared stale local UserInfo from previous user")
+        }
+    }
+
+    func restoreFromFirestore() async -> Bool {
+        do {
+            guard let remoteModel = try await repository.fetchUserInfoFromFirestore(),
+                  remoteModel.calculations != nil else {
+                return false
+            }
+            let localModel = fetchOrCreateUserInfo()
+            remoteModel.toUserInfoModel(localModel)
+            try modelContext.save()
+            logger.info("Successfully restored user data from Firestore")
+            return true
+        } catch {
+            logger.error("Firestore restore failed: \(error.localizedDescription)")
+            return false
+        }
+    }
+
     func uploadLocalData() async {
         guard let userInfo = loadUserInfo() else {
             logger.error("No local data found to upload")
