@@ -36,7 +36,7 @@ struct UpdateWeightView: View {
         VStack(spacing: 8) {
             Spacer()
 
-            unitToggle
+            UnitToggleView(isMetric: $isMetric)
 
             WeightSelectorView(
                 weight: displayWeightBinding,
@@ -70,24 +70,6 @@ struct UpdateWeightView: View {
         .onDisappear {
             floatingButtonVisibility.isHidden = false
         }
-    }
-
-    private var unitToggle: some View {
-        HStack {
-            Text("Imperial")
-                .foregroundStyle(isMetric ? .secondary : .primary)
-                .padding(.trailing, 40)
-
-            Toggle("", isOn: $isMetric)
-                .tint(Color.black)
-                .labelsHidden()
-
-            Text("Metric")
-                .foregroundStyle(isMetric ? .secondary : .primary)
-                .padding(.leading, 40)
-        }
-        .font(.system(size: 16, weight: .bold))
-        .frame(maxWidth: .infinity)
     }
 
     private var displayWeightBinding: Binding<Double> {

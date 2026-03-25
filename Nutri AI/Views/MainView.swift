@@ -9,7 +9,6 @@ import SwiftUI
 
 struct MainView: View {
     @StateObject var viewModel: AuthViewModel
-    @State private var showOptions = false
     @State private var showImagePicker = false
     @State private var selectedImage: UIImage?
     @State private var selectedDate = Date()
@@ -17,14 +16,13 @@ struct MainView: View {
     @State private var floatingButtonVisibilty = FloatingButtonVisibility()
     @State private var analysisVM = NutrientAnalysisViewModel()
     @State var foodViewModel: FoodEntryViewModel
-    @State private var imageID = UUID()
     @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         ZStack {
             TabView(selection: $selectedTab) {
                 HomeView(
-                    selectedDate: $selectedDate, selectedImage: $selectedImage,
+                    selectedDate: $selectedDate,
                     analysisVM: analysisVM
                 )
                 .tabItem {
@@ -49,82 +47,21 @@ struct MainView: View {
                 }
                 .tag(2)
             }
-
-            if showOptions {
-                Color.black.opacity(0.4)
-                    .ignoresSafeArea()
-                    .onTapGesture {
-                        showOptions = false
-                    }
-            }
-
-            // Options Grid
-            if showOptions {
-                VStack {
-                    Spacer()
-                    VStack(spacing: 20) {
-                        HStack(spacing: 20) {
-                            OptionButton(
-                                icon: "dumbbell",
-                                title: "Log exercise"
-                            ) {
-                                showOptions = false
-                                // Handle log exercise
-                            }
-
-                            OptionButton(
-                                icon: "bookmark.fill",
-                                title: "Saved foods"
-                            ) {
-                                showOptions = false
-                                // Handle saved foods
-                            }
-                        }
-
-                        HStack(spacing: 20) {
-                            OptionButton(
-                                icon: "magnifyingglass",
-                                title: "Food Database"
-                            ) {
-                                showOptions = false
-                                // Handle food database
-                            }
-
-                            OptionButton(
-                                icon: "camera.viewfinder",
-                                title: "Scan food"
-                            ) {
-                                showOptions = false
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                                    showImagePicker = true
-                                }
-                            }
-                        }
-                    }
-                    .padding(30)
-                    .background(Color.clear)
-                    .transition(.move(edge: .bottom))
-                    Spacer()
-                        .frame(height: 150)
-                }
-            }
             if !floatingButtonVisibilty.isHidden {
                 VStack {
                     Spacer()
                     HStack {
                         Spacer()
                         Button(action: {
-                            withAnimation(.spring()) {
-                                showOptions.toggle()
-                            }
+                            showImagePicker = true
                         }) {
                             ZStack {
                                 Circle()
                                     .fill(Color.black)
                                     .frame(width: 50, height: 50)
 
-                                Image(systemName: "plus")
-                                    .font(.system(size: 30, weight: .medium))
+                                Image(systemName: "camera")
+                                    .font(.system(size: 20, weight: .medium))
                                     .foregroundColor(.white)
                             }
                         }
@@ -138,18 +75,12 @@ struct MainView: View {
             CameraView(image: $selectedImage)
                 .ignoresSafeArea()
         }
-        .task(id: imageID) {
-            if let selectedImage {
-                await analysisVM.analyzeFood(image: selectedImage, modelContext: modelContext) {
-                    self.selectedImage = nil
-                }
-            }
-        }
-
         .onChange(of: selectedImage) { _, newValue in
-            if newValue != nil {
-                imageID = UUID()
-                selectedTab = 0
+            guard let image = newValue else { return }
+            selectedTab = 0
+            selectedImage = nil // clear immediately
+            Task {
+                await analysisVM.analyzeFood(image: image, modelContext: modelContext)
             }
         }
         .environment(floatingButtonVisibilty)

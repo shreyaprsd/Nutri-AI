@@ -22,7 +22,7 @@ struct UpdateHeightView: View {
         VStack(spacing: 8) {
             Spacer()
 
-            unitToggle
+            UnitToggleView(isMetric: $isMetric)
 
             HeightPickerView(heightInCm: $heightInCm, isMetric: $isMetric)
 
@@ -53,34 +53,16 @@ struct UpdateHeightView: View {
         }
     }
 
-    private var unitToggle: some View {
-        HStack {
-            Text("Imperial")
-                .foregroundStyle(isMetric ? .secondary : .primary)
-                .padding(.trailing, 40)
-
-            Toggle("", isOn: $isMetric)
-                .tint(Color.black)
-                .labelsHidden()
-
-            Text("Metric")
-                .foregroundStyle(isMetric ? .secondary : .primary)
-                .padding(.leading, 40)
-        }
-        .font(.system(size: 16, weight: .bold))
-        .frame(maxWidth: .infinity)
-    }
-
-    private func saveData() {
-        viewModel.saveHeight(height: heightInCm)
-        viewModel.calculateAndSaveNutrition()
-    }
-
     private func loadSavedData() {
         guard let userInfo = viewModel.loadUserInfo() else { return }
         if userInfo.heightInCm > 0 {
             heightInCm = userInfo.heightInCm
         }
+    }
+
+    private func saveData() {
+        viewModel.saveHeight(height: heightInCm)
+        viewModel.calculateAndSaveNutrition()
     }
 }
 

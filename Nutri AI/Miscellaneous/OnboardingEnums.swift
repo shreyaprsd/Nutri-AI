@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 // gender enums
 enum Gender: String, CaseIterable, Codable {
@@ -55,4 +56,21 @@ enum Goal: String, CaseIterable, Codable {
 
 enum UserDefaultsKey {
     static let hasStartedOnboarding = "hasStartedOnboarding"
+}
+
+enum MacroType: String, CaseIterable {
+    case protein = "Protein"
+    case carbs = "Carbs"
+    case fats = "Fats"
+
+    var color: Color {
+        switch self {
+        case .protein:
+            Color(red: 0.88, green: 0.38, blue: 0.38)
+        case .carbs:
+            Color(red: 0.90, green: 0.68, blue: 0.45)
+        case .fats:
+            Color(red: 0.45, green: 0.59, blue: 0.86)
+        }
+    }
 }

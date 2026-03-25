@@ -4,6 +4,7 @@
 //  Created by Shreya Prasad on 05/11/25.
 //
 
+import FirebaseAuth
 import SwiftData
 import SwiftUI
 
@@ -41,7 +42,7 @@ struct ContentView: View {
                     ProgressView("Loading...")
                         .progressViewStyle(CircularProgressViewStyle())
                         .onAppear {
-                            checkOnboardingStatus()
+                            Task { await checkOnboardingStatus() }
                         }
                 } else if hasCompletedOnboarding {
                     MainView(viewModel: authViewModel, foodViewModel: foodEntryViewModel)
@@ -64,12 +65,14 @@ struct ContentView: View {
                     isCheckingOnboardingStatus = false
                 } else {
                     isCheckingOnboardingStatus = true
-                    checkOnboardingStatus()
+                    Task { await checkOnboardingStatus() }
                 }
             } else if newValue == .unauthenticated {
                 isCheckingOnboardingStatus = true
                 hasCompletedOnboarding = false
                 justFinishedOnboarding = false
+                onboardingState.isCompleted = false
+                viewModel.clearLocalUserInfo()
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .onboardingCompleted)) { _ in
@@ -77,15 +80,39 @@ struct ContentView: View {
             hasCompletedOnboarding = true
             isCheckingOnboardingStatus = false
         }
+        .onChange(of: onboardingState.isCompleted) { _, isCompleted in
+            if isCompleted {
+                hasCompletedOnboarding = true
+                isCheckingOnboardingStatus = false
+            }
+        }
     }
 
-    private func checkOnboardingStatus() {
+    private func checkOnboardingStatus() async {
+        // If onboarding was already marked complete (e.g., via "Finish Setup" or notification), skip
+        guard !hasCompletedOnboarding else {
+            isCheckingOnboardingStatus = false
+            return
+        }
+
+        // Detect user switch: if a different user signed in, clear stale local data
+        let currentUserId = Auth.auth().currentUser?.uid
+        let lastUserId = UserDefaults.standard.string(forKey: "lastSignedInUserId")
+
+        if let lastUserId, lastUserId != currentUserId {
+            viewModel.clearLocalUserInfo()
+        }
+        UserDefaults.standard.set(currentUserId, forKey: "lastSignedInUserId")
+
         let userInfo = viewModel.loadUserInfo()
 
         if let userInfo, userInfo.calculations != nil {
+            // Fast path: local data exists (normal app launch, same user)
             hasCompletedOnboarding = true
         } else {
-            hasCompletedOnboarding = false
+            // Slow path: try restoring from Firestore (reinstall scenario)
+            let restored = await viewModel.restoreFromFirestore()
+            hasCompletedOnboarding = restored
         }
         isCheckingOnboardingStatus = false
     }

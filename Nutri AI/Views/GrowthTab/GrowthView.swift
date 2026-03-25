@@ -25,6 +25,10 @@ struct GrowthView: View {
         return vm
     }
 
+    private var currentUserInfo: UserInfoModel? {
+        users.first
+    }
+
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 12) {
@@ -43,6 +47,9 @@ struct GrowthView: View {
         .onAppear {
             loadSavedData()
             floatingButtonVisibility.isHidden = true
+            if users.isEmpty {
+                _ = viewModel.loadUserInfo()
+            }
         }
     }
 
@@ -73,20 +80,21 @@ struct GrowthView: View {
             .frame(width: 64, height: 20)
             .padding(.trailing, 15)
         }
-        .frame(width: 320)
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 4)
     }
 
     private var goalWeightText: String {
-        (desiredWeight ?? users.first?.desiredWeightInKg ?? viewModel.loadUserInfo()?.desiredWeightInKg)
-            .flatMap { $0 > 0 ? String(format: "%.1f kg", $0) : nil }
-            ?? "Not set"
+        currentUserInfo?.desiredWeightInKg.formattedWeight() ?? "Not set"
     }
 
     private var currentWeightView: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 12)
                 .stroke(Color.gray, lineWidth: 1)
-                .frame(width: 320, height: 136)
+                .frame(maxWidth: .infinity)
+                .frame(height: 136)
+                .padding(.horizontal, 4)
                 .foregroundStyle(Color.white)
                 .overlay {
                     VStack(alignment: .leading) {
@@ -128,9 +136,7 @@ struct GrowthView: View {
     }
 
     private var currentWeightText: String {
-        (currentWeight ?? users.first?.weightInKg ?? viewModel.loadUserInfo()?.weightInKg)
-            .flatMap { $0 > 0 ? String(format: "%.1f kg", $0) : nil }
-            ?? "Not set"
+        currentUserInfo?.weightInKg.formattedWeight() ?? "Not set"
     }
 
     private func loadSavedData() {
