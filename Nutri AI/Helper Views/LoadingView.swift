@@ -55,7 +55,9 @@ struct LoadingFoodRow: View {
                     .padding()
                 }
             }
-            .frame(width: 330, height: 120)
+            .frame(maxWidth: .infinity)
+            .frame(height:120)
+            .padding(.horizontal,4)
             .padding(8)
     }
 }

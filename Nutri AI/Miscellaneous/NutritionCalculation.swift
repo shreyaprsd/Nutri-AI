@@ -20,8 +20,8 @@ class NutritionCalculation {
         case weightGain = 1.8
     }
 
-    static func calculateBMI(weightInkg: Double, heightInCm: Double) -> Double {
-        (weightInkg / pow(heightInCm / 100, 2)).rounded(toPlaces: 2)
+    static func calculateBMI(weightInKg: Double, heightInCm: Double) -> Double {
+        (weightInKg / pow(heightInCm / 100, 2)).rounded(toPlaces: 2)
     }
 
     static func calculateBMR(gender: Gender, weightInKg: Double, heightInCm: Double, age: Int) -> Int {

@@ -9,69 +9,13 @@ struct GrowthMacroEntry: Identifiable {
     let calories: Double
 }
 
-enum MacroType: String, CaseIterable {
-    case protein = "Protein"
-    case carbs = "Carbs"
-    case fats = "Fats"
-
-    var color: Color {
-        switch self {
-        case .protein:
-            Color(red: 0.88, green: 0.38, blue: 0.38)
-        case .carbs:
-            Color(red: 0.90, green: 0.68, blue: 0.45)
-        case .fats:
-            Color(red: 0.45, green: 0.59, blue: 0.86)
-        }
-    }
-}
-
 struct GrowthBarGraphView: View {
     @Query(sort: \NutritionModel.createdAt, order: .reverse) private var foodEntries: [NutritionModel]
 
-    private var weekInterval: DateInterval? {
-        Calendar.current.dateInterval(of: .weekOfYear, for: Date())
-    }
+    private let chartBuilder = GrowthChartBuilder(calendar: .current)
 
     private var chartEntries: [GrowthMacroEntry] {
-        guard let interval = weekInterval else {
-            return []
-        }
-        let calendar = Calendar.current
-        let filtered = foodEntries.filter { $0.createdAt >= interval.start && $0.createdAt < interval.end }
-        var totalsByDay: [Date: (protein: Double, carbs: Double, fats: Double)] = [:]
-
-        for entry in filtered {
-            let dayStart = calendar.startOfDay(for: entry.createdAt)
-            let multiplier = entry.servingMultiplier
-            let proteinCalories = entry.nutrients.protein.total * multiplier * 4
-            let carbCalories = entry.nutrients.carbs.total * multiplier * 4
-            let fatCalories = entry.nutrients.fats.total * multiplier * 9
-            var totals = totalsByDay[dayStart] ?? (0, 0, 0)
-            totals.protein += proteinCalories
-            totals.carbs += carbCalories
-            totals.fats += fatCalories
-            totalsByDay[dayStart] = totals
-        }
-
-        var entries: [GrowthMacroEntry] = []
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEE"
-
-        var day = interval.start
-        for _ in 0 ..< 7 {
-            let dayStart = calendar.startOfDay(for: day)
-            let label = formatter.string(from: dayStart)
-            let totals = totalsByDay[dayStart] ?? (0, 0, 0)
-
-            entries.append(GrowthMacroEntry(day: label, macro: .protein, calories: totals.protein))
-            entries.append(GrowthMacroEntry(day: label, macro: .carbs, calories: totals.carbs))
-            entries.append(GrowthMacroEntry(day: label, macro: .fats, calories: totals.fats))
-
-            day = calendar.date(byAdding: .day, value: 1, to: dayStart) ?? dayStart
-        }
-
-        return entries
+        chartBuilder.makeWeeklyEntries(from: foodEntries)
     }
 
     private var totalCaloriesText: String {
@@ -88,6 +32,7 @@ struct GrowthBarGraphView: View {
                 .font(.system(size: 16, weight: .regular))
                 .foregroundStyle(Color.black)
                 .frame(width: 320, alignment: .leading)
+
             VStack(alignment: .leading, spacing: 12) {
                 Text("Total Calories")
                     .font(.system(size: 16, weight: .regular))
@@ -147,7 +92,8 @@ struct GrowthBarGraphView: View {
                 }
             }
             .padding()
-            .frame(width: 320)
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 4)
             .background(
                 RoundedRectangle(cornerRadius: 16)
                     .fill(Color.white)

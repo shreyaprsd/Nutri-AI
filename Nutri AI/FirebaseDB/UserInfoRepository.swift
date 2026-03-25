@@ -29,6 +29,17 @@ class UserInfoRepository {
         logger.info("UserInfo saved to Firestore")
     }
 
+    func fetchUserInfoFromFirestore() async throws -> UserInfoRemoteModel? {
+        guard let userId = Auth.auth().currentUser?.uid else {
+            throw UserInfoError.userNotAuthenticated
+        }
+
+        let docRef = db.collection("users").document(userId).collection("userInfo").document("profile")
+        let document = try await docRef.getDocument()
+        guard document.exists else { return nil }
+        return try document.data(as: UserInfoRemoteModel.self)
+    }
+
     func deleteUserInfoFromFirestore() async throws {
         guard let userId = Auth.auth().currentUser?.uid else {
             throw UserInfoError.userNotAuthenticated

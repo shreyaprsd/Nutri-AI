@@ -17,7 +17,7 @@ struct BMIView: View {
         let height = userInfo?.heightInCm ?? 0
 
         guard weight > 0, height > 0 else { return nil }
-        return NutritionCalculation.calculateBMI(weightInkg: weight, heightInCm: height)
+        return NutritionCalculation.calculateBMI(weightInKg: weight, heightInCm: height)
     }
 
     private var bmiText: String {
@@ -55,21 +55,22 @@ struct BMIView: View {
                 RoundedRectangle(cornerRadius: 12)
                     .shadow(color: Color.gray.opacity(0.2), radius: 5)
                     .foregroundStyle(Color.white)
-                    .frame(width: 320, height: 160)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 160)
+                    .padding(.horizontal, 4)
                     .overlay {
                         VStack(alignment: .leading, spacing: 8) {
                             HStack {
                                 Text("Your weight is")
-                                ZStack {
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .frame(width: 110, height: 30)
-                                        .foregroundStyle(bmiCategoryColor)
-                                        .overlay {
-                                            Text(bmiCategoryText)
-                                                .lineLimit(1)
-                                                .minimumScaleFactor(0.8)
-                                        }
-                                }
+                                Text(bmiCategoryText)
+                                    .font(.system(size: 14, weight: .medium))
+                                    .foregroundStyle(.white)
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 4)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .fill(bmiCategoryColor)
+                                    )
                             }
                             Text(bmiText)
                                 .font(.system(size: 20, weight: .medium))
@@ -90,7 +91,8 @@ struct BMIView: View {
                     }
             }
         }
-        .frame(width: 320)
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 4)
     }
 }
 
@@ -130,33 +132,9 @@ struct BMIGradientBar: View {
                     .offset(x: max(0, min(markerPosition, 1)) * (proxy.size.width - 2))
             }
         }
-        .frame(width: 280, height: 10)
-    }
-}
-
-enum BMIValue: String {
-    case underweight = "Underweight"
-    case normal = "Normal"
-    case overweight = "Overweight"
-    case obese = "Obese"
-
-    init(bmi: Double) {
-        switch bmi {
-        case ..<18.5: self = .underweight
-        case 18.5 ..< 25: self = .normal
-        case 25 ..< 30: self = .overweight
-        case 30...: self = .obese
-        default: self = .underweight
-        }
-    }
-
-    var color: Color {
-        switch self {
-        case .underweight: .blue
-        case .normal: .green
-        case .overweight: .yellow
-        case .obese: .red
-        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 10)
+        .padding(.horizontal, 4)
     }
 }
 
