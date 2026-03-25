@@ -13,10 +13,10 @@ struct HomeView: View {
         [NutritionModel]
     @Query private var users: [UserInfoModel]
     @Binding var selectedDate: Date
-    @Binding var selectedImage: UIImage?
     var analysisVM: NutrientAnalysisViewModel
-    @Binding var hideFloatingButton: Bool
     @Environment(\.modelContext) private var modelContext
+    @Environment(FloatingButtonVisibility.self) private var floatingButtonVisibility
+
     let nutrientTypes: [NutrientType] = [.calories, .protein, .carbs, .fats]
 
     private var filteredEntries: [NutritionModel] {
@@ -55,9 +55,7 @@ struct HomeView: View {
                     .frame(width: 330)
                     FoodEntryList(
                         entries: filteredEntries,
-                        selectedImage: $selectedImage,
-                        selectedDate: $selectedDate, analysisVM: analysisVM,
-                        hideFloatingButton: $hideFloatingButton
+                        selectedDate: $selectedDate, analysisVM: analysisVM
                     )
                     .padding(.top, 4)
                 }
@@ -80,6 +78,9 @@ struct HomeView: View {
             // Only refresh if local data is empty for this date
             guard filteredEntries.isEmpty else { return }
             await foodEntryViewModel.refreshEntries(for: selectedDate)
+        }
+        .onAppear {
+            floatingButtonVisibility.isHidden = false
         }
     }
 

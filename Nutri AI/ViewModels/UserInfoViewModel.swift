@@ -11,8 +11,9 @@ import OSLog
 import SwiftData
 import UIKit
 
+@MainActor
 @Observable
-class UserInfoViewModel {
+final class UserInfoViewModel {
     private var modelContext: ModelContext
     private var repository: UserInfoRepository
 
@@ -63,9 +64,16 @@ class UserInfoViewModel {
         saveAndSync(userInfo, context: "Height and Weight")
     }
 
-    func saveDateOfBirth(_ dateOfBirth: Date) {
+    func saveHeight(height: Double) {
+        let userInfo = fetchOrCreateUserInfo()
+        userInfo.heightInCm = height
+        saveAndSync(userInfo, context: "Height")
+    }
+
+    func saveDateOfBirth(_ dateOfBirth: Date, now: Date = .now, calendar: Calendar = .current) {
         let userInfo = fetchOrCreateUserInfo()
         userInfo.dob = dateOfBirth
+        userInfo.age = calendar.dateComponents([.year], from: dateOfBirth, to: now).year ?? 0
         saveAndSync(userInfo, context: "Date of Birth")
     }
 
@@ -79,6 +87,30 @@ class UserInfoViewModel {
         let userInfo = fetchOrCreateUserInfo()
         userInfo.desiredWeightInKg = desiredWeight
         saveAndSync(userInfo, context: "Desired Weight")
+    }
+
+    private func syncDerivedGoal(for userInfo: UserInfoModel) {
+        guard userInfo.weightInKg > 0, userInfo.desiredWeightInKg > 0 else { return }
+
+        switch userInfo.desiredWeightInKg {
+        case let desired where desired > userInfo.weightInKg: userInfo.desiredGoal = .weightGain
+        case let desired where desired < userInfo.weightInKg: userInfo.desiredGoal = .weightLoss
+        default: userInfo.desiredGoal = .maintain
+        }
+    }
+
+    func saveDesiredWeightAndGoal(_ desiredWeight: Double) {
+        let userInfo = fetchOrCreateUserInfo()
+        userInfo.desiredWeightInKg = desiredWeight
+        syncDerivedGoal(for: userInfo)
+        saveAndSync(userInfo, context: "Desired Weight + Goal")
+    }
+
+    func saveCurrentWeight(_ weight: Double) {
+        let userInfo = fetchOrCreateUserInfo()
+        userInfo.weightInKg = weight
+        syncDerivedGoal(for: userInfo)
+        saveAndSync(userInfo, context: "Current Weight")
     }
 
     func saveAge(_ age: Int) {
@@ -255,6 +287,32 @@ class UserInfoViewModel {
     func loadUserInfo() -> UserInfoModel? {
         let descriptor = FetchDescriptor<UserInfoModel>()
         return try? modelContext.fetch(descriptor).first
+    }
+
+    func clearLocalUserInfo() {
+        let descriptor = FetchDescriptor<UserInfoModel>()
+        if let existing = try? modelContext.fetch(descriptor).first {
+            modelContext.delete(existing)
+            try? modelContext.save()
+            logger.info("Cleared stale local UserInfo from previous user")
+        }
+    }
+
+    func restoreFromFirestore() async -> Bool {
+        do {
+            guard let remoteModel = try await repository.fetchUserInfoFromFirestore(),
+                  remoteModel.calculations != nil else {
+                return false
+            }
+            let localModel = fetchOrCreateUserInfo()
+            remoteModel.toUserInfoModel(localModel)
+            try modelContext.save()
+            logger.info("Successfully restored user data from Firestore")
+            return true
+        } catch {
+            logger.error("Firestore restore failed: \(error.localizedDescription)")
+            return false
+        }
     }
 
     func uploadLocalData() async {

@@ -42,22 +42,7 @@ struct GenderView: View {
 
         Spacer()
 
-        VStack {
-            ForEach(Gender.allCases, id: \.self) {
-                gender in
-                Button(action: {
-                    selectedGender = gender
-                }) {
-                    Text(gender.rawValue)
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundColor(selectedGender == gender ? .white : .primary)
-                        .frame(width: 310, height: 60)
-                        .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(selectedGender == gender ? Color.black : Color(.systemGray6)))
-                }
-            }
-        }
+        GenderSelectionView(selectedGender: $selectedGender)
 
         Spacer()
 

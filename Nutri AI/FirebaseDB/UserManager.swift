@@ -44,7 +44,7 @@ class UserManager {
             let foodDocs = try await foodsCollection.getDocuments()
 
             for doc in foodDocs.documents {
-                if let imageURL = doc.data()["foodImageURL"] as? String {
+                if let imageURL = doc.data()["food_image_url"] as? String {
                     logger.info("Deleting image: \(imageURL)")
                     try? await StorageManager.shared.deleteImage(imageURL: imageURL)
                 }

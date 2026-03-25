@@ -11,9 +11,9 @@ import SwiftUI
 
 struct FoodEntryDetails: View {
     let item: NutritionModel
-    @Binding var hideFloatingButton: Bool
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @Environment(FloatingButtonVisibility.self) private var floatingButtonVisibility
     private var vm: FoodEntryViewModel {
         FoodEntryViewModel(modelContext: modelContext)
     }
@@ -59,7 +59,7 @@ struct FoodEntryDetails: View {
                                     descriptor
                                 )
                                 if count == 0 {
-                                    hideFloatingButton = false
+                                    floatingButtonVisibility.isHidden = false
                                 }
                             }
                             logger.info("Food Item deleted")
