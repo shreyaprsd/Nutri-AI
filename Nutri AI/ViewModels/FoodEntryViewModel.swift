@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import OSLog
 import SwiftData
 import UIKit
 
@@ -13,6 +14,7 @@ import UIKit
 class FoodEntryViewModel {
     private var modelContext: ModelContext
     private var foodRepository: FoodRepository
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "Nutri AI", category: "FoodEntryViewModel")
 
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
@@ -40,5 +42,19 @@ class FoodEntryViewModel {
     // delete all food entries (for account deletion)
     func deleteAllLocalFoodEntries() async throws {
         try await foodRepository.deleteAllLocalFoods()
+    }
+
+    // background sync for specific date food entry
+    func refreshEntries(for selectedDate: Date) async {
+        let calendar = Calendar.current
+        let dayStart = calendar.startOfDay(for: selectedDate)
+        guard let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else {
+            return
+        }
+        do {
+            try await foodRepository.pullFoodsFromFirestore(dayStart: dayStart, dayEnd: dayEnd)
+        } catch {
+            logger.error("Refresh failed :\(error.localizedDescription)")
+        }
     }
 }

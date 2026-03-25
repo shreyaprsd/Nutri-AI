@@ -42,3 +42,10 @@ extension Double {
         return (self * divisor).rounded() / divisor
     }
 }
+
+extension [NutritionModel] {
+    func entries(for date: Date) -> [NutritionModel] {
+        let calendar = Calendar.current
+        return filter { calendar.isDate($0.createdAt, inSameDayAs: date) }
+    }
+}

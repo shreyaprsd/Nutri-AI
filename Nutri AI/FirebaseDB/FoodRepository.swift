@@ -42,11 +42,11 @@ class FoodRepository {
         }
 
         let docRef = db.collection("users").document(userId).collection("foods").document(food.id.uuidString)
-        let document = try await docRef.getDocument()
-        var foodRemote = try document.data(as: RemoteModel.self)
-
-        foodRemote.servingMultiplier = food.servingMultiplier
-        try docRef.setData(from: foodRemote, merge: true)
+        // Update only the serving multiplier to avoid decoding failures from incomplete docs.
+        try await docRef.setData(
+            ["serving_multiplier": food.servingMultiplier],
+            merge: true
+        )
         logger.info("Food nutrients updated in firestore db")
     }
 
@@ -89,7 +89,7 @@ class FoodRepository {
             logger.info("Data saved to Firestore")
         } catch {
             logger.error("Firestore save failed, scheduling background sync")
-            BackgroundSyncManager.shared.addPendingSync(food: food, image: image)
+            FirestoreDataSyncManager.shared.addPendingSync(food: food, image: image)
         }
     }
 
@@ -138,6 +138,57 @@ class FoodRepository {
         }
         try modelContext.save()
         logger.info("All local foods deleted")
+    }
+
+    func pullFoodsFromFirestore(dayStart: Date, dayEnd: Date) async throws {
+        let remoteFoods = try await fetchFoodsFromFirestore(dayStart: dayStart, dayEnd: dayEnd)
+        try await MainActor.run {
+            try upsertFoods(remoteFoods)
+        }
+    }
+
+    private func fetchFoodsFromFirestore(dayStart: Date, dayEnd: Date) async throws -> [RemoteModel] {
+        guard let userId = Auth.auth().currentUser?.uid else {
+            throw FoodDataError.userNotAuthenticated
+        }
+        let startTimestamp = Timestamp(date: dayStart)
+        let endTimestamp = Timestamp(date: dayEnd)
+        let query = db.collection("users")
+            .document(userId)
+            .collection("foods")
+            .whereField("created_At", isGreaterThanOrEqualTo: startTimestamp)
+            .whereField("created_At", isLessThan: endTimestamp)
+            .order(by: "created_At", descending: true)
+        let snapshot = try await query.getDocuments()
+        return try snapshot.documents.map { try $0.data(as: RemoteModel.self) }
+    }
+
+    @MainActor
+    private func upsertFoods(_ remoteFoods: [RemoteModel]) throws {
+        // collect all valid UUIDs from remote foods
+        let remoteMapping: [(UUID, RemoteModel)] = remoteFoods.compactMap { remote in
+            guard let id = remote.id, let uuid = UUID(uuidString: id) else { return nil }
+            return (uuid, remote)
+        }
+
+        // Fetch all local entries unfiltered, then filter in-memory.
+        let allIDs = Set(remoteMapping.map(\.0))
+        let descriptor = FetchDescriptor<NutritionModel>()
+        let allLocal = try modelContext.fetch(descriptor)
+        let existingFoods = allLocal.filter { allIDs.contains($0.id) }
+
+        // build a dictionary for instant lookup by ID
+        let existingByID = Dictionary(uniqueKeysWithValues: existingFoods.map { ($0.id, $0) })
+
+        for (uuid, remote) in remoteMapping {
+            if let existing = existingByID[uuid] {
+                remote.applyTo(existing)
+            } else {
+                let model = remote.toNutritionModel()
+                modelContext.insert(model)
+            }
+        }
+        try modelContext.save()
     }
 
     enum FoodDataError: Error {

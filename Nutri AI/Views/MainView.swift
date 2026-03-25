@@ -12,6 +12,7 @@ struct MainView: View {
     @State private var showOptions = false
     @State private var showImagePicker = false
     @State private var selectedImage: UIImage?
+    @State private var selectedDate = Date()
     @State private var selectedTab = 0
     @State private var hideFloatingButton = false
     @State private var analysisVM = NutrientAnalysisViewModel()
@@ -23,7 +24,7 @@ struct MainView: View {
         ZStack {
             TabView(selection: $selectedTab) {
                 HomeView(
-                    selectedImage: $selectedImage,
+                    selectedDate: $selectedDate, selectedImage: $selectedImage,
                     analysisVM: analysisVM, hideFloatingButton: $hideFloatingButton
                 )
                 .tabItem {
@@ -143,8 +144,8 @@ struct MainView: View {
             }
         }
 
-        .onChange(of: selectedImage) { oldValue, newValue in
-            if oldValue == nil, newValue != nil {
+        .onChange(of: selectedImage) { _, newValue in
+            if newValue != nil {
                 imageID = UUID()
                 selectedTab = 0
             }

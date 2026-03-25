@@ -175,8 +175,25 @@ struct RemoteModel: Codable, Identifiable {
             imageData: imageData,
             response: response
         )
+        // Preserve the Firestore document id to avoid duplicate local entries on sync.
+        if let id, let uuid = UUID(uuidString: id) {
+            model.id = uuid
+        }
         model.servingMultiplier = servingMultiplier
 
         return model
+    }
+}
+
+extension RemoteModel {
+    // Maps every remote field onto an existing local model (used during pull-sync).
+    func applyTo(_ model: NutritionModel) {
+        let fresh = toNutritionModel()
+        model.createdAt = fresh.createdAt
+        model.foodName = fresh.foodName
+        model.servingSize = fresh.servingSize
+        model.foodDescription = fresh.foodDescription
+        model.servingMultiplier = fresh.servingMultiplier
+        model.nutrients = fresh.nutrients
     }
 }

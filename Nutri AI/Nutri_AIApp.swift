@@ -25,7 +25,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             try? Auth.auth().signOut()
         }
 
-        BackgroundSyncManager.shared.registerBackgroundTask()
+        FirestoreDataSyncManager.shared.registerBackgroundTask()
         return true
     }
 }

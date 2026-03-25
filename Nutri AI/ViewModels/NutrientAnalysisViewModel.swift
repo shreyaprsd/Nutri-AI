@@ -24,6 +24,7 @@ final class NutrientAnalysisViewModel {
     func analyzeFood(image: UIImage, modelContext: ModelContext, onComplete: @escaping () -> Void) async {
         isLoading = true
         errorMessage = nil
+
         defer {
             isLoading = false
         }
@@ -40,6 +41,7 @@ final class NutrientAnalysisViewModel {
             try await foodEntryViewModel.addFoodEntry(entry, image: image, onLocalSaveComplete: onComplete)
         } catch {
             errorMessage = error.localizedDescription
+            onComplete()
         }
     }
 }

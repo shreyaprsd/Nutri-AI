@@ -5,51 +5,57 @@
 //  Created by Shreya Prasad on 20/11/25.
 //
 
+import OSLog
 import SwiftData
 import SwiftUI
 
 struct FoodEntryList: View {
-    @Query(sort: \NutritionModel.createdAt, order: .reverse) var foodEntries:
-        [NutritionModel]
+    let entries: [NutritionModel]
     @Binding var selectedImage: UIImage?
+    @Binding var selectedDate: Date
     var analysisVM: NutrientAnalysisViewModel
     @State private var selectedFoodEntry: NutritionModel?
-    @Environment(\.modelContext) private var modelContext
     @Binding var hideFloatingButton: Bool
+    private let logger = Logger(subsystem: "com.shreyaprasad.NutriAI", category: "FoodEntryList")
+
     var body: some View {
-        Group {
-            if foodEntries.isEmpty, !analysisVM.isLoading {
-                FoodEntryEmptyList()
-            } else {
-                List {
-                    if analysisVM.isLoading, let image = selectedImage {
-                        LoadingFoodRow(image: image)
-                            .listRowBackground(Color.clear)
-                            .listRowSeparator(.hidden)
-                            .listRowInsets(EdgeInsets())
-                    }
-                    ForEach(foodEntries, id: \.id) { entry in
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("Recently logged")
+                    .font(.system(size: 16, weight: .semibold))
+                Spacer()
+            }
+
+            LazyVStack(spacing: 8) {
+                if analysisVM.isLoading, let image = selectedImage {
+                    LoadingFoodRow(image: image)
+                }
+
+                if entries.isEmpty, !analysisVM.isLoading {
+                    FoodEntryEmptyList()
+                } else {
+                    ForEach(entries, id: \.id) { entry in
                         FoodEntryRow(item: entry)
-                            .listRowBackground(Color.clear)
-                            .listRowSeparator(.hidden)
-                            .listRowInsets(EdgeInsets())
                             .onTapGesture {
                                 hideFloatingButton = true
                                 selectedFoodEntry = entry
                             }
                     }
                 }
-                .listStyle(.plain)
-                .scrollContentBackground(.hidden)
-                .padding(.horizontal)
-                .navigationDestination(item: $selectedFoodEntry) { entry in
-                    FoodEntryDetails(item: entry, hideFloatingButton: $hideFloatingButton)
-                }
-                .onChange(of: selectedFoodEntry) { _, newValue in
-                    if newValue == nil {
-                        hideFloatingButton = false
-                    }
-                }
+            }
+        }
+        .frame(width: 330, alignment: .leading)
+        .navigationDestination(item: $selectedFoodEntry) { entry in
+            FoodEntryDetails(item: entry, hideFloatingButton: $hideFloatingButton)
+        }
+        .onChange(of: selectedFoodEntry) { _, newValue in
+            if newValue == nil {
+                hideFloatingButton = false
+            }
+        }
+        .onChange(of: selectedDate) { _, _ in
+            if entries.isEmpty, !analysisVM.isLoading {
+                logger.info("No food entry found")
             }
         }
     }
@@ -71,8 +77,6 @@ struct FoodEntryEmptyList: View {
             }
             .frame(width: 330, height: 120)
             .padding(8)
-            .padding(.top, 478)
-            .padding(.bottom, 116)
     }
 }
 

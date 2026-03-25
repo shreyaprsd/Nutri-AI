@@ -9,10 +9,11 @@ import BackgroundTasks
 import FirebaseAuth
 import FirebaseFirestore
 import OSLog
+import SwiftData
 import UIKit
 
-class BackgroundSyncManager {
-    static let shared = BackgroundSyncManager()
+class FirestoreDataSyncManager {
+    static let shared = FirestoreDataSyncManager()
     static let taskIdentifier = "com.shreyaprasad.NutriAI.firestoresync"
     private let queue = DispatchQueue(label: "com.shreyaprasad.NutriAI.syncQueue")
     private var pendingSyncItems: [(food: NutritionModel, image: UIImage?)] = []
