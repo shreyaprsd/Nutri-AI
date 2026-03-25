@@ -11,6 +11,7 @@ import OSLog
 import SwiftData
 import UIKit
 
+@MainActor
 @Observable
 class UserInfoViewModel {
     private var modelContext: ModelContext
@@ -63,6 +64,12 @@ class UserInfoViewModel {
         saveAndSync(userInfo, context: "Height and Weight")
     }
 
+    func saveHeight(height: Double) {
+        let userInfo = fetchOrCreateUserInfo()
+        userInfo.heightInCm = height
+        saveAndSync(userInfo, context: "Height")
+    }
+
     func saveDateOfBirth(_ dateOfBirth: Date) {
         let userInfo = fetchOrCreateUserInfo()
         userInfo.dob = dateOfBirth
@@ -79,6 +86,30 @@ class UserInfoViewModel {
         let userInfo = fetchOrCreateUserInfo()
         userInfo.desiredWeightInKg = desiredWeight
         saveAndSync(userInfo, context: "Desired Weight")
+    }
+
+    private func syncDerivedGoal(for userInfo: UserInfoModel) {
+        guard userInfo.weightInKg > 0, userInfo.desiredWeightInKg > 0 else { return }
+
+        switch userInfo.desiredWeightInKg {
+        case let desired where desired > userInfo.weightInKg: userInfo.desiredGoal = .weightGain
+        case let desired where desired < userInfo.weightInKg: userInfo.desiredGoal = .weightLoss
+        default: userInfo.desiredGoal = .maintain
+        }
+    }
+
+    func saveDesiredWeightAndGoal(_ desiredWeight: Double) {
+        let userInfo = fetchOrCreateUserInfo()
+        userInfo.desiredWeightInKg = desiredWeight
+        syncDerivedGoal(for: userInfo)
+        saveAndSync(userInfo, context: "Desired Weight + Goal")
+    }
+
+    func saveCurrentWeight(_ weight: Double) {
+        let userInfo = fetchOrCreateUserInfo()
+        userInfo.weightInKg = weight
+        syncDerivedGoal(for: userInfo)
+        saveAndSync(userInfo, context: "Current Weight")
     }
 
     func saveAge(_ age: Int) {

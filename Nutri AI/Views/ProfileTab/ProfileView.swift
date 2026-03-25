@@ -15,11 +15,14 @@ struct ProfileView: View {
     @State private var showLogoutAlert: Bool = false
     @State private var showDeleteAlert: Bool = false
     @Environment(\.modelContext) private var modelContext
+    @Environment(FloatingButtonVisibility.self) private var floatingButtonVisibility
 
     var body: some View {
         List {
             Section("Account") {
-                NavigationLink {} label: {
+                NavigationLink {
+                    PersonalDetailsView()
+                } label: {
                     HStack {
                         Image(systemName: "person.text.rectangle")
                         Text("Personal Details")
@@ -71,6 +74,9 @@ struct ProfileView: View {
             }
         } message: {
             Text("Are you sure you want to permanently delete your account? This action cannot be undone.")
+        }
+        .onAppear {
+            floatingButtonVisibility.isHidden = true
         }
     }
 }

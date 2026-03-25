@@ -14,7 +14,7 @@ struct MainView: View {
     @State private var selectedImage: UIImage?
     @State private var selectedDate = Date()
     @State private var selectedTab = 0
-    @State private var hideFloatingButton = false
+    @State private var floatingButtonVisibilty = FloatingButtonVisibility()
     @State private var analysisVM = NutrientAnalysisViewModel()
     @State var foodViewModel: FoodEntryViewModel
     @State private var imageID = UUID()
@@ -25,20 +25,22 @@ struct MainView: View {
             TabView(selection: $selectedTab) {
                 HomeView(
                     selectedDate: $selectedDate, selectedImage: $selectedImage,
-                    analysisVM: analysisVM, hideFloatingButton: $hideFloatingButton
+                    analysisVM: analysisVM
                 )
                 .tabItem {
                     Label("Home", systemImage: "house")
                 }
                 .tag(0)
-                GrowthView()
-                    .tabItem {
-                        Label(
-                            "Progress",
-                            systemImage: "chart.line.uptrend.xyaxis"
-                        )
-                    }
-                    .tag(1)
+                NavigationStack {
+                    GrowthView()
+                }
+                .tabItem {
+                    Label(
+                        "Progress",
+                        systemImage: "chart.line.uptrend.xyaxis"
+                    )
+                }
+                .tag(1)
                 NavigationStack {
                     ProfileView(auth: viewModel, foodViewModel: foodViewModel)
                 }
@@ -106,7 +108,7 @@ struct MainView: View {
                         .frame(height: 150)
                 }
             }
-            if !hideFloatingButton {
+            if !floatingButtonVisibilty.isHidden {
                 VStack {
                     Spacer()
                     HStack {
@@ -150,5 +152,6 @@ struct MainView: View {
                 selectedTab = 0
             }
         }
+        .environment(floatingButtonVisibilty)
     }
 }
