@@ -5,6 +5,7 @@
 //  Created by Shreya Prasad on 08/12/25.
 //
 
+import FirebaseAuth
 import FirebaseStorage
 import Foundation
 import OSLog
@@ -25,6 +26,7 @@ class StorageManager {
         // setting up of metadata
         let metadata = StorageMetadata()
         metadata.contentType = "image/jpeg"
+        metadata.customMetadata = ["uploaderEmail": Auth.auth().currentUser?.email ?? "unknown"]
 
         // upload the image
         _ = try await foodImageRef.putDataAsync(

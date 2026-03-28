@@ -82,7 +82,7 @@ class FirestoreDataSyncManager {
                 // Upload image if exists
                 var imageURL: String?
                 if let image = item.image,
-                   let imageData = image.jpegData(compressionQuality: 0.8)
+                   let imageData = image.resizedForUpload().jpegData(compressionQuality: 0.8)
                 {
                     imageURL = try await StorageManager.shared.uploadFoodImage(imageData: imageData)
                 }

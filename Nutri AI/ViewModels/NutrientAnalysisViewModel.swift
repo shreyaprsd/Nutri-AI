@@ -47,7 +47,7 @@ final class NutrientAnalysisViewModel {
             let response = try await analysisService.analyze(image: image)
             nutritionInfo = response
 
-            guard let imageData = image.jpegData(compressionQuality: 0.8) else {
+            guard let imageData = image.resizedForUpload().jpegData(compressionQuality: 0.8) else {
                 hideLoadingIfDone(for: loadingItem)
                 return
             }
