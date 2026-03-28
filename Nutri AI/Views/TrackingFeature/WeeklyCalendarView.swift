@@ -62,7 +62,7 @@ struct DayView: View {
                 if !isFuture {
                     Circle()
                         .stroke(
-                            isSelected ? Color.black : Color.gray.opacity(0.5),
+                            isSelected ? Color.primary : Color.gray.opacity(0.5),
                             style: StrokeStyle(
                                 lineWidth: 1,
                                 dash: [3, 3]

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct AppBenefitGraphView: View {
+    @Environment(AppTheme.self) private var theme
     @ObservedObject var authViewModel: AuthViewModel
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
@@ -28,11 +29,11 @@ struct AppBenefitGraphView: View {
         NavigationLink(destination: AllDoneView(authViewModel: authViewModel)) {
             Text("Continue")
                 .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(.white)
+                .foregroundStyle(theme.buttonForeground)
                 .frame(width: 310, height: 46)
                 .background(
                     RoundedRectangle(cornerRadius: 20)
-                        .fill(Color.black)
+                        .fill(theme.buttonBackground)
                 )
         }
         .padding(.horizontal, 24)
@@ -47,6 +48,8 @@ struct AppBenefitGraphView: View {
 }
 
 struct ComparisonGraphView: View {
+    @Environment(AppTheme.self) private var theme
+
     var body: some View {
         VStack(spacing: 20) {
             VStack(spacing: 0) {
@@ -55,21 +58,21 @@ struct ComparisonGraphView: View {
                         Text("Without\nNutri AI")
                             .font(.system(size: 17, weight: .semibold))
                             .multilineTextAlignment(.center)
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                             .frame(height: 45)
 
                         ZStack(alignment: .bottom) {
                             RoundedRectangle(cornerRadius: 20)
-                                .fill(Color.white)
+                                .fill(theme.cardBackground)
                                 .frame(width: 145, height: 265)
 
                             ZStack {
                                 RoundedRectangle(cornerRadius: 20)
-                                    .fill(Color(white: 0.85))
+                                    .fill(Color(.systemGray4))
 
                                 Text("20%")
                                     .font(.system(size: 28, weight: .bold))
-                                    .foregroundColor(.black)
+                                    .foregroundColor(.primary)
                             }
                             .frame(width: 145, height: 85)
                         }
@@ -79,21 +82,21 @@ struct ComparisonGraphView: View {
                         Text("With\nNutri AI")
                             .font(.system(size: 17, weight: .semibold))
                             .multilineTextAlignment(.center)
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                             .frame(height: 45)
 
                         ZStack(alignment: .bottom) {
                             RoundedRectangle(cornerRadius: 20)
-                                .fill(Color.white)
+                                .fill(theme.cardBackground)
                                 .frame(width: 145, height: 265)
 
                             ZStack {
                                 RoundedRectangle(cornerRadius: 20)
-                                    .fill(Color.black)
+                                    .fill(theme.buttonBackground)
 
                                 Text("2X")
                                     .font(.system(size: 36, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(theme.buttonForeground)
                             }
                             .frame(width: 145, height: 225)
                         }
@@ -105,13 +108,13 @@ struct ComparisonGraphView: View {
 
                 Text("Nutri AI makes it easy and holds\nyou accountable.")
                     .font(.system(size: 16, weight: .regular))
-                    .foregroundColor(.gray)
+                    .foregroundColor(theme.secondaryText)
                     .multilineTextAlignment(.center)
                     .padding(.bottom, 35)
             }
             .background(
                 RoundedRectangle(cornerRadius: 28)
-                    .fill(Color(red: 0.94, green: 0.94, blue: 0.96))
+                    .fill(Color(.systemGray6))
             )
             .padding(.horizontal, 25)
         }

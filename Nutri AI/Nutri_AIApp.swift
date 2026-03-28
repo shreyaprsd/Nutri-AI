@@ -40,6 +40,7 @@ struct Nutri_AIApp: App {
         WindowGroup {
             AppRootView(viewModel: viewModel)
                 .environment(onboardingState)
+                .environment(AppTheme())
         }
         .modelContainer(for: [NutritionModel.self, UserInfoModel.self])
     }

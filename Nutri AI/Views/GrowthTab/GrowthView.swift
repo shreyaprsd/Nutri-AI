@@ -16,6 +16,7 @@ struct GrowthView: View {
     @State private var currentWeight: Double?
     @Environment(FloatingButtonVisibility.self) private var floatingButtonVisibility
     @Environment(\.modelContext) private var modelContext
+    @Environment(AppTheme.self) private var theme
     private var viewModel: UserInfoViewModel {
         if let existing = userInfoViewModel {
             return existing
@@ -62,7 +63,7 @@ struct GrowthView: View {
                 Image(systemName: "trophy")
                 Circle()
                     .frame(width: 30, height: 30)
-                    .foregroundStyle(Color.white)
+                    .foregroundStyle(theme.cardBackground)
                 Image(systemName: "trophy.fill")
             }
             Text("Goal Weight: \(goalWeightText)")
@@ -75,8 +76,8 @@ struct GrowthView: View {
                     .frame(width: 64, height: 20)
             }
             .buttonStyle(.borderedProminent)
-            .tint(Color.black)
-            .foregroundStyle(Color.white)
+            .tint(theme.buttonBackground)
+            .foregroundStyle(theme.buttonForeground)
             .frame(width: 64, height: 20)
             .padding(.trailing, 15)
         }
@@ -91,20 +92,20 @@ struct GrowthView: View {
     private var currentWeightView: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.gray, lineWidth: 1)
+                .stroke(theme.border, lineWidth: 1)
                 .frame(maxWidth: .infinity)
                 .frame(height: 136)
                 .padding(.horizontal, 4)
-                .foregroundStyle(Color.white)
+                .foregroundStyle(theme.cardBackground)
                 .overlay {
                     VStack(alignment: .leading) {
                         HStack {
                             ZStack {
                                 Circle()
                                     .frame(width: 36, height: 36)
-                                    .foregroundStyle(Color.black)
+                                    .foregroundStyle(theme.buttonBackground)
                                 Image(systemName: "dumbbell.fill")
-                                    .foregroundStyle(Color.white)
+                                    .foregroundStyle(theme.buttonForeground)
                             }
                             Text("Current Weight: \(currentWeightText)")
                                 .font(.system(size: 14, weight: .regular))
@@ -126,8 +127,8 @@ struct GrowthView: View {
                                 .frame(maxWidth: 320)
                         }
                         .buttonStyle(.borderedProminent)
-                        .tint(Color.black)
-                        .foregroundStyle(Color.white)
+                        .tint(theme.buttonBackground)
+                        .foregroundStyle(theme.buttonForeground)
                         .padding(.bottom, 8)
                     }
                     .padding()

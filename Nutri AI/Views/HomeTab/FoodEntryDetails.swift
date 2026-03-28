@@ -82,6 +82,7 @@ struct FoodEntryDetails: View {
 }
 
 struct FoodEntryTextDetailsView: View {
+    @Environment(AppTheme.self) private var theme
     @State private var inputText = ""
     @State private var isExpanding = false
     @State private var updateTask: Task<Void, Never>?
@@ -111,12 +112,12 @@ struct FoodEntryTextDetailsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.black, lineWidth: 1)
+                .stroke(theme.border, lineWidth: 1)
                 .overlay {
                     Text(item.createdAt, style: .time)
                         .fontWeight(.regular)
                         .font(.system(size: 12))
-                        .foregroundStyle(Color.black)
+                        .foregroundStyle(theme.buttonBackground)
                 }
                 .frame(width: 54, height: 28)
 
@@ -125,7 +126,7 @@ struct FoodEntryTextDetailsView: View {
                     .font(.system(size: 20, weight: .medium))
                 Spacer()
                 RoundedRectangle(cornerRadius: 16)
-                    .stroke(Color.black, lineWidth: 1)
+                    .stroke(theme.border, lineWidth: 1)
                     .overlay {
                         HStack {
                             TextField("1.0", text: $inputText)
@@ -169,7 +170,7 @@ struct FoodEntryTextDetailsView: View {
 
             VStack(alignment: .leading) {
                 RoundedRectangle(cornerRadius: 16)
-                    .stroke(Color.black, lineWidth: 1)
+                    .stroke(theme.border, lineWidth: 1)
                     .overlay {
                         HStack {
                             Image(systemName: "flame.fill")
@@ -191,7 +192,7 @@ struct FoodEntryTextDetailsView: View {
             HStack {
                 VStack {
                     RoundedRectangle(cornerRadius: 16)
-                        .stroke(Color.black, lineWidth: 1)
+                        .stroke(theme.border, lineWidth: 1)
                         .overlay {
                             HStack {
                                 Text("🍗")
@@ -212,7 +213,7 @@ struct FoodEntryTextDetailsView: View {
                 }
                 VStack {
                     RoundedRectangle(cornerRadius: 16)
-                        .stroke(Color.black, lineWidth: 1)
+                        .stroke(theme.border, lineWidth: 1)
                         .overlay {
                             HStack {
                                 Text("🌾")
@@ -231,7 +232,7 @@ struct FoodEntryTextDetailsView: View {
                 }
                 VStack {
                     RoundedRectangle(cornerRadius: 16)
-                        .stroke(Color.black, lineWidth: 1)
+                        .stroke(theme.border, lineWidth: 1)
                         .overlay {
                             HStack {
                                 Text("🥑")
@@ -262,7 +263,7 @@ struct FoodEntryTextDetailsView: View {
                         }
                     } label: {
                         Image(systemName: "chevron.right")
-                            .foregroundStyle(Color.black)
+                            .foregroundStyle(theme.buttonBackground)
                             .rotationEffect(.degrees(isExpanding ? 90 : 0))
                     }
                 }
@@ -348,11 +349,12 @@ struct FoodEntryTextDetailsView: View {
 }
 
 struct FoodNutriFactRow: View {
+    @Environment(AppTheme.self) private var theme
     let label: String
     let value: String
     var body: some View {
         RoundedRectangle(cornerRadius: 16)
-            .stroke(Color.black, lineWidth: 1)
+            .stroke(theme.border, lineWidth: 1)
             .overlay {
                 HStack {
                     Text(label)

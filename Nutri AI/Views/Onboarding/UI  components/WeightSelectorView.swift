@@ -32,7 +32,7 @@ struct WeightSelectorView: View {
             } label: {
                 Image(systemName: "plus.circle.fill")
                     .font(.system(size: 50))
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
             }
             .padding(20)
 
@@ -50,7 +50,7 @@ struct WeightSelectorView: View {
                 } label: {
                     Text(verbatim: String(format: "%.1f", weight))
                         .font(.system(size: 32, weight: .regular))
-                        .foregroundStyle(Color.black)
+                        .foregroundStyle(Color.primary)
                         .frame(width: 90)
                         .lineLimit(1)
                         .minimumScaleFactor(0.8)
@@ -64,7 +64,7 @@ struct WeightSelectorView: View {
             } label: {
                 Image(systemName: "minus.circle.fill")
                     .font(.system(size: 50))
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
             }
             .padding(20)
         }

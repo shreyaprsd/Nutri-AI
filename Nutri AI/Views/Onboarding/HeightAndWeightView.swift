@@ -9,6 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct HeightWeightView: View {
+    @Environment(AppTheme.self) private var theme
     @State private var isMetric = true
     @State private var heightInCm: Double = 168
     @State private var weightInKg: Double = 54
@@ -79,7 +80,7 @@ struct HeightWeightView: View {
                 .padding(.trailing, 40)
 
             Toggle("", isOn: $isMetric)
-                .tint(Color.black)
+                .tint(theme.toggleTint)
                 .labelsHidden()
 
             Text("Metrics")
@@ -158,11 +159,11 @@ struct HeightWeightView: View {
         NavigationLink(destination: DateOfBirthView(authViewModel: authViewModel)) {
             Text("Continue")
                 .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(.white)
+                .foregroundStyle(theme.buttonForeground)
                 .frame(width: 310, height: 46)
                 .background(
                     RoundedRectangle(cornerRadius: 20)
-                        .fill(Color.black)
+                        .fill(theme.buttonBackground)
                 )
         }
         .simultaneousGesture(TapGesture().onEnded {

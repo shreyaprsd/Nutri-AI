@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct AllDoneView: View {
+    @Environment(AppTheme.self) private var theme
     @ObservedObject var authViewModel: AuthViewModel
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
@@ -24,6 +25,7 @@ struct AllDoneView: View {
 }
 
 struct AllDoneViewCard: View {
+    @Environment(AppTheme.self) private var theme
     @ObservedObject var authViewModel: AuthViewModel
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
@@ -61,11 +63,11 @@ struct AllDoneViewCard: View {
             NavigationLink(destination: CustomPlanGenerationView(authViewModel: authViewModel)) {
                 Text("Continue")
                     .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(theme.buttonForeground)
                     .frame(width: 310, height: 46)
                     .background(
                         RoundedRectangle(cornerRadius: 20)
-                            .fill(Color.black)
+                            .fill(theme.buttonBackground)
                     )
             }
             .padding(.bottom, 20)

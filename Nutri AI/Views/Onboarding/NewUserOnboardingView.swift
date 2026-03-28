@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct NewUserOnboardingView: View {
+    @Environment(AppTheme.self) private var theme
     @State private var presentLoginSheet = false
     @ObservedObject var authViewModel: AuthViewModel
-    
+
     var body: some View {
         VStack {
             Spacer()
@@ -25,11 +26,11 @@ struct NewUserOnboardingView: View {
             NavigationLink(destination: GenderView(authViewModel: authViewModel)) {
                 Text("Get Started")
                     .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(theme.buttonForeground)
                     .frame(width: 310, height: 46)
                     .background(
                         RoundedRectangle(cornerRadius: 20)
-                            .fill(Color.black)
+                            .fill(theme.buttonBackground)
                     )
             }
             .padding()

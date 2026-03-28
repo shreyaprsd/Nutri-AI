@@ -9,6 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct GoalMotivationView: View {
+    @Environment(AppTheme.self) private var theme
     @Environment(\.modelContext) private var modelContext
     @State private var goal: Goal?
     @State private var currentWeight = 0.0
@@ -57,7 +58,7 @@ struct GoalMotivationView: View {
                 HStack(spacing: 0) {
                     Text("\(goalVerb) ")
                         .font(.system(size: 32, weight: .semibold))
-                        .foregroundColor(.black)
+                        .foregroundColor(.primary)
 
                     Text("\(String(format: "%.1f", weightDifference)) kg")
                         .font(.system(size: 32, weight: .bold))
@@ -65,23 +66,23 @@ struct GoalMotivationView: View {
 
                     Text(" is a")
                         .font(.system(size: 32, weight: .semibold))
-                        .foregroundColor(.black)
+                        .foregroundColor(.primary)
                 }
 
                 Text("realistic target. It's")
                     .font(.system(size: 32, weight: .semibold))
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
 
                 Text("not hard at all!")
                     .font(.system(size: 32, weight: .semibold))
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
             }
             .multilineTextAlignment(.center)
             .padding(.horizontal, 30)
 
             Text("90% of the users say that the change is obvious after using Nutri AI and it is not easy to rebound")
                 .font(.system(size: 15, weight: .regular))
-                .foregroundColor(.black)
+                .foregroundColor(.primary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 40)
                 .padding(.top, 20)
@@ -91,11 +92,11 @@ struct GoalMotivationView: View {
             NavigationLink(destination: AppBenefitGraphView(authViewModel: authViewModel)) {
                 Text("Continue")
                     .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(theme.buttonForeground)
                     .frame(width: 310, height: 46)
                     .background(
                         RoundedRectangle(cornerRadius: 20)
-                            .fill(Color.black)
+                            .fill(theme.buttonBackground)
                     )
             }
         }

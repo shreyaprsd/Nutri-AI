@@ -12,21 +12,22 @@ struct OptionButton: View {
     let icon: String
     let title: String
     let action: () -> Void
+    @Environment(AppTheme.self) private var theme
 
     var body: some View {
         Button(action: action) {
             VStack(spacing: 12) {
                 Image(systemName: icon)
                     .font(.system(size: 30))
-                    .foregroundColor(.black)
+                    .foregroundColor(theme.buttonBackground)
 
                 Text(title)
                     .font(.system(size: 12, weight: .medium))
-                    .foregroundColor(.black)
+                    .foregroundColor(theme.buttonBackground)
                     .multilineTextAlignment(.center)
             }
             .frame(width: 130, height: 90)
-            .background(Color.white)
+            .background(theme.cardBackground)
             .cornerRadius(16)
         }
     }

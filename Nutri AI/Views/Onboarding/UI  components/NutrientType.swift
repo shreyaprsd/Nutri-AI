@@ -41,7 +41,7 @@ enum NutrientType {
 
     var ringColor: Color {
         switch self {
-        case .calories: .black
+        case .calories: .primary
         case .carbs: Color(red: 0.85, green: 0.6, blue: 0.4)
         case .protein: Color(red: 46 / 255, green: 204 / 255, blue: 113 / 255)
         case .fats: Color(red: 52 / 255, green: 120 / 255, blue: 246 / 255)

@@ -21,6 +21,7 @@ struct UpdateWeightView: View {
     @State private var weight: Double = 54.0
     @State private var userInfoViewModel: UserInfoViewModel?
     @Environment(FloatingButtonVisibility.self) private var floatingButtonVisibility
+    @Environment(AppTheme.self) private var theme
 
     private var viewModel: UserInfoViewModel {
         if let existing = userInfoViewModel {
@@ -53,11 +54,11 @@ struct UpdateWeightView: View {
             } label: {
                 Text("Save")
                     .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(theme.buttonForeground)
                     .frame(width: 310, height: 46)
                     .background(
                         RoundedRectangle(cornerRadius: 20)
-                            .fill(Color.black)
+                            .fill(theme.buttonBackground)
                     )
             }
             .padding(.bottom, 16)

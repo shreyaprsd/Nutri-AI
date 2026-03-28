@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct DayWiseCalorieCard: View {
+    @Environment(AppTheme.self) private var theme
     let data: MacroCardsData
     let nutrientType: NutrientType
     let cardHeight: CGFloat
@@ -25,8 +26,8 @@ struct DayWiseCalorieCard: View {
         VStack {
             ZStack(alignment: .center) {
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(Color.gray.opacity(0.6), lineWidth: 2)
-                    .fill(Color.white)
+                    .stroke(theme.border, lineWidth: 2)
+                    .fill(theme.cardBackground)
                     .frame(width: cardWidth, height: cardHeight)
                     .overlay(alignment: .trailing) {
                         ZStack {
@@ -67,6 +68,7 @@ struct DayWiseCalorieCard: View {
 }
 
 struct DayWiseMacroCards: View {
+    @Environment(AppTheme.self) private var theme
     let data: MacroCardsData
     let nutrientType: NutrientType
     let ringColor: Color
@@ -78,8 +80,8 @@ struct DayWiseMacroCards: View {
         VStack {
             ZStack(alignment: .center) {
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(Color.gray.opacity(0.6), lineWidth: 2)
-                    .fill(Color.white)
+                    .stroke(theme.border, lineWidth: 2)
+                    .fill(theme.cardBackground)
                     .frame(width: cardWidth, height: cardHeight)
                     .overlay(alignment: .center) {
                         VStack(spacing: 4) {

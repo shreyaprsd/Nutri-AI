@@ -9,6 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct WorkoutFrequencyView: View {
+    @Environment(AppTheme.self) private var theme
     @State private var selectedFrequency: WorkoutFrequency?
     @Environment(\.modelContext) private var modelContext
     @State private var userInfoViewModel: UserInfoViewModel?
@@ -56,11 +57,11 @@ struct WorkoutFrequencyView: View {
             NavigationLink(destination: HeightWeightView(authViewModel: authViewModel)) {
                 Text("Continue")
                     .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(theme.buttonForeground)
                     .frame(width: 310, height: 46)
                     .background(
                         RoundedRectangle(cornerRadius: 20)
-                            .fill(Color.black)
+                            .fill(theme.buttonBackground)
                     )
             }
             .simultaneousGesture(TapGesture().onEnded {
@@ -94,6 +95,7 @@ struct WorkoutFrequencyView: View {
 }
 
 struct WorkoutFrequencyCardview: View {
+    @Environment(AppTheme.self) private var theme
     let frequency: WorkoutFrequency
     let isSelected: Bool
 
@@ -101,20 +103,20 @@ struct WorkoutFrequencyCardview: View {
         HStack {
             ZStack {
                 Circle()
-                    .fill(isSelected ? Color.white : Color.white.opacity(0.2))
+                    .fill(isSelected ? theme.buttonForeground : theme.buttonForeground.opacity(0.2))
                     .frame(width: 30, height: 30)
                 Image(systemName: frequency.icon)
                     .font(.system(size: 20, weight: .semibold))
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
             }
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(frequency.title)
                     .font(.system(size: 16, weight: .regular))
-                    .foregroundStyle(isSelected ? Color.white : Color.black)
+                    .foregroundStyle(isSelected ? theme.buttonForeground : .primary)
                 Text(frequency.description)
                     .font(.system(size: 14, weight: .regular))
-                    .foregroundColor(isSelected ? Color.white : Color.black)
+                    .foregroundColor(isSelected ? theme.buttonForeground : .primary)
             }
             Spacer()
         }
@@ -122,7 +124,7 @@ struct WorkoutFrequencyCardview: View {
         .frame(width: 310, height: 74)
         .background(
             RoundedRectangle(cornerRadius: 18)
-                .fill(isSelected ? Color.black : Color.white)
+                .fill(isSelected ? theme.buttonBackground : theme.cardBackground)
         )
     }
 }

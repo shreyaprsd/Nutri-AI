@@ -9,6 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct BMIView: View {
+    @Environment(AppTheme.self) private var theme
     @Query private var users: [UserInfoModel]
 
     private var bmiValue: Double? {
@@ -53,8 +54,8 @@ struct BMIView: View {
                 .padding(.bottom, 16)
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
-                    .shadow(color: Color.gray.opacity(0.2), radius: 5)
-                    .foregroundStyle(Color.white)
+                    .shadow(color: theme.shadow, radius: 5)
+                    .foregroundStyle(theme.cardBackground)
                     .frame(maxWidth: .infinity)
                     .frame(height: 160)
                     .padding(.horizontal, 4)
@@ -127,7 +128,7 @@ struct BMIGradientBar: View {
                         )
                     )
                 Rectangle()
-                    .fill(Color.black)
+                    .fill(Color.primary)
                     .frame(width: 2, height: 20)
                     .offset(x: max(0, min(markerPosition, 1)) * (proxy.size.width - 2))
             }

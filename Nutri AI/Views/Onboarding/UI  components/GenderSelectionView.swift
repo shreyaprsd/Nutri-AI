@@ -2,6 +2,7 @@ import SwiftUI
 
 struct GenderSelectionView: View {
     @Binding var selectedGender: Gender?
+    @Environment(AppTheme.self) private var theme
 
     var body: some View {
         VStack(spacing: 12) {
@@ -11,11 +12,11 @@ struct GenderSelectionView: View {
                 } label: {
                     Text(gender.rawValue)
                         .font(.system(size: 14, weight: .medium))
-                        .foregroundColor(selectedGender == gender ? .white : .primary)
+                        .foregroundColor(selectedGender == gender ? theme.buttonForeground : .primary)
                         .frame(width: 310, height: 60)
                         .background(
                             RoundedRectangle(cornerRadius: 12)
-                                .fill(selectedGender == gender ? Color.black : Color(.systemGray6))
+                                .fill(selectedGender == gender ? theme.buttonBackground : Color(.systemGray6))
                         )
                 }
             }

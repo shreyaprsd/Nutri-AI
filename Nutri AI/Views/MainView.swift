@@ -17,6 +17,7 @@ struct MainView: View {
     @State private var analysisVM = NutrientAnalysisViewModel()
     @State var foodViewModel: FoodEntryViewModel
     @Environment(\.modelContext) private var modelContext
+    @Environment(AppTheme.self) private var theme
 
     var body: some View {
         ZStack {
@@ -57,12 +58,12 @@ struct MainView: View {
                         }) {
                             ZStack {
                                 Circle()
-                                    .fill(Color.black)
+                                    .fill(theme.buttonBackground)
                                     .frame(width: 50, height: 50)
 
                                 Image(systemName: "camera")
                                     .font(.system(size: 20, weight: .medium))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(theme.buttonForeground)
                             }
                         }
                         .padding(.trailing, 24)

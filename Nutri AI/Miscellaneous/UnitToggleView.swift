@@ -9,6 +9,7 @@ import SwiftUI
 
 struct UnitToggleView: View {
     @Binding var isMetric: Bool
+    @Environment(AppTheme.self) private var theme
 
     var body: some View {
         HStack {
@@ -16,7 +17,7 @@ struct UnitToggleView: View {
                 .foregroundStyle(isMetric ? .secondary : .primary)
                 .padding(.trailing, 40)
             Toggle("", isOn: $isMetric)
-                .tint(Color.black)
+                .tint(theme.toggleTint)
                 .labelsHidden()
             Text("Metric")
                 .foregroundStyle(isMetric ? .primary : .secondary)

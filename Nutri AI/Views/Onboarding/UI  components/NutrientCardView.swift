@@ -11,6 +11,8 @@ struct NutritionCard: View {
     let nutrientType: NutrientType
     @Binding var nutrientValue: Double
 
+    @Environment(AppTheme.self) private var theme
+
     var body: some View {
         NavigationLink(
             destination: EditNutrientView(
@@ -21,20 +23,20 @@ struct NutritionCard: View {
         ) {
             ZStack(alignment: .center) {
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(Color.gray.opacity(0.6), lineWidth: 2)
-                    .fill(Color.white)
+                    .stroke(theme.border, lineWidth: 2)
+                    .fill(theme.cardBackground)
                     .frame(width: 150, height: 150)
                     .overlay(alignment: .bottomTrailing) {
                         Image(systemName: "pencil")
                             .font(.system(size: 20))
-                            .foregroundStyle(.black)
+                            .foregroundStyle(.primary)
                             .padding(8)
                     }
 
                 VStack {
                     Text(nutrientType.displayName)
                         .font(Font.system(size: 24, weight: .regular))
-                        .foregroundStyle(.black)
+                        .foregroundStyle(.primary)
 
                     ZStack {
                         CircularProgressRing(
@@ -48,7 +50,7 @@ struct NutritionCard: View {
 
                         Text(nutrientValue.cleanString() + nutrientType.unit)
                             .font(.system(size: 20, weight: .regular))
-                            .foregroundStyle(.black)
+                            .foregroundStyle(.primary)
                     }
                 }
             }
