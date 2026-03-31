@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct DateOfBirthView: View {
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
     @State private var selectedMonth = 7
     @State private var selectedDay = 3
     @State private var selectedYear = 2003

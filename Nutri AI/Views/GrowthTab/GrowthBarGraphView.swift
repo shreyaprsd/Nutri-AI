@@ -10,7 +10,7 @@ struct GrowthMacroEntry: Identifiable {
 }
 
 struct GrowthBarGraphView: View {
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
     @Query(sort: \NutritionModel.createdAt, order: .reverse) private var foodEntries: [NutritionModel]
 
     private let chartBuilder = GrowthChartBuilder(calendar: .current)
@@ -31,19 +31,16 @@ struct GrowthBarGraphView: View {
         VStack(spacing: 12) {
             Text("This week")
                 .font(.system(size: 16, weight: .regular))
-                .foregroundStyle(Color.primary)
                 .frame(width: 320, alignment: .leading)
 
             VStack(alignment: .leading, spacing: 12) {
                 Text("Total Calories")
                     .font(.system(size: 16, weight: .regular))
-                    .foregroundStyle(Color.primary)
                     .padding(.leading, 12)
                     .padding(.bottom, 16)
                 HStack(alignment: .lastTextBaseline, spacing: 6) {
                     Text(totalCaloriesText)
                         .font(.system(size: 34, weight: .bold))
-                        .foregroundStyle(Color.primary)
                     Text("cals")
                         .font(.system(size: 14, weight: .regular))
                         .foregroundStyle(theme.secondaryText)

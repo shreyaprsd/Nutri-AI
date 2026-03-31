@@ -12,7 +12,7 @@ struct OptionButton: View {
     let icon: String
     let title: String
     let action: () -> Void
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
 
     var body: some View {
         Button(action: action) {

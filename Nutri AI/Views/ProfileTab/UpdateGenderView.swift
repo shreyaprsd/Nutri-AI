@@ -7,7 +7,7 @@ struct UpdateGenderView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var userInfoViewModel: UserInfoViewModel?
     @Environment(FloatingButtonVisibility.self) private var floatingButtonVisibility
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
 
     private var viewModel: UserInfoViewModel {
         if let existing = userInfoViewModel {

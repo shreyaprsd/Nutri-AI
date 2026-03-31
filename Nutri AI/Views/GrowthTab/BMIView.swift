@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct BMIView: View {
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
     @Query private var users: [UserInfoModel]
 
     private var bmiValue: Double? {

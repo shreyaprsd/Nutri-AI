@@ -16,7 +16,7 @@ struct GrowthView: View {
     @State private var currentWeight: Double?
     @Environment(FloatingButtonVisibility.self) private var floatingButtonVisibility
     @Environment(\.modelContext) private var modelContext
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
     private var viewModel: UserInfoViewModel {
         if let existing = userInfoViewModel {
             return existing

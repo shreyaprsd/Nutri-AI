@@ -10,7 +10,7 @@ import SwiftUI
 struct ProgressBar: View {
     let current: Int
     let total: Int
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
 
     var progress: CGFloat {
         CGFloat(current) / CGFloat(total)

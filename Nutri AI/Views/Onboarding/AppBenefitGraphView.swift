@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AppBenefitGraphView: View {
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
     @ObservedObject var authViewModel: AuthViewModel
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
@@ -48,7 +48,7 @@ struct AppBenefitGraphView: View {
 }
 
 struct ComparisonGraphView: View {
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
 
     var body: some View {
         VStack(spacing: 20) {
@@ -58,7 +58,6 @@ struct ComparisonGraphView: View {
                         Text("Without\nNutri AI")
                             .font(.system(size: 17, weight: .semibold))
                             .multilineTextAlignment(.center)
-                            .foregroundColor(.primary)
                             .frame(height: 45)
 
                         ZStack(alignment: .bottom) {
@@ -72,7 +71,6 @@ struct ComparisonGraphView: View {
 
                                 Text("20%")
                                     .font(.system(size: 28, weight: .bold))
-                                    .foregroundColor(.primary)
                             }
                             .frame(width: 145, height: 85)
                         }
@@ -82,7 +80,6 @@ struct ComparisonGraphView: View {
                         Text("With\nNutri AI")
                             .font(.system(size: 17, weight: .semibold))
                             .multilineTextAlignment(.center)
-                            .foregroundColor(.primary)
                             .frame(height: 45)
 
                         ZStack(alignment: .bottom) {

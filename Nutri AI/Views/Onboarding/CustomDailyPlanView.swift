@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct CustomDailyPlanView: View {
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
     @Query private var users: [UserInfoModel]
     @Environment(\.modelContext) var modelContext
     @ObservedObject var authViewModel: AuthViewModel

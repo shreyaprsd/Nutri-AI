@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct SaveProgressView: View {
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
     @ObservedObject var authViewModel: AuthViewModel
     @Environment(\.modelContext) private var modelContext
     @Environment(OnboardingState.self) private var onboardingState

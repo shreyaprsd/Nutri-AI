@@ -16,7 +16,7 @@ struct ProfileView: View {
     @State private var showDeleteAlert: Bool = false
     @Environment(\.modelContext) private var modelContext
     @Environment(FloatingButtonVisibility.self) private var floatingButtonVisibility
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
 
     var body: some View {
         List {

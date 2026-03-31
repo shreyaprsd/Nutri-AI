@@ -5,27 +5,13 @@
 //  Created by Shreya Prasad on 28/03/26.
 //
 
-import Observation
 import SwiftUI
 
-@Observable
-final class AppTheme {
+struct AppTheme {
     // MARK: - Backgrounds
 
-    var cardBackground: Color {
-        Color(UIColor { traits in
-            traits.userInterfaceStyle == .dark
-                ? UIColor.secondarySystemBackground
-                : UIColor.white
-        })
-    }
-    var subtleCardBackground: Color {
-        Color(UIColor { traits in
-            traits.userInterfaceStyle == .dark
-                ? UIColor.secondarySystemBackground
-                : UIColor.gray.withAlphaComponent(0.1)
-        })
-    }
+    var cardBackground: Color { Color("CardBackground") }
+    var subtleCardBackground: Color { Color("SubtleCardBackground") }
 
     // MARK: - Text
 
@@ -47,4 +33,17 @@ final class AppTheme {
     // MARK: - Shadows
 
     var shadow: Color { Color.primary.opacity(0.1) }
+}
+
+// MARK: - Environment Integration
+
+private struct AppThemeKey: EnvironmentKey {
+    static let defaultValue = AppTheme()
+}
+
+extension EnvironmentValues {
+    var appTheme: AppTheme {
+        get { self[AppThemeKey.self] }
+        set { self[AppThemeKey.self] = newValue }
+    }
 }

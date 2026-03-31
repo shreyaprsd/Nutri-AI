@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DayWiseCalorieCard: View {
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
     let data: MacroCardsData
     let nutrientType: NutrientType
     let cardHeight: CGFloat
@@ -68,7 +68,7 @@ struct DayWiseCalorieCard: View {
 }
 
 struct DayWiseMacroCards: View {
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
     let data: MacroCardsData
     let nutrientType: NutrientType
     let ringColor: Color

@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct GoalMotivationView: View {
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
     @Environment(\.modelContext) private var modelContext
     @State private var goal: Goal?
     @State private var currentWeight = 0.0
@@ -58,7 +58,6 @@ struct GoalMotivationView: View {
                 HStack(spacing: 0) {
                     Text("\(goalVerb) ")
                         .font(.system(size: 32, weight: .semibold))
-                        .foregroundColor(.primary)
 
                     Text("\(String(format: "%.1f", weightDifference)) kg")
                         .font(.system(size: 32, weight: .bold))
@@ -66,23 +65,19 @@ struct GoalMotivationView: View {
 
                     Text(" is a")
                         .font(.system(size: 32, weight: .semibold))
-                        .foregroundColor(.primary)
                 }
 
                 Text("realistic target. It's")
                     .font(.system(size: 32, weight: .semibold))
-                    .foregroundColor(.primary)
 
                 Text("not hard at all!")
                     .font(.system(size: 32, weight: .semibold))
-                    .foregroundColor(.primary)
             }
             .multilineTextAlignment(.center)
             .padding(.horizontal, 30)
 
             Text("90% of the users say that the change is obvious after using Nutri AI and it is not easy to rebound")
                 .font(.system(size: 15, weight: .regular))
-                .foregroundColor(.primary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 40)
                 .padding(.top, 20)

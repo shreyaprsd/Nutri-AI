@@ -11,7 +11,7 @@ import SwiftUI
 struct LoginView: View {
     @ObservedObject var viewModel: AuthViewModel
     @Environment(\.dismiss) var dismiss
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
 
     private func signInWithGoogle() {
         Task {
@@ -35,10 +35,11 @@ struct LoginView: View {
                     }
                     .frame(width: 255, height: 50)
                 }
-                .foregroundStyle(theme.buttonForeground)
+                .foregroundStyle(theme.buttonBackground)
                 .background(
                     RoundedRectangle(cornerRadius: 24)
-                        .fill(theme.buttonBackground)
+                        .fill(theme.buttonForeground)
+                        .stroke(theme.buttonBackground, lineWidth: 2)
                 )
             }
             Spacer()

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct UnitToggleView: View {
     @Binding var isMetric: Bool
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
 
     var body: some View {
         HStack {

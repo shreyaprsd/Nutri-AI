@@ -30,7 +30,7 @@ struct LoadingImageView: View {
 
 struct LoadingFoodRow: View {
     let image: UIImage
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
     var body: some View {
         RoundedRectangle(cornerRadius: 16)
             .foregroundStyle(theme.subtleCardBackground)

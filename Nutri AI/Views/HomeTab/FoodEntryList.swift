@@ -65,7 +65,7 @@ struct FoodEntryList: View {
 }
 
 struct FoodEntryEmptyList: View {
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
 
     var body: some View {
         RoundedRectangle(cornerRadius: 16)
@@ -88,7 +88,7 @@ struct FoodEntryEmptyList: View {
 }
 
 struct FoodEntryRow: View {
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
     @Bindable var item: NutritionModel
 
     private var calculatedCalories: String {
@@ -117,13 +117,12 @@ struct FoodEntryRow: View {
                                 .font(.system(size: 16))
                             Spacer()
                             RoundedRectangle(cornerRadius: 12)
-                                .fill(Color.white)
+                                .fill(theme.cardBackground)
                                 .stroke(theme.border, lineWidth: 1)
                                 .overlay {
                                     Text(item.createdAt, style: .time)
                                         .fontWeight(.regular)
                                         .font(.system(size: 12))
-                                        .foregroundStyle(Color.black)
                                 }
                                 .frame(width: 54, height: 28)
                         }

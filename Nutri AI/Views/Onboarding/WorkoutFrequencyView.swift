@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct WorkoutFrequencyView: View {
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
     @State private var selectedFrequency: WorkoutFrequency?
     @Environment(\.modelContext) private var modelContext
     @State private var userInfoViewModel: UserInfoViewModel?
@@ -95,7 +95,7 @@ struct WorkoutFrequencyView: View {
 }
 
 struct WorkoutFrequencyCardview: View {
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
     let frequency: WorkoutFrequency
     let isSelected: Bool
 

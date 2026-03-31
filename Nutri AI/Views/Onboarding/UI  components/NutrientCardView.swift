@@ -11,7 +11,7 @@ struct NutritionCard: View {
     let nutrientType: NutrientType
     @Binding var nutrientValue: Double
 
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
 
     var body: some View {
         NavigationLink(
@@ -29,14 +29,12 @@ struct NutritionCard: View {
                     .overlay(alignment: .bottomTrailing) {
                         Image(systemName: "pencil")
                             .font(.system(size: 20))
-                            .foregroundStyle(.primary)
                             .padding(8)
                     }
 
                 VStack {
                     Text(nutrientType.displayName)
                         .font(Font.system(size: 24, weight: .regular))
-                        .foregroundStyle(.primary)
 
                     ZStack {
                         CircularProgressRing(
@@ -50,7 +48,6 @@ struct NutritionCard: View {
 
                         Text(nutrientValue.cleanString() + nutrientType.unit)
                             .font(.system(size: 20, weight: .regular))
-                            .foregroundStyle(.primary)
                     }
                 }
             }

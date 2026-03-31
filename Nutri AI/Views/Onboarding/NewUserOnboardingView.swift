@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct NewUserOnboardingView: View {
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
     @State private var presentLoginSheet = false
     @ObservedObject var authViewModel: AuthViewModel
 

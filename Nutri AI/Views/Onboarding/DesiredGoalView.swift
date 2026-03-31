@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct DesiredGoalView: View {
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
     @State private var selectedGoal: Goal?
     @Environment(\.modelContext) private var modelContext
     @State private var userInfoViewModel: UserInfoViewModel?

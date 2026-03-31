@@ -82,7 +82,7 @@ struct FoodEntryDetails: View {
 }
 
 struct FoodEntryTextDetailsView: View {
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
     @State private var inputText = ""
     @State private var isExpanding = false
     @State private var updateTask: Task<Void, Never>?
@@ -349,7 +349,7 @@ struct FoodEntryTextDetailsView: View {
 }
 
 struct FoodNutriFactRow: View {
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
     let label: String
     let value: String
     var body: some View {

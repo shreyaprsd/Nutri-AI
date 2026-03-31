@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct HeightWeightView: View {
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
     @State private var isMetric = true
     @State private var heightInCm: Double = 168
     @State private var weightInKg: Double = 54

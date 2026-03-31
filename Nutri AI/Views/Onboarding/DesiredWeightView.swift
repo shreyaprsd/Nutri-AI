@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct DesiredWeightView: View {
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
     @Environment(\.modelContext) private var modelContext
     @State var weight: Double = 54.0
     @State private var selectedGoal: Goal?

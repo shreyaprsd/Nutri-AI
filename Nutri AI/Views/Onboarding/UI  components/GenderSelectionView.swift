@@ -2,7 +2,7 @@ import SwiftUI
 
 struct GenderSelectionView: View {
     @Binding var selectedGender: Gender?
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
 
     var body: some View {
         VStack(spacing: 12) {

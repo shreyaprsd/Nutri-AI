@@ -19,7 +19,7 @@ struct EditNutrientView: View {
     let ringColor: Color
     let nutrientIcon: String
 
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
 
     var body: some View {
         VStack(spacing: 0) {
@@ -47,6 +47,7 @@ struct EditNutrientView: View {
                         .frame(width: 135, height: 42)
                         .foregroundStyle(theme.buttonBackground)
                         .background(theme.cardBackground)
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
                         .overlay(
                             RoundedRectangle(cornerRadius: 20)
                                 .stroke(theme.border, lineWidth: 1)

@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct AllDoneView: View {
-    @Environment(AppTheme.self) private var theme
     @ObservedObject var authViewModel: AuthViewModel
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
@@ -25,7 +24,7 @@ struct AllDoneView: View {
 }
 
 struct AllDoneViewCard: View {
-    @Environment(AppTheme.self) private var theme
+    @Environment(\.appTheme) private var theme
     @ObservedObject var authViewModel: AuthViewModel
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
