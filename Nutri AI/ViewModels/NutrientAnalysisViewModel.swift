@@ -54,7 +54,7 @@ final class NutrientAnalysisViewModel {
             let entry = NutritionModel(createdAt: Date(), imageData: imageData, response: response)
             let foodEntryViewModel = FoodEntryViewModel(modelContext: modelContext)
 
-            try await foodEntryViewModel.addFoodEntry(entry, image: image, onLocalSaveComplete: { self.hideLoadingIfDone(for: loadingItem) })
+            try await foodEntryViewModel.addFoodEntry(entry, imageData: imageData, onLocalSaveComplete: { self.hideLoadingIfDone(for: loadingItem) })
         } catch {
             errorMessage = error.localizedDescription
         }

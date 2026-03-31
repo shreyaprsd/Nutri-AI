@@ -13,7 +13,7 @@ import OSLog
 class StorageManager {
     static let shared = StorageManager()
     private let storage = Storage.storage()
-    let logger = Logger(subsystem: "com.shreyaprasad.NutriAI", category: "StorageManager")
+    private let logger = Logger(subsystem: "com.shreyaprasad.NutriAI", category: "StorageManager")
     private init() {}
 
     // upload the image and return url
@@ -26,7 +26,7 @@ class StorageManager {
         // setting up of metadata
         let metadata = StorageMetadata()
         metadata.contentType = "image/jpeg"
-        metadata.customMetadata = ["uploaderEmail": Auth.auth().currentUser?.email ?? "unknown"]
+        metadata.customMetadata = ["uploaderId": Auth.auth().currentUser?.uid ?? "unknown"]
 
         // upload the image
         _ = try await foodImageRef.putDataAsync(

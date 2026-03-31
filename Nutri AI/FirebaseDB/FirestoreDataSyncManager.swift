@@ -10,15 +10,14 @@ import FirebaseAuth
 import FirebaseFirestore
 import OSLog
 import SwiftData
-import UIKit
 
 class FirestoreDataSyncManager {
     static let shared = FirestoreDataSyncManager()
     static let taskIdentifier = "com.shreyaprasad.NutriAI.firestoresync"
     private let queue = DispatchQueue(label: "com.shreyaprasad.NutriAI.syncQueue")
-    private var pendingSyncItems: [(food: NutritionModel, image: UIImage?)] = []
+    private var pendingSyncItems: [(food: NutritionModel, imageData: Data?)] = []
     private let db = Firestore.firestore()
-    let logger = Logger(subsystem: "com.shreyaprasad.NutriAI", category: "BackgroundSyncManager")
+    private let logger = Logger(subsystem: "com.shreyaprasad.NutriAI", category: "BackgroundSyncManager")
     private init() {}
 
     // register the background task
@@ -37,9 +36,9 @@ class FirestoreDataSyncManager {
     }
 
     // Called when Firestore save fails
-    func addPendingSync(food: NutritionModel, image: UIImage?) {
+    func addPendingSync(food: NutritionModel, imageData: Data?) {
         queue.sync {
-            pendingSyncItems.append((food, image))
+            pendingSyncItems.append((food, imageData))
         }
         let request = BGProcessingTaskRequest(identifier: Self.taskIdentifier)
         request.requiresExternalPower = true
@@ -81,9 +80,7 @@ class FirestoreDataSyncManager {
             do {
                 // Upload image if exists
                 var imageURL: String?
-                if let image = item.image,
-                   let imageData = image.resizedForUpload().jpegData(compressionQuality: 0.8)
-                {
+                if let imageData = item.imageData {
                     imageURL = try await StorageManager.shared.uploadFoodImage(imageData: imageData)
                 }
 

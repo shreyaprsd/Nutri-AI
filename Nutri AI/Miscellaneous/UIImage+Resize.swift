@@ -10,12 +10,14 @@ import UIKit
 extension UIImage {
     /// Resizes the image so its longest edge is at most `maxDimension` points.
     /// Maintains aspect ratio. Returns the original image if already small enough.
-    func resizedForUpload(maxDimension: CGFloat = 1024) -> UIImage {
-        let currentMax = max(size.width, size.height)
-        guard currentMax > maxDimension else { return self }
+    func resizedForUpload(maxPixelDimension: CGFloat = 1024) -> UIImage {
+        let pixelWidth = size.width * scale
+        let pixelHeight = size.height * scale
+        let currentMax = max(pixelWidth, pixelHeight)
+        guard currentMax > maxPixelDimension else { return self }
 
-        let scale = maxDimension / currentMax
-        let newSize = CGSize(width: size.width * scale, height: size.height * scale)
+        let ratio = maxPixelDimension / currentMax
+        let newSize = CGSize(width: pixelWidth * ratio, height: pixelHeight * ratio)
 
         let format = UIGraphicsImageRendererFormat()
         format.scale = 1.0

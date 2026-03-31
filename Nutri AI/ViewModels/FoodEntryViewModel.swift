@@ -8,7 +8,7 @@
 import Foundation
 import OSLog
 import SwiftData
-import UIKit
+
 
 @Observable
 class FoodEntryViewModel {
@@ -22,8 +22,8 @@ class FoodEntryViewModel {
     }
 
     // save the data
-    func addFoodEntry(_ food: NutritionModel, image: UIImage?, onLocalSaveComplete: () -> Void) async throws {
-        try await foodRepository.saveFoodToBothDB(food: food, image: image, onLocalSaveComplete: onLocalSaveComplete)
+    func addFoodEntry(_ food: NutritionModel, imageData: Data?, onLocalSaveComplete: () -> Void) async throws {
+        try await foodRepository.saveFoodToBothDB(food: food, imageData: imageData, onLocalSaveComplete: onLocalSaveComplete)
     }
 
     // delete the data
