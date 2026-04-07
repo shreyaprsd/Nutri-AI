@@ -14,20 +14,18 @@ import SwiftData
 class FoodRepository {
     private let db = Firestore.firestore()
     private var modelContext: ModelContext
-    let logger = Logger(subsystem: "com.shreyaprasad.NutriAI", category: "FoodRepository")
+    private let logger = Logger(subsystem: "com.shreyaprasad.NutriAI", category: "FoodRepository")
 
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
     }
 
-    func saveFoodEntryToFirestore(food: NutritionModel, image: UIImage?) async throws {
+    func saveFoodEntryToFirestore(food: NutritionModel, imageData: Data?) async throws {
         guard let userId = Auth.auth().currentUser?.uid else {
             throw FoodDataError.userNotAuthenticated
         }
         var imageURL: String?
-        if let image,
-           let imageData = image.jpegData(compressionQuality: 0.8)
-        {
+        if let imageData {
             imageURL = try await StorageManager.shared.uploadFoodImage(imageData: imageData)
         }
         let foodData = RemoteModel(model: food, imageURL: imageURL)
@@ -73,7 +71,7 @@ class FoodRepository {
         }
     }
 
-    func saveFoodToBothDB(food: NutritionModel, image: UIImage?, onLocalSaveComplete: () -> Void) async throws {
+    func saveFoodToBothDB(food: NutritionModel, imageData: Data?, onLocalSaveComplete: () -> Void) async throws {
         // save the data locally
         do {
             modelContext.insert(food)
@@ -86,11 +84,11 @@ class FoodRepository {
 
         // save the data to firestoreDB
         do {
-            try await saveFoodEntryToFirestore(food: food, image: image)
+            try await saveFoodEntryToFirestore(food: food, imageData: imageData)
             logger.info("Data saved to Firestore")
         } catch {
             logger.error("Firestore save failed, scheduling background sync")
-            FirestoreDataSyncManager.shared.addPendingSync(food: food, image: image)
+            FirestoreDataSyncManager.shared.addPendingSync(food: food, imageData: imageData)
         }
     }
 

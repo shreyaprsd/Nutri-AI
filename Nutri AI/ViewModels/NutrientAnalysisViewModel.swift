@@ -47,14 +47,14 @@ final class NutrientAnalysisViewModel {
             let response = try await analysisService.analyze(image: image)
             nutritionInfo = response
 
-            guard let imageData = image.jpegData(compressionQuality: 0.8) else {
+            guard let imageData = image.resizedForUpload().jpegData(compressionQuality: 0.8) else {
                 hideLoadingIfDone(for: loadingItem)
                 return
             }
             let entry = NutritionModel(createdAt: Date(), imageData: imageData, response: response)
             let foodEntryViewModel = FoodEntryViewModel(modelContext: modelContext)
 
-            try await foodEntryViewModel.addFoodEntry(entry, image: image, onLocalSaveComplete: { self.hideLoadingIfDone(for: loadingItem) })
+            try await foodEntryViewModel.addFoodEntry(entry, imageData: imageData, onLocalSaveComplete: { self.hideLoadingIfDone(for: loadingItem) })
         } catch {
             errorMessage = error.localizedDescription
         }

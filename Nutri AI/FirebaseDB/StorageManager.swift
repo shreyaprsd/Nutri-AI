@@ -5,6 +5,7 @@
 //  Created by Shreya Prasad on 08/12/25.
 //
 
+import FirebaseAuth
 import FirebaseStorage
 import Foundation
 import OSLog
@@ -12,7 +13,7 @@ import OSLog
 class StorageManager {
     static let shared = StorageManager()
     private let storage = Storage.storage()
-    let logger = Logger(subsystem: "com.shreyaprasad.NutriAI", category: "StorageManager")
+    private let logger = Logger(subsystem: "com.shreyaprasad.NutriAI", category: "StorageManager")
     private init() {}
 
     // upload the image and return url
@@ -25,6 +26,7 @@ class StorageManager {
         // setting up of metadata
         let metadata = StorageMetadata()
         metadata.contentType = "image/jpeg"
+        metadata.customMetadata = ["uploaderId": Auth.auth().currentUser?.uid ?? "unknown"]
 
         // upload the image
         _ = try await foodImageRef.putDataAsync(
