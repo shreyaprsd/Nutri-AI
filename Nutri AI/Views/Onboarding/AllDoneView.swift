@@ -24,7 +24,6 @@ struct AllDoneView: View {
 }
 
 struct AllDoneViewCard: View {
-    @Environment(\.appTheme) private var theme
     @ObservedObject var authViewModel: AuthViewModel
     let currentOnboardingStep: Int
     let totalOnboardingSteps: Int
@@ -60,14 +59,7 @@ struct AllDoneViewCard: View {
             Spacer()
 
             NavigationLink(destination: CustomPlanGenerationView(authViewModel: authViewModel)) {
-                Text("Continue")
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(theme.buttonForeground)
-                    .frame(width: 310, height: 46)
-                    .background(
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(theme.buttonBackground)
-                    )
+                PrimaryButton(title: "Continue")
             }
             .padding(.bottom, 20)
         }

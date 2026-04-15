@@ -27,14 +27,7 @@ struct AppBenefitGraphView: View {
         }
 
         NavigationLink(destination: AllDoneView(authViewModel: authViewModel)) {
-            Text("Continue")
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(theme.buttonForeground)
-                .frame(width: 310, height: 46)
-                .background(
-                    RoundedRectangle(cornerRadius: 20)
-                        .fill(theme.buttonBackground)
-                )
+            PrimaryButton(title: "Continue")
         }
         .padding(.horizontal, 24)
         .padding(.bottom, 40)
@@ -89,11 +82,11 @@ struct ComparisonGraphView: View {
 
                             ZStack {
                                 RoundedRectangle(cornerRadius: 20)
-                                    .fill(theme.buttonBackground)
+                                    .fill(theme.primaryFill)
 
                                 Text("2X")
                                     .font(.system(size: 36, weight: .bold))
-                                    .foregroundColor(theme.buttonForeground)
+                                    .foregroundColor(theme.primaryFillContent)
                             }
                             .frame(width: 145, height: 225)
                         }

@@ -52,11 +52,11 @@ struct DesiredGoalView: View {
                     }) {
                         Text(goal.rawValue)
                             .font(.system(size: 14, weight: .medium))
-                            .foregroundColor(selectedGoal == goal ? theme.buttonForeground : .primary)
+                            .foregroundColor(selectedGoal == goal ? theme.primaryFillContent : .primary)
                             .frame(width: 310, height: 60)
                             .background(
                                 RoundedRectangle(cornerRadius: 12)
-                                    .fill(selectedGoal == goal ? theme.buttonBackground : Color(.systemGray6)))
+                                    .fill(selectedGoal == goal ? theme.primaryFill : Color(.systemGray6)))
                     }
                 }
             }
@@ -65,14 +65,7 @@ struct DesiredGoalView: View {
 
             if selectedGoal == .maintain {
                 NavigationLink(destination: AppBenefitGraphView(authViewModel: authViewModel)) {
-                    Text("Continue")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(theme.buttonForeground)
-                        .frame(width: 310, height: 46)
-                        .background(
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(theme.buttonBackground)
-                        )
+                    PrimaryButton(title: "Continue")
                 }
                 .simultaneousGesture(TapGesture()
                     .onEnded {
@@ -85,14 +78,7 @@ struct DesiredGoalView: View {
                 .padding(.bottom, 20)
             } else {
                 NavigationLink(destination: DesiredWeightView(authViewModel: authViewModel)) {
-                    Text("Continue")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(theme.buttonForeground)
-                        .frame(width: 310, height: 46)
-                        .background(
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(theme.buttonBackground)
-                        )
+                    PrimaryButton(title: "Continue")
                 }
                 .simultaneousGesture(TapGesture()
                     .onEnded {

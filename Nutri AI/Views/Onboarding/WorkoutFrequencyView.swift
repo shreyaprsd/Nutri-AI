@@ -55,14 +55,7 @@ struct WorkoutFrequencyView: View {
             Spacer()
 
             NavigationLink(destination: HeightWeightView(authViewModel: authViewModel)) {
-                Text("Continue")
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(theme.buttonForeground)
-                    .frame(width: 310, height: 46)
-                    .background(
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(theme.buttonBackground)
-                    )
+                PrimaryButton(title: "Continue")
             }
             .simultaneousGesture(TapGesture().onEnded {
                 if let frequency = selectedFrequency {
@@ -103,7 +96,7 @@ struct WorkoutFrequencyCardview: View {
         HStack {
             ZStack {
                 Circle()
-                    .fill(isSelected ? theme.buttonForeground : theme.buttonForeground.opacity(0.2))
+                    .fill(isSelected ? theme.primaryFillContent : theme.primaryFillContent.opacity(0.2))
                     .frame(width: 30, height: 30)
                 Image(systemName: frequency.icon)
                     .font(.system(size: 20, weight: .semibold))
@@ -113,10 +106,10 @@ struct WorkoutFrequencyCardview: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(frequency.title)
                     .font(.system(size: 16, weight: .regular))
-                    .foregroundStyle(isSelected ? theme.buttonForeground : .primary)
+                    .foregroundStyle(isSelected ? theme.primaryFillContent : .primary)
                 Text(frequency.description)
                     .font(.system(size: 14, weight: .regular))
-                    .foregroundColor(isSelected ? theme.buttonForeground : .primary)
+                    .foregroundColor(isSelected ? theme.primaryFillContent : .primary)
             }
             Spacer()
         }
@@ -124,7 +117,7 @@ struct WorkoutFrequencyCardview: View {
         .frame(width: 310, height: 74)
         .background(
             RoundedRectangle(cornerRadius: 18)
-                .fill(isSelected ? theme.buttonBackground : theme.cardBackground)
+                .fill(isSelected ? theme.primaryFill : theme.cardBackground)
         )
     }
 }

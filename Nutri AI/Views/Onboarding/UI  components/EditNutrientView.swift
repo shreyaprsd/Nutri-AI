@@ -45,7 +45,7 @@ struct EditNutrientView: View {
                 } label: {
                     Text("Revert")
                         .frame(width: 135, height: 42)
-                        .foregroundStyle(theme.buttonBackground)
+                        .foregroundStyle(theme.primaryFill)
                         .background(theme.cardBackground)
                         .clipShape(RoundedRectangle(cornerRadius: 20))
                         .overlay(
@@ -64,8 +64,8 @@ struct EditNutrientView: View {
                 } label: {
                     Text("Done")
                         .frame(width: 135, height: 42)
-                        .foregroundStyle(theme.buttonForeground)
-                        .background(theme.buttonBackground)
+                        .foregroundStyle(theme.primaryFillContent)
+                        .background(theme.primaryFill)
                         .clipShape(RoundedRectangle(cornerRadius: 20))
                 }
             }

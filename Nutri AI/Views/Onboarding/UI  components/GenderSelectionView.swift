@@ -12,11 +12,11 @@ struct GenderSelectionView: View {
                 } label: {
                     Text(gender.rawValue)
                         .font(.system(size: 14, weight: .medium))
-                        .foregroundColor(selectedGender == gender ? theme.buttonForeground : .primary)
+                        .foregroundColor(selectedGender == gender ? theme.primaryFillContent : .primary)
                         .frame(width: 310, height: 60)
                         .background(
                             RoundedRectangle(cornerRadius: 12)
-                                .fill(selectedGender == gender ? theme.buttonBackground : Color(.systemGray6))
+                                .fill(selectedGender == gender ? theme.primaryFill : Color(.systemGray6))
                         )
                 }
             }

@@ -117,7 +117,7 @@ struct FoodEntryTextDetailsView: View {
                     Text(item.createdAt, style: .time)
                         .fontWeight(.regular)
                         .font(.system(size: 12))
-                        .foregroundStyle(theme.buttonBackground)
+                        .foregroundStyle(theme.primaryFill)
                 }
                 .frame(width: 54, height: 28)
 
@@ -263,7 +263,7 @@ struct FoodEntryTextDetailsView: View {
                         }
                     } label: {
                         Image(systemName: "chevron.right")
-                            .foregroundStyle(theme.buttonBackground)
+                            .foregroundStyle(theme.primaryFill)
                             .rotationEffect(.degrees(isExpanding ? 90 : 0))
                     }
                 }

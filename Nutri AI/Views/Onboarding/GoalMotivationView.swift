@@ -9,7 +9,6 @@ import SwiftData
 import SwiftUI
 
 struct GoalMotivationView: View {
-    @Environment(\.appTheme) private var theme
     @Environment(\.modelContext) private var modelContext
     @State private var goal: Goal?
     @State private var currentWeight = 0.0
@@ -85,14 +84,7 @@ struct GoalMotivationView: View {
             Spacer()
 
             NavigationLink(destination: AppBenefitGraphView(authViewModel: authViewModel)) {
-                Text("Continue")
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(theme.buttonForeground)
-                    .frame(width: 310, height: 46)
-                    .background(
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(theme.buttonBackground)
-                    )
+                PrimaryButton(title: "Continue")
             }
         }
         .toolbar {

@@ -9,7 +9,6 @@ import SwiftData
 import SwiftUI
 
 struct DesiredWeightView: View {
-    @Environment(\.appTheme) private var theme
     @Environment(\.modelContext) private var modelContext
     @State var weight: Double = 54.0
     @State private var selectedGoal: Goal?
@@ -51,14 +50,7 @@ struct DesiredWeightView: View {
             Spacer()
 
             NavigationLink(destination: GoalMotivationView(authViewModel: authViewModel)) {
-                Text("Continue")
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(theme.buttonForeground)
-                    .frame(width: 310, height: 46)
-                    .background(
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(theme.buttonBackground)
-                    )
+                PrimaryButton(title: "Continue")
             }
             .simultaneousGesture(TapGesture().onEnded {
                 saveData()

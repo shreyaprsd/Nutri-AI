@@ -9,7 +9,6 @@ import SwiftData
 import SwiftUI
 
 struct DateOfBirthView: View {
-    @Environment(\.appTheme) private var theme
     @State private var selectedMonth = 7
     @State private var selectedDay = 3
     @State private var selectedYear = 2003
@@ -59,14 +58,7 @@ struct DateOfBirthView: View {
         Button {
             validateAgeAndContinue()
         } label: {
-            Text("Continue")
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(theme.buttonForeground)
-                .frame(width: 310, height: 46)
-                .background(
-                    RoundedRectangle(cornerRadius: 20)
-                        .fill(theme.buttonBackground)
-                )
+            PrimaryButton(title: "Continue")
         }
         .alert("We're sorry!", isPresented: $showAgeAlert) {
             Button("OK") {

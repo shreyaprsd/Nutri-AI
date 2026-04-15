@@ -9,7 +9,6 @@ import SwiftData
 import SwiftUI
 
 struct GenderView: View {
-    @Environment(\.appTheme) private var theme
     @State private var selectedGender: Gender?
     @Environment(\.modelContext) private var modelContext
     @State private var userInfoViewModel: UserInfoViewModel?
@@ -48,14 +47,7 @@ struct GenderView: View {
         Spacer()
 
         NavigationLink(destination: WorkoutFrequencyView(authViewModel: authViewModel)) {
-            Text("Continue")
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(theme.buttonForeground)
-                .frame(width: 310, height: 46)
-                .background(
-                    RoundedRectangle(cornerRadius: 20)
-                        .fill(theme.buttonBackground)
-                )
+            PrimaryButton(title: "Continue")
         }
         .simultaneousGesture(TapGesture().onEnded {
             if let gender = selectedGender {

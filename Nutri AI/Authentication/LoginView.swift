@@ -32,15 +32,19 @@ struct LoginView: View {
                         Text("Sign in with Google")
                             .font(.body)
                             .fontWeight(.medium)
+                            .foregroundStyle(theme.primaryFill)
                     }
                     .frame(width: 255, height: 50)
+                    .background(
+                        RoundedRectangle(cornerRadius: 24)
+                            .fill(theme.primaryFillContent)
+                    )
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 24)
+                            .stroke(theme.primaryFill, lineWidth: 2)
+                    }
                 }
-                .foregroundStyle(theme.buttonBackground)
-                .background(
-                    RoundedRectangle(cornerRadius: 24)
-                        .fill(theme.buttonForeground)
-                        .stroke(theme.buttonBackground, lineWidth: 2)
-                )
+                .buttonStyle(.plain)
             }
             Spacer()
         }

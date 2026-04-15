@@ -116,14 +116,7 @@ struct CustomDailyPlanView: View {
             Spacer()
 
             NavigationLink(destination: SaveProgressView(authViewModel: authViewModel)) {
-                Text("Let's get started!")
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(theme.buttonForeground)
-                    .frame(width: 310, height: 46)
-                    .background(
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(theme.buttonBackground)
-                    )
+                PrimaryButton(title: "Let's get started!")
             }
         }
         .onAppear {

@@ -9,7 +9,6 @@ import SwiftData
 import SwiftUI
 
 struct SaveProgressView: View {
-    @Environment(\.appTheme) private var theme
     @ObservedObject var authViewModel: AuthViewModel
     @Environment(\.modelContext) private var modelContext
     @Environment(OnboardingState.self) private var onboardingState
@@ -53,11 +52,7 @@ struct SaveProgressView: View {
                 Button {
                     onboardingState.isCompleted = true
                 } label: {
-                    Text("Finish Setup")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(theme.buttonForeground)
-                        .frame(width: 310, height: 46)
-                        .background(RoundedRectangle(cornerRadius: 20).fill(theme.buttonBackground))
+                    PrimaryButton(title: "Finish Setup")
                 }
                 .padding(.bottom, 20)
 

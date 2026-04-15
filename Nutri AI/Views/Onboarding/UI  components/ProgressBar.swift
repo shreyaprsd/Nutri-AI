@@ -24,7 +24,7 @@ struct ProgressBar: View {
                     .frame(height: 4)
 
                 Rectangle()
-                    .fill(theme.buttonBackground)
+                    .fill(theme.primaryFill)
                     .frame(width: geometry.size.width * progress, height: 4)
                     .animation(.easeInOut(duration: 0.3), value: progress)
             }

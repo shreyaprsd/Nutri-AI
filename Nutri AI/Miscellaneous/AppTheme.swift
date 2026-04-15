@@ -10,29 +10,29 @@ import SwiftUI
 struct AppTheme {
     // MARK: - Backgrounds
 
-    var cardBackground: Color { Color("CardBackground") }
-    var subtleCardBackground: Color { Color("SubtleCardBackground") }
+    let cardBackground = Color(.cardBackground)
+    let subtleCardBackground = Color(.subtleCardBackground)
 
     // MARK: - Text
 
-    var secondaryText: Color { Color.secondary }
+    let secondaryText = Color.secondary
 
     // MARK: - Buttons
 
-    var buttonBackground: Color { Color.primary }
-    var buttonForeground: Color { Color(.systemBackground) }
+    let primaryFill = Color.primary
+    let primaryFillContent = Color(.systemBackground)
 
     // MARK: - Controls
 
-    var toggleTint: Color { Color(.darkGray) }
+    let toggleTint = Color(.darkGray)
 
     // MARK: - Borders & Strokes
 
-    var border: Color { Color(.separator) }
+    var border = Color(.separator)
 
     // MARK: - Shadows
 
-    var shadow: Color { Color.primary.opacity(0.1) }
+    let shadow = Color.primary.opacity(0.1)
 }
 
 // MARK: - Environment Integration

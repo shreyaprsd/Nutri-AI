@@ -76,8 +76,8 @@ struct GrowthView: View {
                     .frame(width: 64, height: 20)
             }
             .buttonStyle(.borderedProminent)
-            .tint(theme.buttonBackground)
-            .foregroundStyle(theme.buttonForeground)
+            .tint(theme.primaryFill)
+            .foregroundStyle(theme.primaryFillContent)
             .frame(width: 64, height: 20)
             .padding(.trailing, 15)
         }
@@ -103,9 +103,9 @@ struct GrowthView: View {
                             ZStack {
                                 Circle()
                                     .frame(width: 36, height: 36)
-                                    .foregroundStyle(theme.buttonBackground)
+                                    .foregroundStyle(theme.primaryFill)
                                 Image(systemName: "dumbbell.fill")
-                                    .foregroundStyle(theme.buttonForeground)
+                                    .foregroundStyle(theme.primaryFillContent)
                             }
                             Text("Current Weight: \(currentWeightText)")
                                 .font(.system(size: 14, weight: .regular))
@@ -127,8 +127,8 @@ struct GrowthView: View {
                                 .frame(maxWidth: 320)
                         }
                         .buttonStyle(.borderedProminent)
-                        .tint(theme.buttonBackground)
-                        .foregroundStyle(theme.buttonForeground)
+                        .tint(theme.primaryFill)
+                        .foregroundStyle(theme.primaryFillContent)
                         .padding(.bottom, 8)
                     }
                     .padding()

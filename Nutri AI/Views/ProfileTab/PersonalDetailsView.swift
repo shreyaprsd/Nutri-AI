@@ -123,10 +123,10 @@ struct PersonalDetailsView: View {
                 } label: {
                     Text("Change Goal")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(theme.buttonForeground)
+                        .foregroundStyle(theme.primaryFillContent)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)
-                        .background(Capsule().fill(theme.buttonBackground))
+                        .background(Capsule().fill(theme.primaryFill))
                 }
             }
             .padding(.horizontal, 16)

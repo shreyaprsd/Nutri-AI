@@ -7,8 +7,6 @@ struct UpdateGenderView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var userInfoViewModel: UserInfoViewModel?
     @Environment(FloatingButtonVisibility.self) private var floatingButtonVisibility
-    @Environment(\.appTheme) private var theme
-
     private var viewModel: UserInfoViewModel {
         if let existing = userInfoViewModel {
             return existing
@@ -30,14 +28,7 @@ struct UpdateGenderView: View {
                 saveData()
                 dismiss()
             } label: {
-                Text("Save")
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(theme.buttonForeground)
-                    .frame(width: 310, height: 46)
-                    .background(
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(theme.buttonBackground)
-                    )
+                PrimaryButton(title: "Save")
             }
             .disabled(selectedGender == nil)
             .opacity(selectedGender == nil ? 0.3 : 1.0)

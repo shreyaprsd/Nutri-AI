@@ -5,6 +5,7 @@
 //  Created by Shreya Prasad on 05/11/25.
 //
 
+import SwiftData
 import SwiftUI
 
 struct MainView: View {
@@ -58,12 +59,12 @@ struct MainView: View {
                         }) {
                             ZStack {
                                 Circle()
-                                    .fill(theme.buttonBackground)
+                                    .fill(theme.primaryFill)
                                     .frame(width: 50, height: 50)
 
                                 Image(systemName: "camera")
                                     .font(.system(size: 20, weight: .medium))
-                                    .foregroundColor(theme.buttonForeground)
+                                    .foregroundColor(theme.primaryFillContent)
                             }
                         }
                         .padding(.trailing, 24)

@@ -19,17 +19,36 @@ struct OptionButton: View {
             VStack(spacing: 12) {
                 Image(systemName: icon)
                     .font(.system(size: 30))
-                    .foregroundColor(theme.buttonBackground)
+                    .foregroundColor(theme.primaryFill)
 
                 Text(title)
                     .font(.system(size: 12, weight: .medium))
-                    .foregroundColor(theme.buttonBackground)
+                    .foregroundColor(theme.primaryFill)
                     .multilineTextAlignment(.center)
             }
             .frame(width: 130, height: 90)
             .background(theme.cardBackground)
             .cornerRadius(16)
         }
+    }
+}
+
+struct PrimaryButton: View {
+    let title: String
+    var width: CGFloat = 310
+    var height: CGFloat = 46
+    var cornerRadius: CGFloat = 20
+    @Environment(\.appTheme) private var theme
+
+    var body: some View {
+        Text(title)
+            .font(.system(size: 14, weight: .medium))
+            .foregroundStyle(theme.primaryFillContent)
+            .frame(width: width, height: height)
+            .background(
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .fill(theme.primaryFill)
+            )
     }
 }
 
