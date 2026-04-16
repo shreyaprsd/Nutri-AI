@@ -23,9 +23,12 @@ struct NutritionCard: View {
         ) {
             ZStack(alignment: .center) {
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(theme.border, lineWidth: 2)
                     .fill(theme.cardBackground)
                     .frame(width: 150, height: 150)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(theme.border, lineWidth: 2)
+                    }
                     .overlay(alignment: .bottomTrailing) {
                         Image(systemName: "pencil")
                             .font(.system(size: 20))

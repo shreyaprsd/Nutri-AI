@@ -48,7 +48,7 @@ struct CustomDailyPlanView: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
                     .frame(width: 360, height: 450)
-                    .foregroundStyle(theme.cardBackground)
+                    .foregroundStyle(theme.subtleCardBackground)
                 VStack(alignment: .leading) {
                     HStack {
                         VStack(alignment: .leading) {

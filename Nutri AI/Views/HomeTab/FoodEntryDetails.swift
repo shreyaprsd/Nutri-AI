@@ -43,7 +43,7 @@ struct FoodEntryDetails: View {
                 ToolbarItem(placement: .principal) {
                     Text("Nutrition")
                         .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(.white)
+                        .foregroundStyle(.primary)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {

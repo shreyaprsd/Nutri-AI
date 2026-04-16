@@ -24,11 +24,11 @@ struct AppTheme {
 
     // MARK: - Controls
 
-    let toggleTint = Color(.darkGray)
+    let toggleTint = Color.primary
 
     // MARK: - Borders & Strokes
 
-    var border = Color(.separator)
+    let border = Color(.separator)
 
     // MARK: - Shadows
 

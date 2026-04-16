@@ -117,15 +117,15 @@ struct FoodEntryRow: View {
                                 .font(.system(size: 16))
                             Spacer()
                             RoundedRectangle(cornerRadius: 12)
-                                .stroke(theme.border, lineWidth: 1)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .fill(theme.cardBackground)
-                                )
+                                .fill(theme.cardBackground)
                                 .overlay {
                                     Text(item.createdAt, style: .time)
                                         .fontWeight(.regular)
                                         .font(.system(size: 12))
+                                }
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(theme.border, lineWidth: 1)
                                 }
                                 .frame(width: 54, height: 28)
                         }

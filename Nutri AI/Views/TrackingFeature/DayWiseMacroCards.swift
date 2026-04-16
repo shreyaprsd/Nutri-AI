@@ -26,9 +26,12 @@ struct DayWiseCalorieCard: View {
         VStack {
             ZStack(alignment: .center) {
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(theme.border, lineWidth: 2)
                     .fill(theme.cardBackground)
                     .frame(width: cardWidth, height: cardHeight)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(theme.border, lineWidth: 2)
+                    }
                     .overlay(alignment: .trailing) {
                         ZStack {
                             DynamicProgressRing(
@@ -80,9 +83,12 @@ struct DayWiseMacroCards: View {
         VStack {
             ZStack(alignment: .center) {
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(theme.border, lineWidth: 2)
                     .fill(theme.cardBackground)
                     .frame(width: cardWidth, height: cardHeight)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(theme.border, lineWidth: 2)
+                    }
                     .overlay(alignment: .center) {
                         VStack(spacing: 4) {
                             HStack(alignment: .firstTextBaseline, spacing: 2) {
