@@ -89,9 +89,9 @@ Key flow:
 
 1. Clone the repository.
 2. Open `Nutri AI.xcodeproj` in Xcode.
-3. Connect your Firebase project with this Xcode project.
-4. Enable Google sign-in in Firebase Authentication.
-5. Enable Firestore Database and Firebase Storage.
+3. Install Firebase SDK and the Google sign-in SDK in Xcode. Below are the links to the SDK https://github.com/firebase/firebase-ios-sdk https://github.com/google/GoogleSignIn-iOS
+4. Configure Google sign-in in Firebase Authentication.
+5. Configure Firestore Database and Firebase Storage.
 6. Configure Firebase AI access for the model used in `Nutri AI/ViewModels/NutritionalAnalysisService.swift`, currently `gemini-2.5-flash`.
 7. Update the Google URL scheme in `Nutri-AI-Info.plist` to match your reversed client ID.
 8. Build and run on a simulator or device with camera access available.
