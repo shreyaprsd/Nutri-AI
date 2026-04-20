@@ -104,7 +104,3 @@ Key flow:
 - Food entries are saved locally first, then uploaded to Firestore and Firebase Storage.
 - If a cloud save fails, the app queues the entry and retries via `BGTaskScheduler`.
 - On reinstall or device changes, the app attempts to restore onboarding/profile data from Firestore.
-
-## Repository Status 📌
-
-The GitHub repository is currently private, uses `main` as the default branch, and did not previously include a README. This document was written from the current codebase and GitHub repository structure so it stays aligned with the actual implementation.
