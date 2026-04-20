@@ -12,30 +12,30 @@ The app is built around three main ideas:
 
 ## Features 🚀
 
-- Google Sign-In with Firebase Authentication 🔐
-- Multi-step onboarding with goal and lifestyle capture 📝
-- Personalized calorie and macro recommendations 🎯
-- Editable daily nutrition targets ✍️
-- Camera-based food logging 📸
-- AI nutrition analysis using `gemini-2.5-flash` through Firebase AI 🤖
-- SwiftData local storage for user profile and food entries 💾
-- Firestore + Firebase Storage sync for cloud-backed data ☁️
-- Background retry queue for failed Firestore uploads 🔄
-- Daily home dashboard with calorie and macro cards 📊
-- Weekly date picker for browsing past meal logs 🗓️
-- Skeleton/loading states while AI meal analysis is in progress ⏳
-- Recently logged meal feed with photo, timestamp, and macro summary 🍽️
-- Detailed nutrition view for each food entry 🔍
-- Editable serving multiplier that recalculates calories and macros ⚖️
-- Expanded nutrition facts including fiber, sugar, sodium, cholesterol, vitamins, iron, calcium, and more 🧪
-- Food entry deletion 🗑️
-- Save captured meal photos to the user photo library 🖼️
-- Weekly progress chart with Charts 📈
-- BMI and weight progress views 📉
-- Goal weight and current weight management 🏁
-- In-app editing for height, date of birth, and gender 👤
-- Restore onboarding/profile data from Firestore after reinstall or sign-in on a new device ♻️
-- Profile editing and account deletion ⚙️
+- Google Sign-In with Firebase Authentication 
+- Multi-step onboarding with goal and lifestyle capture 
+- Personalized calorie and macro recommendations 
+- Editable daily nutrition targets 
+- Camera-based food logging 
+- AI nutrition analysis using `gemini-2.5-flash` through Firebase AI 
+- SwiftData local storage for user profile and food entries 
+- Firestore + Firebase Storage sync for cloud-backed data 
+- Background retry queue for failed Firestore uploads 
+- Daily home dashboard with calorie and macro cards 
+- Weekly date picker for browsing past meal logs 
+- Skeleton/loading states while AI meal analysis is in progress 
+- Recently logged meal feed with photo, timestamp, and macro summary 
+- Detailed nutrition view for each food entry 
+- Editable serving multiplier that recalculates calories and macros 
+- Expanded nutrition facts including fiber, sugar, sodium, cholesterol, vitamins, iron, calcium, and more 
+- Food entry deletion 
+- Save captured meal photos to the user photo library 
+- Weekly progress chart with Charts 
+- BMI and weight progress views 
+- Goal weight and current weight management 
+- In-app editing for height, date of birth, and gender 
+- Restore onboarding/profile data from Firestore after reinstall or sign-in on a new device 
+- Profile editing and account deletion 
 
 ## Tech Stack 🛠️
 
@@ -44,7 +44,7 @@ The app is built around three main ideas:
 - Firebase Auth
 - Firebase Firestore
 - Firebase Storage
-- Firebase AI / Firebase AI Logic
+- Firebase AI
 - Google Sign-In for iOS
 - Apple Charts
 - BackgroundTasks
@@ -89,14 +89,12 @@ Key flow:
 
 1. Clone the repository.
 2. Open `Nutri AI.xcodeproj` in Xcode.
-3. Create a Firebase iOS app with the bundle identifier `com.shreyaprasad.NutriAI`.
-4. Download `GoogleService-Info.plist` and add it to the app target.
-   This file is intentionally gitignored and is not included in the repo.
-5. Enable Google sign-in in Firebase Authentication.
-6. Enable Firestore Database and Firebase Storage.
-7. Configure Firebase AI access for the model used in `Nutri AI/ViewModels/NutritionalAnalysisService.swift`, currently `gemini-2.5-flash`.
-8. If you use a different Firebase project, update the Google URL scheme in `Nutri-AI-Info.plist` to match your reversed client ID.
-9. Build and run on a simulator or device with camera access available.
+3. Connect your Firebase project with this Xcode project.
+4. Enable Google sign-in in Firebase Authentication.
+5. Enable Firestore Database and Firebase Storage.
+6. Configure Firebase AI access for the model used in `Nutri AI/ViewModels/NutritionalAnalysisService.swift`, currently `gemini-2.5-flash`.
+7. Update the Google URL scheme in `Nutri-AI-Info.plist` to match your reversed client ID.
+8. Build and run on a simulator or device with camera access available.
 
 ## Persistence and Sync Notes 🔁
 
