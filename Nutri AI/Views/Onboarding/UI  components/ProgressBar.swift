@@ -10,6 +10,7 @@ import SwiftUI
 struct ProgressBar: View {
     let current: Int
     let total: Int
+    @Environment(\.appTheme) private var theme
 
     var progress: CGFloat {
         CGFloat(current) / CGFloat(total)
@@ -23,7 +24,7 @@ struct ProgressBar: View {
                     .frame(height: 4)
 
                 Rectangle()
-                    .fill(Color.black)
+                    .fill(theme.primaryFill)
                     .frame(width: geometry.size.width * progress, height: 4)
                     .animation(.easeInOut(duration: 0.3), value: progress)
             }

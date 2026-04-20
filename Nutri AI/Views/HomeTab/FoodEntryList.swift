@@ -65,9 +65,11 @@ struct FoodEntryList: View {
 }
 
 struct FoodEntryEmptyList: View {
+    @Environment(\.appTheme) private var theme
+
     var body: some View {
         RoundedRectangle(cornerRadius: 16)
-            .foregroundStyle(Color.gray.opacity(0.1))
+            .foregroundStyle(theme.subtleCardBackground)
             .overlay {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("You haven't uploaded any food yet.")
@@ -86,6 +88,7 @@ struct FoodEntryEmptyList: View {
 }
 
 struct FoodEntryRow: View {
+    @Environment(\.appTheme) private var theme
     @Bindable var item: NutritionModel
 
     private var calculatedCalories: String {
@@ -100,7 +103,7 @@ struct FoodEntryRow: View {
 
     var body: some View {
         RoundedRectangle(cornerRadius: 16)
-            .foregroundStyle(Color.gray.opacity(0.1))
+            .foregroundStyle(theme.subtleCardBackground)
             .overlay {
                 HStack {
                     if let image = item.image {
@@ -114,11 +117,15 @@ struct FoodEntryRow: View {
                                 .font(.system(size: 16))
                             Spacer()
                             RoundedRectangle(cornerRadius: 12)
-                                .fill(Color.white)
+                                .fill(theme.cardBackground)
                                 .overlay {
                                     Text(item.createdAt, style: .time)
                                         .fontWeight(.regular)
                                         .font(.system(size: 12))
+                                }
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(theme.border, lineWidth: 1)
                                 }
                                 .frame(width: 54, height: 28)
                         }

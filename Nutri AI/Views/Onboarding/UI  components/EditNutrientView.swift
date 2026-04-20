@@ -19,6 +19,8 @@ struct EditNutrientView: View {
     let ringColor: Color
     let nutrientIcon: String
 
+    @Environment(\.appTheme) private var theme
+
     var body: some View {
         VStack(spacing: 0) {
             HStack {
@@ -43,11 +45,12 @@ struct EditNutrientView: View {
                 } label: {
                     Text("Revert")
                         .frame(width: 135, height: 42)
-                        .foregroundStyle(.black)
-                        .background(Color.white)
+                        .foregroundStyle(theme.primaryFill)
+                        .background(theme.cardBackground)
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
                         .overlay(
                             RoundedRectangle(cornerRadius: 20)
-                                .stroke(Color.black, lineWidth: 1)
+                                .stroke(theme.border, lineWidth: 1)
                         )
                 }
 
@@ -61,8 +64,8 @@ struct EditNutrientView: View {
                 } label: {
                     Text("Done")
                         .frame(width: 135, height: 42)
-                        .foregroundStyle(.white)
-                        .background(Color.black)
+                        .foregroundStyle(theme.primaryFillContent)
+                        .background(theme.primaryFill)
                         .clipShape(RoundedRectangle(cornerRadius: 20))
                 }
             }
@@ -78,9 +81,12 @@ struct EditNutrientView: View {
     private var currentValueCard: some View {
         ZStack(alignment: .leading) {
             RoundedRectangle(cornerRadius: 12)
-                .fill(Color.white)
-                .stroke(.gray.opacity(0.2), style: StrokeStyle(lineWidth: 1))
+                .fill(theme.cardBackground)
                 .frame(width: 272, height: 72)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(theme.border, style: StrokeStyle(lineWidth: 1))
+                }
 
             HStack(spacing: 16) {
                 ZStack {
@@ -109,9 +115,12 @@ struct EditNutrientView: View {
     private var inputFieldCard: some View {
         ZStack(alignment: .topLeading) {
             RoundedRectangle(cornerRadius: 12)
-                .stroke(.black, style: StrokeStyle(lineWidth: 1))
-                .fill(Color.white)
+                .fill(theme.cardBackground)
                 .frame(width: 272, height: 60)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(theme.border, style: StrokeStyle(lineWidth: 1))
+                }
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(nutrientType.displayName)

@@ -10,6 +10,7 @@ struct GrowthMacroEntry: Identifiable {
 }
 
 struct GrowthBarGraphView: View {
+    @Environment(\.appTheme) private var theme
     @Query(sort: \NutritionModel.createdAt, order: .reverse) private var foodEntries: [NutritionModel]
 
     private let chartBuilder = GrowthChartBuilder(calendar: .current)
@@ -30,22 +31,19 @@ struct GrowthBarGraphView: View {
         VStack(spacing: 12) {
             Text("This week")
                 .font(.system(size: 16, weight: .regular))
-                .foregroundStyle(Color.black)
                 .frame(width: 320, alignment: .leading)
 
             VStack(alignment: .leading, spacing: 12) {
                 Text("Total Calories")
                     .font(.system(size: 16, weight: .regular))
-                    .foregroundStyle(Color.black)
                     .padding(.leading, 12)
                     .padding(.bottom, 16)
                 HStack(alignment: .lastTextBaseline, spacing: 6) {
                     Text(totalCaloriesText)
                         .font(.system(size: 34, weight: .bold))
-                        .foregroundStyle(Color.black)
                     Text("cals")
                         .font(.system(size: 14, weight: .regular))
-                        .foregroundStyle(Color.gray)
+                        .foregroundStyle(theme.secondaryText)
                 }
 
                 Chart(chartEntries) { entry in
@@ -64,15 +62,15 @@ struct GrowthBarGraphView: View {
                 .chartXAxis {
                     AxisMarks { _ in
                         AxisValueLabel()
-                            .foregroundStyle(Color.gray)
+                            .foregroundStyle(theme.secondaryText)
                     }
                 }
                 .chartYAxis {
                     AxisMarks(position: .leading) { _ in
                         AxisGridLine(stroke: StrokeStyle(lineWidth: 1, dash: [4, 4]))
-                            .foregroundStyle(Color.gray.opacity(0.35))
+                            .foregroundStyle(theme.border)
                         AxisValueLabel()
-                            .foregroundStyle(Color.gray)
+                            .foregroundStyle(theme.secondaryText)
                     }
                 }
                 .chartLegend(.hidden)
@@ -86,7 +84,7 @@ struct GrowthBarGraphView: View {
                                 .frame(width: 8, height: 8)
                             Text(macro.rawValue)
                                 .font(.system(size: 12, weight: .regular))
-                                .foregroundStyle(Color.gray)
+                                .foregroundStyle(theme.secondaryText)
                         }
                     }
                 }
@@ -96,8 +94,8 @@ struct GrowthBarGraphView: View {
             .padding(.horizontal, 4)
             .background(
                 RoundedRectangle(cornerRadius: 16)
-                    .fill(Color.white)
-                    .shadow(color: Color.gray.opacity(0.2), radius: 8, x: 0, y: 0)
+                    .fill(theme.cardBackground)
+                    .shadow(color: theme.shadow, radius: 8, x: 0, y: 0)
             )
         }
     }

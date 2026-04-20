@@ -50,14 +50,7 @@ struct DesiredWeightView: View {
             Spacer()
 
             NavigationLink(destination: GoalMotivationView(authViewModel: authViewModel)) {
-                Text("Continue")
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(.white)
-                    .frame(width: 310, height: 46)
-                    .background(
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(Color.black)
-                    )
+                PrimaryButton(title: "Continue")
             }
             .simultaneousGesture(TapGesture().onEnded {
                 saveData()

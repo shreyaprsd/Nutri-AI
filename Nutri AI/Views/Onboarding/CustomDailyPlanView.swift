@@ -9,6 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct CustomDailyPlanView: View {
+    @Environment(\.appTheme) private var theme
     @Query private var users: [UserInfoModel]
     @Environment(\.modelContext) var modelContext
     @ObservedObject var authViewModel: AuthViewModel
@@ -47,7 +48,7 @@ struct CustomDailyPlanView: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
                     .frame(width: 360, height: 450)
-                    .foregroundStyle(Color.gray.opacity(0.1))
+                    .foregroundStyle(theme.subtleCardBackground)
                 VStack(alignment: .leading) {
                     HStack {
                         VStack(alignment: .leading) {
@@ -56,7 +57,7 @@ struct CustomDailyPlanView: View {
                                 .padding(.bottom, 4)
                             Text("You can edit this anytime")
                                 .font(.system(size: 24, weight: .regular))
-                                .foregroundStyle(.gray)
+                                .foregroundStyle(theme.secondaryText)
                         }
                         Spacer()
                     }
@@ -115,14 +116,7 @@ struct CustomDailyPlanView: View {
             Spacer()
 
             NavigationLink(destination: SaveProgressView(authViewModel: authViewModel)) {
-                Text("Let's get started!")
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(.white)
-                    .frame(width: 310, height: 46)
-                    .background(
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(Color.black)
-                    )
+                PrimaryButton(title: "Let's get started!")
             }
         }
         .onAppear {

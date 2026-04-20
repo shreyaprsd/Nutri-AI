@@ -15,6 +15,7 @@ struct PersonalDetailsView: View {
     @State private var currentWeight: Double?
     @Environment(\.modelContext) private var modelContext
     @Environment(FloatingButtonVisibility.self) private var floatingButtonVisibility
+    @Environment(\.appTheme) private var theme
 
     private var viewModel: UserInfoViewModel {
         if let existing = userInfoViewModel {
@@ -106,8 +107,8 @@ struct PersonalDetailsView: View {
     private var goalWeightView: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 18)
-                .fill(Color.white)
-                .shadow(color: Color.black.opacity(0.08), radius: 6, x: 0, y: 2)
+                .fill(theme.cardBackground)
+                .shadow(color: theme.shadow, radius: 6, x: 0, y: 2)
             HStack {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Goal Weight")
@@ -122,10 +123,10 @@ struct PersonalDetailsView: View {
                 } label: {
                     Text("Change Goal")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(Color.white)
+                        .foregroundStyle(theme.primaryFillContent)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)
-                        .background(Capsule().fill(Color.black))
+                        .background(Capsule().fill(theme.primaryFill))
                 }
             }
             .padding(.horizontal, 16)
@@ -139,8 +140,8 @@ struct PersonalDetailsView: View {
     private var personalInfoCardView: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 18)
-                .fill(Color.white)
-                .shadow(color: Color.black.opacity(0.08), radius: 6, x: 0, y: 2)
+                .fill(theme.cardBackground)
+                .shadow(color: theme.shadow, radius: 6, x: 0, y: 2)
             VStack(spacing: 0) {
                 ForEach(PersonalInfoRow.allCases) { row in
                     personalInfoRowView(row)
@@ -170,14 +171,14 @@ struct PersonalDetailsView: View {
         HStack(spacing: 12) {
             Text(row.title)
                 .font(.system(size: 14, weight: .regular))
-                .foregroundStyle(Color.black.opacity(0.85))
+                .foregroundStyle(Color.primary.opacity(0.85))
             Spacer()
             Text(row.valueText(userInfo: currentUserInfo))
                 .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(Color.black)
+                .foregroundStyle(Color.primary)
             Image(systemName: "pencil")
                 .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(Color.gray)
+                .foregroundStyle(theme.secondaryText)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)

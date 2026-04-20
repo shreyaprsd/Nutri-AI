@@ -5,6 +5,7 @@
 //  Created by Shreya Prasad on 05/11/25.
 //
 
+import SwiftData
 import SwiftUI
 
 struct MainView: View {
@@ -17,6 +18,7 @@ struct MainView: View {
     @State private var analysisVM = NutrientAnalysisViewModel()
     @State var foodViewModel: FoodEntryViewModel
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.appTheme) private var theme
 
     var body: some View {
         ZStack {
@@ -57,12 +59,12 @@ struct MainView: View {
                         }) {
                             ZStack {
                                 Circle()
-                                    .fill(Color.black)
+                                    .fill(theme.primaryFill)
                                     .frame(width: 50, height: 50)
 
                                 Image(systemName: "camera")
                                     .font(.system(size: 20, weight: .medium))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(theme.primaryFillContent)
                             }
                         }
                         .padding(.trailing, 24)

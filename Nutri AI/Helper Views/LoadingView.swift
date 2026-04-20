@@ -30,9 +30,10 @@ struct LoadingImageView: View {
 
 struct LoadingFoodRow: View {
     let image: UIImage
+    @Environment(\.appTheme) private var theme
     var body: some View {
         RoundedRectangle(cornerRadius: 16)
-            .foregroundStyle(Color.gray.opacity(0.1))
+            .foregroundStyle(theme.subtleCardBackground)
             .overlay {
                 HStack {
                     LoadingImageView(image: image)
@@ -56,8 +57,8 @@ struct LoadingFoodRow: View {
                 }
             }
             .frame(maxWidth: .infinity)
-            .frame(height:120)
-            .padding(.horizontal,4)
+            .frame(height: 120)
+            .padding(.horizontal, 4)
             .padding(8)
     }
 }

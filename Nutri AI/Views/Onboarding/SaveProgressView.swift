@@ -52,11 +52,7 @@ struct SaveProgressView: View {
                 Button {
                     onboardingState.isCompleted = true
                 } label: {
-                    Text("Finish Setup")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(.white)
-                        .frame(width: 310, height: 46)
-                        .background(RoundedRectangle(cornerRadius: 20).fill(Color.black))
+                    PrimaryButton(title: "Finish Setup")
                 }
                 .padding(.bottom, 20)
 

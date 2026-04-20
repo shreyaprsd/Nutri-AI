@@ -32,8 +32,9 @@ struct WeightSelectorView: View {
             } label: {
                 Image(systemName: "plus.circle.fill")
                     .font(.system(size: 50))
-                    .foregroundColor(.black)
+                    .foregroundStyle(.primary)
             }
+            .buttonStyle(.plain)
             .padding(20)
 
             if isEditing {
@@ -50,11 +51,12 @@ struct WeightSelectorView: View {
                 } label: {
                     Text(verbatim: String(format: "%.1f", weight))
                         .font(.system(size: 32, weight: .regular))
-                        .foregroundStyle(Color.black)
+                        .foregroundStyle(.primary)
                         .frame(width: 90)
                         .lineLimit(1)
                         .minimumScaleFactor(0.8)
                 }
+                .buttonStyle(.plain)
             }
 
             Button {
@@ -64,8 +66,9 @@ struct WeightSelectorView: View {
             } label: {
                 Image(systemName: "minus.circle.fill")
                     .font(.system(size: 50))
-                    .foregroundColor(.black)
+                    .foregroundStyle(.primary)
             }
+            .buttonStyle(.plain)
             .padding(20)
         }
     }

@@ -16,6 +16,7 @@ struct ProfileView: View {
     @State private var showDeleteAlert: Bool = false
     @Environment(\.modelContext) private var modelContext
     @Environment(FloatingButtonVisibility.self) private var floatingButtonVisibility
+    @Environment(\.appTheme) private var theme
 
     var body: some View {
         List {
@@ -39,9 +40,9 @@ struct ProfileView: View {
                         Text("Logout")
                         Spacer()
                         Image(systemName: "chevron.right")
-                            .foregroundStyle(Color.gray)
+                            .foregroundStyle(theme.secondaryText)
                     }
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(Color.primary)
                 }
 
                 Button {
@@ -52,9 +53,9 @@ struct ProfileView: View {
                         Text("Delete Account")
                         Spacer()
                         Image(systemName: "chevron.right")
-                            .foregroundStyle(Color.gray)
+                            .foregroundStyle(theme.secondaryText)
                     }
-                    .foregroundStyle(Color.black)
+                    .foregroundStyle(Color.primary)
                 }
             }
         }

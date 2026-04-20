@@ -9,6 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct DesiredGoalView: View {
+    @Environment(\.appTheme) private var theme
     @State private var selectedGoal: Goal?
     @Environment(\.modelContext) private var modelContext
     @State private var userInfoViewModel: UserInfoViewModel?
@@ -51,11 +52,11 @@ struct DesiredGoalView: View {
                     }) {
                         Text(goal.rawValue)
                             .font(.system(size: 14, weight: .medium))
-                            .foregroundColor(selectedGoal == goal ? .white : .primary)
+                            .foregroundColor(selectedGoal == goal ? theme.primaryFillContent : .primary)
                             .frame(width: 310, height: 60)
                             .background(
                                 RoundedRectangle(cornerRadius: 12)
-                                    .fill(selectedGoal == goal ? Color.black : Color(.systemGray6)))
+                                    .fill(selectedGoal == goal ? theme.primaryFill : Color(.systemGray6)))
                     }
                 }
             }
@@ -64,14 +65,7 @@ struct DesiredGoalView: View {
 
             if selectedGoal == .maintain {
                 NavigationLink(destination: AppBenefitGraphView(authViewModel: authViewModel)) {
-                    Text("Continue")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(.white)
-                        .frame(width: 310, height: 46)
-                        .background(
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(Color.black)
-                        )
+                    PrimaryButton(title: "Continue")
                 }
                 .simultaneousGesture(TapGesture()
                     .onEnded {
@@ -84,14 +78,7 @@ struct DesiredGoalView: View {
                 .padding(.bottom, 20)
             } else {
                 NavigationLink(destination: DesiredWeightView(authViewModel: authViewModel)) {
-                    Text("Continue")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(.white)
-                        .frame(width: 310, height: 46)
-                        .background(
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(Color.black)
-                        )
+                    PrimaryButton(title: "Continue")
                 }
                 .simultaneousGesture(TapGesture()
                     .onEnded {
